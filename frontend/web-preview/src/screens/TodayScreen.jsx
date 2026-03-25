@@ -184,6 +184,17 @@ export default function TodayScreen({ lang, plan, onWeek, onRecovery, onRaceProf
         </div>
       </div>
 
+      {todayWorkout?.flatAlternative && (
+        <div style={{margin:'8px 20px', background:'rgba(251,191,36,0.1)', border:'0.5px solid rgba(251,191,36,0.25)', borderRadius:12, padding:'12px 14px'}}>
+          <div style={{fontSize:10, color:'#fbbf24', fontWeight:600, letterSpacing:0.5, marginBottom:6}}>
+            {lang==='es' ? '🏔️ SIMULACIÓN DE DESNIVEL' : '🏔️ ELEVATION SIMULATION'}
+          </div>
+          <div style={{fontSize:12, color:'rgba(255,255,255,0.7)', lineHeight:1.6}}>
+            {todayWorkout.flatTips?.[lang] || todayWorkout.flatTips?.en}
+          </div>
+        </div>
+      )}
+
       <div style={s.section}>
         <div style={s.sectionLabel}>{t(lang,'afterRun')}</div>
         <div style={s.recoveryRow}>

@@ -133,6 +133,9 @@ export default function WeekScreen({ lang, plan, onToday, onRecovery }) {
               <div style={{flex:1}}>
                 <div style={s.workoutName(isDone)}>
                   {t(lang, `workouts.${workout.type}`) || workout.type}
+                  {workout.flatAlternative && (
+                    <span style={{ fontSize: 10, color: '#fbbf24', marginLeft: 6 }}>🏔️ +sim</span>
+                  )}
                   {workout.type === 'recovery' ? ' ↗' : ''}
                 </div>
                 <div style={s.workoutDesc(isDone)}>

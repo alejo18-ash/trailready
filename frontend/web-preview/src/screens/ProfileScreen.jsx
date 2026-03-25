@@ -29,6 +29,7 @@ export default function ProfileScreen({ lang, raceData, onNext, onBack }) {
   const [dias, setDias]             = useState('5');
   const [alreadyTraining, setAT]    = useState(false);
   const [startWeek, setStartWeek]   = useState('1');
+  const [terrain, setTerrain]       = useState('mountain');
 
   const idealWeeks = raceData.distancia <= 25 ? 10
   : raceData.distancia <= 35 ? 12
@@ -41,7 +42,7 @@ export default function ProfileScreen({ lang, raceData, onNext, onBack }) {
   const insufficient = available < idealWeeks * 0.6;
 
   const handleNext = () => {
-    onNext({ nivel, kmSemanales, diasDisponibles: dias, startWeek: alreadyTraining ? startWeek : '1' });
+    onNext({ nivel, kmSemanales, diasDisponibles: dias, startWeek: alreadyTraining ? startWeek : '1', terrain });
   };
 
   return (
@@ -123,6 +124,16 @@ export default function ProfileScreen({ lang, raceData, onNext, onBack }) {
             />
           </>
         )}
+
+        <div style={s.sectionLabel}>{lang === 'es' ? '¿Dónde entrenas?' : 'Where do you train?'}</div>
+        <div style={s.optRow}>
+          <div style={s.opt(terrain === 'mountain')} onClick={() => setTerrain('mountain')}>
+            {lang === 'es' ? '🏔️ Tengo montañas cerca' : '🏔️ Mountains / hills nearby'}
+          </div>
+          <div style={s.opt(terrain === 'flat')} onClick={() => setTerrain('flat')}>
+            {lang === 'es' ? '🌅 Zona principalmente plana' : '🌅 Mostly flat terrain'}
+          </div>
+        </div>
 
         <button style={s.btn} onClick={handleNext}>{t(lang,'generatePlan')}</button>
       </div>

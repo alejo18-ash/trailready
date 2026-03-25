@@ -90,6 +90,26 @@ export function generatePlan(raceData, profile) {
         };
       });
 
+      if (profile.terrain === 'flat' && Number(raceData.desnivel) > 1500) {
+        // Flat runner mode: simulate elevation on long trails (and add hill strength tips).
+        const longTrailDay = workouts.find(w => w.type === 'longTrail');
+        if (longTrailDay) {
+          longTrailDay.flatAlternative = true;
+          longTrailDay.flatTips = {
+            en: 'Flat zone — add elevation simulation after your run: 45min treadmill at 10-12% incline, OR 8-10 staircase repeats (min 10 floors), OR 6 parking garage ramp repeats',
+            es: 'Zona plana — agrega simulación de desnivel después de correr: 45min treadmill al 10-12% inclinación, O 8-10 repeticiones de escaleras (mínimo 10 pisos), O 6 subidas de rampa de parking',
+          };
+        }
+
+        const strengthDay = workouts.find(w => w.type === 'strength');
+        if (strengthDay) {
+          strengthDay.flatTips = {
+            en: 'Add: Step-ups with heavy load 4×15 each leg — simulates uphill muscle recruitment',
+            es: 'Agrega: Step-ups con carga pesada 4×15 cada pierna — simula reclutamiento muscular de subida',
+          };
+        }
+      }
+
       const keyWorkoutTypes = {
         base: 'longTrail',
         build: 'intervals',
