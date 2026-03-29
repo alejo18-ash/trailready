@@ -98,7 +98,9 @@ export default function TodayScreen({ lang, plan, onWeek, onRecovery, onRaceProf
   const dayIndex     = todayIndex === 0 ? 6 : todayIndex - 1;
   const todayWorkout = week.workouts[dayIndex];
   const phaseLabel   = t(lang, phaseKey[week.phase] || 'buildPhase');
-  const workoutName  = t(lang, `workouts.${todayWorkout.type}`) || todayWorkout.type;
+  const isTreadmill  = todayWorkout.type === 'treadmillIntervals';
+  const treadmillLabel = t(lang, 'workoutNames.treadmillIntervals') || t(lang, 'workouts.treadmillIntervals');
+  const workoutName  = isTreadmill ? `🏃 ${treadmillLabel}` : (t(lang, `workouts.${todayWorkout.type}`) || todayWorkout.type);
   const isGoodAqi    = !conditions?.aqi || conditions.aqi === 'Good' || conditions.aqi === 'Moderate';
 
   const activeTrail = trails[trailIndex] || null;
@@ -117,7 +119,12 @@ export default function TodayScreen({ lang, plan, onWeek, onRecovery, onRaceProf
           </div>
           <div style={s.activityTitle}>{workoutName}</div>
           <div style={s.activitySub}>
-            {phaseLabel}{todayWorkout.km ? ` · ${todayWorkout.km} km · ${Math.floor(todayWorkout.km / 7)}h${String(Math.round((todayWorkout.km / 7 % 1) * 60)).padStart(2, '0')}` : ''}
+            {phaseLabel}
+            {isTreadmill && todayWorkout.duration != null
+              ? ` · ${todayWorkout.duration} min`
+              : todayWorkout.km
+                ? ` · ${todayWorkout.km} km · ${Math.floor(todayWorkout.km / 7)}h${String(Math.round((todayWorkout.km / 7 % 1) * 60)).padStart(2, '0')}`
+                : ''}
           </div>
         </div>
 
@@ -150,41 +157,69 @@ export default function TodayScreen({ lang, plan, onWeek, onRecovery, onRaceProf
 
       <div style={s.divider} />
 
-      <div style={s.routeCard}>
-        <div style={s.routeLabel}>{t(lang,'todaysRoute')}</div>
-        <div style={s.routeName}>{routeName}</div>
-        <div style={s.routeSub}>{routeSource}</div>
-        <div style={s.statsRow}>
-          <div style={s.statBox}>
-            <div style={s.statVal('#4ade80')}>{routeKm}km</div>
-            <div style={s.statLbl}>{t(lang,'distance')}</div>
+      {isTreadmill ? (
+        <>
+          <div style={{ margin:'12px 20px', background:'rgba(251,191,36,0.12)', border:'1px solid rgba(251,191,36,0.35)', borderRadius:14, padding:14 }}>
+            <div style={{ fontSize:10, color:'rgba(251,191,36,0.85)', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
+              {t(lang,'treadmillSession').toUpperCase()}
+            </div>
+            <div style={{ fontSize:15, fontWeight:700, color:'#fff', marginBottom:4 }}>
+              {treadmillLabel}
+            </div>
+            <div style={{ fontSize:11, color:'rgba(255,255,255,0.45)', lineHeight:1.45, marginBottom:8 }}>
+              {t(lang, 'workoutDescriptions.treadmillIntervals')}
+            </div>
+            <div style={{ fontSize:12, color:'rgba(255,255,255,0.75)', lineHeight:1.55, marginBottom:10 }}>
+              {todayWorkout.treadmillNote?.[lang] || todayWorkout.treadmillNote?.en}
+            </div>
+            <ul style={{ margin:0, paddingLeft:18, fontSize:12, color:'rgba(255,255,255,0.7)', lineHeight:1.65 }}>
+              <li>{t(lang,'treadmillTipIncline')}</li>
+              <li>{t(lang,'treadmillTipHR')}</li>
+              <li>{t(lang,'treadmillTipPoles')}</li>
+            </ul>
           </div>
-          <div style={s.statBox}>
-            <div style={s.statVal('#fbbf24')}>{week.desnivel ? `${week.desnivel}m` : '—'}</div>
-            <div style={s.statLbl}>{t(lang,'elevation')}</div>
+          <div style={{ margin:'0 20px 8px', background:'rgba(255,255,255,0.03)', border:'0.5px solid rgba(255,255,255,0.08)', borderRadius:12, padding:'10px 14px', opacity:0.65 }}>
+            <div style={{ fontSize:10, color:'rgba(255,255,255,0.35)', marginBottom:4 }}>{t(lang,'treadmillOptionalOutdoor')}</div>
+            <div style={{ fontSize:12, color:'rgba(255,255,255,0.45)' }}>{routeName} · ~{routeKm} km</div>
           </div>
-          <div style={s.statBoxTime}>
-            <div style={s.statValTime}>{routeTime}</div>
-            <div style={s.statLblTime}>{t(lang,'estimated')}</div>
+        </>
+      ) : (
+        <div style={s.routeCard}>
+          <div style={s.routeLabel}>{t(lang,'todaysRoute')}</div>
+          <div style={s.routeName}>{routeName}</div>
+          <div style={s.routeSub}>{routeSource}</div>
+          <div style={s.statsRow}>
+            <div style={s.statBox}>
+              <div style={s.statVal('#4ade80')}>{routeKm}km</div>
+              <div style={s.statLbl}>{t(lang,'distance')}</div>
+            </div>
+            <div style={s.statBox}>
+              <div style={s.statVal('#fbbf24')}>{week.desnivel ? `${week.desnivel}m` : '—'}</div>
+              <div style={s.statLbl}>{t(lang,'elevation')}</div>
+            </div>
+            <div style={s.statBoxTime}>
+              <div style={s.statValTime}>{routeTime}</div>
+              <div style={s.statLblTime}>{t(lang,'estimated')}</div>
+            </div>
+          </div>
+
+          {trails.length > 1 && (
+            <div style={s.dots}>
+              {trails.map((_, i) => (
+                <div key={i} style={s.dot(i===trailIndex)} onClick={() => setTrailIndex(i)} />
+              ))}
+            </div>
+          )}
+
+          <div style={s.wikiloc} onClick={() => window.open(routeUrl, '_blank')}>
+            {activeTrail
+              ? (lang==='es' ? 'Buscar en Wikiloc ↗' : 'Search on Wikiloc ↗')
+              : t(lang,'openWikiloc')}
           </div>
         </div>
+      )}
 
-        {trails.length > 1 && (
-          <div style={s.dots}>
-            {trails.map((_, i) => (
-              <div key={i} style={s.dot(i===trailIndex)} onClick={() => setTrailIndex(i)} />
-            ))}
-          </div>
-        )}
-
-        <div style={s.wikiloc} onClick={() => window.open(routeUrl, '_blank')}>
-          {activeTrail
-            ? (lang==='es' ? 'Buscar en Wikiloc ↗' : 'Search on Wikiloc ↗')
-            : t(lang,'openWikiloc')}
-        </div>
-      </div>
-
-      {todayWorkout?.flatAlternative && (
+      {todayWorkout?.flatAlternative && todayWorkout.type !== 'treadmillIntervals' && todayWorkout.flatTips && (
         <div style={{margin:'8px 20px', background:'rgba(251,191,36,0.1)', border:'0.5px solid rgba(251,191,36,0.25)', borderRadius:12, padding:'12px 14px'}}>
           <div style={{fontSize:10, color:'#fbbf24', fontWeight:600, letterSpacing:0.5, marginBottom:6}}>
             {lang==='es' ? '🏔️ SIMULACIÓN DE DESNIVEL' : '🏔️ ELEVATION SIMULATION'}

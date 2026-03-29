@@ -43,6 +43,12 @@ export const translations = {
       distance: "distance",
       elevation: "elevation",
       estimated: "estimated",
+      treadmillSession: "Treadmill session",
+      treadmillOptionalOutdoor: "Outdoor alternative (optional)",
+      treadmillTipIncline: "Set treadmill to the prescribed incline before starting",
+      treadmillTipHR: "Use HR monitor — target zone shown above",
+      treadmillTipPoles: "No poles needed — focus on arm drive and short stride",
+      keyWorkoutFlatRunner: "Flat Runner Key Session 🏔️➡️🏃",
       afterRun: "AFTER YOUR RUN — TAP TO OPEN VIDEO",
       stretching: "Stretching",
       iceBath: "Ice bath",
@@ -60,6 +66,14 @@ export const translations = {
         tempo: "Tempo run", cross: "Bike / Swim", longTrail: "Long trail",
         recovery: "Recovery", strides: "Strides", backToBack: "Back-to-back",
         shortTrail: "Short trail",
+        treadmillIntervals: "Treadmill Intervals",
+      },
+
+      workoutNames: {
+        treadmillIntervals: "Treadmill Intervals",
+      },
+      workoutDescriptions: {
+        treadmillIntervals: "Simulate race elevation on treadmill — incline repeats to build climbing power without mountain access",
       },
   
       // Recovery screen
@@ -118,6 +132,12 @@ export const translations = {
       distance: "distancia",
       elevation: "desnivel",
       estimated: "estimado",
+      treadmillSession: "Sesión en cinta",
+      treadmillOptionalOutdoor: "Alternativa outdoor (opcional)",
+      treadmillTipIncline: "Configura la cinta con la inclinación indicada antes de empezar",
+      treadmillTipHR: "Usa monitor de FC — apunta a la zona indicada arriba",
+      treadmillTipPoles: "Sin bastones — enfócate en brazada y zancada corta",
+      keyWorkoutFlatRunner: "Sesión clave corredor en llano 🏔️➡️🏃",
       afterRun: "DESPUÉS DE CORRER — TOCA PARA VER VIDEO",
       stretching: "Estiramiento",
       iceBath: "Ice bath",
@@ -135,6 +155,14 @@ export const translations = {
         tempo: "Tempo", cross: "Bike / Nado", longTrail: "Trail largo",
         recovery: "Recuperación", strides: "Strides", backToBack: "Back-to-back",
         shortTrail: "Trail corto",
+        treadmillIntervals: "Intervalos en Cinta",
+      },
+
+      workoutNames: {
+        treadmillIntervals: "Intervalos en Cinta",
+      },
+      workoutDescriptions: {
+        treadmillIntervals: "Simula el desnivel de carrera en cinta — repeticiones de inclinación para desarrollar potencia sin acceso a montaña",
       },
   
       // Recovery screen

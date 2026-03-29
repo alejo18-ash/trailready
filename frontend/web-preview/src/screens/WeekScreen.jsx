@@ -16,6 +16,7 @@ const workoutColors = {
   backToBack: { bg:'rgba(248,113,113,0.07)', border:'rgba(248,113,113,0.15)',dot:'#f87171' },
   strides:    { bg:'rgba(45,212,191,0.07)',  border:'rgba(45,212,191,0.12)',  dot:'#2dd4bf' },
   cross:      { bg:'rgba(45,212,191,0.07)',  border:'rgba(45,212,191,0.12)',  dot:'#2dd4bf' },
+  treadmillIntervals: { bg:'rgba(251,191,36,0.1)', border:'rgba(251,191,36,0.28)', dot:'#f59e0b' },
 };
 
 const s = {
@@ -54,11 +55,16 @@ const s = {
   }),
 };
 
-export default function WeekScreen({ lang, plan, onToday, onRecovery }) {
+export default function WeekScreen({ lang, plan, profile, raceData, onToday, onRecovery }) {
   const [selectedWeek, setSelectedWeek] = useState(0);
   if (!plan || !plan.weeks.length) return null;
 
+  const flatRunner = profile?.terrain === 'flat' && Number(raceData?.desnivel) > 1500;
   const week = plan.weeks[selectedWeek];
+  const flatRunnerKeyBanner = flatRunner && week.keyWorkout && (
+    week.keyWorkout.type === 'treadmillIntervals'
+    || (week.phase === 'taper' && week.keyWorkout.type === 'strides' && week.keyWorkout.day === 'Sat')
+  );
   const todayIndex = new Date().getDay();
   const todayDayIndex = todayIndex === 0 ? 6 : todayIndex - 1;
   const dayKeys = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -107,11 +113,13 @@ export default function WeekScreen({ lang, plan, onToday, onRecovery }) {
           <div style={{ fontSize: 16 }}>⭐</div>
           <div>
             <div style={{ fontSize: 11, color: 'rgba(251,191,36,0.8)', fontWeight: 600, letterSpacing: 0.5 }}>
-              {lang === 'es' ? 'ENTRENO CLAVE DE LA SEMANA' : 'KEY WORKOUT THIS WEEK'}
+              {flatRunnerKeyBanner ? t(lang, 'keyWorkoutFlatRunner') : (lang === 'es' ? 'ENTRENO CLAVE DE LA SEMANA' : 'KEY WORKOUT THIS WEEK')}
             </div>
             <div style={{ fontSize: 13, color: '#fff', fontWeight: 600, marginTop: 2 }}>
-              {t(lang, `workouts.${week.keyWorkout.type}`)}
-              {week.keyWorkout.km ? ` · ${week.keyWorkout.km} km` : ''}
+              {week.keyWorkout.type === 'treadmillIntervals'
+                ? (t(lang, 'workoutNames.treadmillIntervals') || t(lang, 'workouts.treadmillIntervals'))
+                : t(lang, `workouts.${week.keyWorkout.type}`)}
+              {week.keyWorkout.km ? ` · ${week.keyWorkout.km} km` : week.keyWorkout.duration ? ` · ${week.keyWorkout.duration} min` : ''}
               {' · '}
               {t(lang, `days.${week.keyWorkout.day}`)}
             </div>
@@ -132,15 +140,21 @@ export default function WeekScreen({ lang, plan, onToday, onRecovery }) {
               <div style={s.dayLabel(isToday)}>{t(lang, `days.${dayKeys[i]}`)}</div>
               <div style={{flex:1}}>
                 <div style={s.workoutName(isDone)}>
-                  {t(lang, `workouts.${workout.type}`) || workout.type}
-                  {workout.flatAlternative && (
+                  {workout.type === 'treadmillIntervals' && <span style={{ marginRight: 6 }}>🏃</span>}
+                  {workout.type === 'treadmillIntervals'
+                    ? (t(lang, 'workoutNames.treadmillIntervals') || t(lang, 'workouts.treadmillIntervals'))
+                    : (t(lang, `workouts.${workout.type}`) || workout.type)}
+                  {workout.flatAlternative && workout.type !== 'treadmillIntervals' && (
                     <span style={{ fontSize: 10, color: '#fbbf24', marginLeft: 6 }}>🏔️ +sim</span>
                   )}
                   {workout.type === 'recovery' ? ' ↗' : ''}
                 </div>
                 <div style={s.workoutDesc(isDone)}>
-                  {workout.km ? `${workout.km} km · ` : ''}
-                  {workout.desc?.[lang] || workout.desc?.en || ''}
+                  {workout.type === 'treadmillIntervals'
+                    ? `${workout.duration != null ? `${workout.duration} min · ` : ''}${workout.treadmillNote?.[lang] || workout.treadmillNote?.en || ''}`
+                    : workout.treadmillNote
+                      ? workout.treadmillNote[lang] || workout.treadmillNote.en
+                      : `${workout.km ? `${workout.km} km · ` : ''}${workout.desc?.[lang] || workout.desc?.en || ''}`}
                 </div>
               </div>
               {week.keyWorkout?.day === dayKeys[i] && (

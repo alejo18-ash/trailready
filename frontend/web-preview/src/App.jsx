@@ -62,6 +62,46 @@ export function generatePlan(raceData, profile) {
     strides:    { pct:0.10, desc:{ en:'6×100m progressive strides',        es:'6×100m progresivos' }},
     shortTrail: { pct:0.20, desc:{ en:'Similar terrain to race, easy',     es:'Terreno similar a la carrera' }},
     cross:      { km:null,  desc:{ en:'45min zone 2 bike or swim',         es:'45min zona 2 bike o nado' }},
+    treadmillIntervals: {
+      km: null,
+      desc: {
+        en: 'Simulate race elevation on treadmill — incline repeats to build climbing power without mountain access',
+        es: 'Simula el desnivel de carrera en cinta — repeticiones de inclinación para desarrollar potencia sin acceso a montaña',
+      },
+    },
+  };
+
+  const flatRunner = profile.terrain === 'flat' && Number(raceData.desnivel) > 1500;
+
+  const treadmillByPhase = {
+    base: {
+      duration: 60,
+      treadmillNote: {
+        en: '60 min @ 10% incline, zone 2 — incline walk/run, build aerobic base',
+        es: '60 min al 10% de inclinación, zona 2 — camina/corre en pendiente, base aeróbica',
+      },
+    },
+    build: {
+      duration: 75,
+      treadmillNote: {
+        en: '8×5 min @ 12% incline, 2 min rest — simulate climb, HR zone 3-4',
+        es: '8×5 min al 12% de inclinación, 2 min descanso — simula subida, FCM zonas 3-4',
+      },
+    },
+    peak: {
+      duration: 90,
+      treadmillNote: {
+        en: '10×5 min @ 12-15% incline alternating, 90s rest — race-specific effort',
+        es: '10×5 min alternando 12-15% de inclinación, 90s descanso — esfuerzo específico de carrera',
+      },
+    },
+    taper: {
+      duration: 30,
+      treadmillNote: {
+        en: '30 min easy @ 8% incline — maintain feel, conserve legs',
+        es: '30 min suave al 8% de inclinación — mantén sensación, conserva piernas',
+      },
+    },
   };
 
   const dayKeys = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -80,44 +120,45 @@ export function generatePlan(raceData, profile) {
       else if (activeDays >= 6) template[4] = 'cross';
 
       const workouts = dayKeys.map((day, di) => {
-        const type = template[di];
+        let type = template[di];
+        if (flatRunner) {
+          if (type === 'longTrail') type = 'treadmillIntervals';
+          else if (type === 'backToBack') type = 'cross';
+          else if (type === 'shortTrail') type = 'strides';
+        }
+
         const detail = workoutDetails[type] || workoutDetails.rest;
-        return {
+        const w = {
           day,
           type,
           km: detail.pct ? Math.round(kmTotal * detail.pct) : null,
           desc: detail.desc,
         };
+
+        if (type === 'treadmillIntervals') {
+          const tp = treadmillByPhase[phase.name] || treadmillByPhase.base;
+          w.duration = tp.duration;
+          w.treadmillNote = { ...tp.treadmillNote };
+          w.flatAlternative = true;
+        }
+
+        if (flatRunner && phase.name === 'taper' && type === 'strides' && di === 5) {
+          w.treadmillNote = {
+            en: 'Treadmill: after warm-up, 6×100m strides; optional 5–10 min @ 6–8% incline cool-down',
+            es: 'Cinta: tras calentar, 6×100m progresivos; opcional 5–10 min al 6–8% en enfriamiento',
+          };
+        }
+
+        return w;
       });
 
-      if (profile.terrain === 'flat' && Number(raceData.desnivel) > 1500) {
-        // Flat runner mode: simulate elevation on long trails (and add hill strength tips).
-        const longTrailDay = workouts.find(w => w.type === 'longTrail');
-        if (longTrailDay) {
-          longTrailDay.flatAlternative = true;
-          longTrailDay.flatTips = {
-            en: 'Flat zone — add elevation simulation after your run: 45min treadmill at 10-12% incline, OR 8-10 staircase repeats (min 10 floors), OR 6 parking garage ramp repeats',
-            es: 'Zona plana — agrega simulación de desnivel después de correr: 45min treadmill al 10-12% inclinación, O 8-10 repeticiones de escaleras (mínimo 10 pisos), O 6 subidas de rampa de parking',
-          };
-        }
-
-        const strengthDay = workouts.find(w => w.type === 'strength');
-        if (strengthDay) {
-          strengthDay.flatTips = {
-            en: 'Add: Step-ups with heavy load 4×15 each leg — simulates uphill muscle recruitment',
-            es: 'Agrega: Step-ups con carga pesada 4×15 cada pierna — simula reclutamiento muscular de subida',
-          };
-        }
-      }
-
-      const keyWorkoutTypes = {
-        base: 'longTrail',
-        build: 'intervals',
-        peak: 'longTrail',
-        taper: 'shortTrail',
-      };
+      const keyWorkoutTypes = flatRunner
+        ? { base: 'treadmillIntervals', build: 'intervals', peak: 'treadmillIntervals', taper: 'strides' }
+        : { base: 'longTrail', build: 'intervals', peak: 'longTrail', taper: 'shortTrail' };
       const keyType = keyWorkoutTypes[phase.name];
-      const keyDay = workouts.find(w => w.type === keyType);
+      const keyDay = phase.name === 'taper'
+        ? workouts.find(w => w.day === 'Sat')
+        : workouts.find(w => w.type === keyType);
 
       weeks.push({
         week: weekNum,
