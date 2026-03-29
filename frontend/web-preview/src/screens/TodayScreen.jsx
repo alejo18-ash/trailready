@@ -103,9 +103,17 @@ export default function TodayScreen({ lang, plan, onWeek, onRecovery, onRaceProf
   const workoutName  = isTreadmill ? `🏃 ${treadmillLabel}` : (t(lang, `workouts.${todayWorkout.type}`) || todayWorkout.type);
   const isGoodAqi    = !conditions?.aqi || conditions.aqi === 'Good' || conditions.aqi === 'Moderate';
 
-  const activeTrail = trails[trailIndex] || null;
+  const safeTrailIndex = trails.length ? Math.min(trailIndex, trails.length - 1) : 0;
+  const activeTrail = trails[safeTrailIndex] ?? null;
   const routeName   = activeTrail?.name || 'Cerro La Campana — Norte';
-  const routeKm     = activeTrail?.distancia ? Math.round(activeTrail.distancia) : (todayWorkout.km || 12);
+  const routeKm =
+    activeTrail != null && activeTrail.distancia != null && activeTrail.distancia !== ''
+      ? Math.round(Number(activeTrail.distancia))
+      : (todayWorkout.km || 12);
+  const routeElev =
+    activeTrail != null && activeTrail.desnivel != null && activeTrail.desnivel !== ''
+      ? Number(activeTrail.desnivel)
+      : week.desnivel;
   const routeSource = activeTrail ? 'OSM · OpenStreetMap' : 'Wikiloc (mock)';
   const routeUrl    = activeTrail?.wikiloc || 'https://wikiloc.com';
   const routeTime   = `${Math.floor(routeKm/7)}:${String(Math.round((routeKm/7%1)*60)).padStart(2,'0')}h`;
@@ -194,7 +202,7 @@ export default function TodayScreen({ lang, plan, onWeek, onRecovery, onRaceProf
               <div style={s.statLbl}>{t(lang,'distance')}</div>
             </div>
             <div style={s.statBox}>
-              <div style={s.statVal('#fbbf24')}>{week.desnivel ? `${week.desnivel}m` : '—'}</div>
+              <div style={s.statVal('#fbbf24')}>{routeElev != null && !Number.isNaN(routeElev) ? `${Math.round(routeElev)}m` : '—'}</div>
               <div style={s.statLbl}>{t(lang,'elevation')}</div>
             </div>
             <div style={s.statBoxTime}>
@@ -206,7 +214,7 @@ export default function TodayScreen({ lang, plan, onWeek, onRecovery, onRaceProf
           {trails.length > 1 && (
             <div style={s.dots}>
               {trails.map((_, i) => (
-                <div key={i} style={s.dot(i===trailIndex)} onClick={() => setTrailIndex(i)} />
+                <div key={i} style={s.dot(i===safeTrailIndex)} onClick={() => setTrailIndex(i)} />
               ))}
             </div>
           )}
