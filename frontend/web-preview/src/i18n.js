@@ -75,6 +75,39 @@ export const translations = {
       workoutDescriptions: {
         treadmillIntervals: "Simulate race elevation on treadmill — incline repeats to build climbing power without mountain access",
       },
+
+      landing: {
+        heroHeadline: "Your trail race. Your local trails. One perfect plan.",
+        heroSubheadline: "Generate a personalized multi-week training plan for any trail race — 21K to 100K. Real nearby routes assigned every week.",
+        heroCta: "Build My Plan — Free",
+        heroCtaNote: "No account needed · Ready in 60 seconds",
+
+        howTitle: "HOW IT WORKS",
+        how1Title: "Enter your race",
+        how1Body: "Paste a link or upload GPX",
+        how2Title: "Get your plan",
+        how2Body: "Weeks, phases, workouts personalized to your level",
+        how3Title: "Run real trails",
+        how3Body: "A different nearby route assigned each week",
+
+        featuresTitle: "KEY FEATURES",
+        f1Title: "Global trails",
+        f1Body: "OSM data · works anywhere in the world",
+        f2Title: "Weather + AQI",
+        f2Body: "Conditions checked before every run",
+        f3Title: "Flat runner mode",
+        f3Body: "No mountains? We simulate elevation on treadmill",
+        f4Title: "EN / ES",
+        f4Body: "Fully bilingual",
+
+        proofTitle: "WHY TRAILREADY",
+        proofBody: "Built for runners training for races like UTMB, Western States, Javelina, and local ultras worldwide.",
+
+        finalTitle: "READY TO START?",
+        finalCta: "Start Free — No Sign Up",
+
+        footerTop: "Back to top",
+      },
   
       // Recovery screen
       afterYourRun: "AFTER YOUR RUN",
@@ -163,6 +196,39 @@ export const translations = {
       },
       workoutDescriptions: {
         treadmillIntervals: "Simula el desnivel de carrera en cinta — repeticiones de inclinación para desarrollar potencia sin acceso a montaña",
+      },
+
+      landing: {
+        heroHeadline: "Tu carrera. Tus trails. Un plan perfecto.",
+        heroSubheadline: "Genera un plan de entrenamiento personalizado para cualquier carrera de trail — 21K a 100K. Rutas reales cerca de ti cada semana.",
+        heroCta: "Crear Mi Plan — Gratis",
+        heroCtaNote: "Sin registro · Listo en 60 segundos",
+
+        howTitle: "CÓMO FUNCIONA",
+        how1Title: "Ingresa tu carrera",
+        how1Body: "Pega un link o sube un GPX",
+        how2Title: "Obtén tu plan",
+        how2Body: "Semanas, fases y entrenos según tu nivel",
+        how3Title: "Corre trails reales",
+        how3Body: "Una ruta cercana distinta asignada cada semana",
+
+        featuresTitle: "FEATURES CLAVE",
+        f1Title: "Trails globales",
+        f1Body: "Datos OSM · funciona en cualquier lugar",
+        f2Title: "Clima + AQI",
+        f2Body: "Condiciones antes de cada salida",
+        f3Title: "Modo llano",
+        f3Body: "¿Sin montañas? Simulamos desnivel en cinta",
+        f4Title: "EN / ES",
+        f4Body: "100% bilingüe",
+
+        proofTitle: "PARA QUIÉN",
+        proofBody: "Diseñado para corredores entrenando para UTMB, Western States, Javelina y ultras locales en todo el mundo.",
+
+        finalTitle: "¿LISTO PARA PARTIR?",
+        finalCta: "Comenzar Gratis — Sin Registro",
+
+        footerTop: "Volver arriba",
       },
   
       // Recovery screen

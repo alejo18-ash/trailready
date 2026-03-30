@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { translations } from './i18n';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import SplashScreen from './screens/SplashScreen';
 import LanguageScreen from './screens/LanguageScreen';
 import SourceScreen from './screens/SourceScreen';
@@ -8,6 +9,7 @@ import TodayScreen from './screens/TodayScreen';
 import WeekScreen from './screens/WeekScreen';
 import RecoveryScreen from './screens/RecoveryScreen';
 import RaceProfileScreen from './screens/RaceProfileScreen';
+import LandingPage from './screens/LandingPage';
 
 export function generatePlan(raceData, profile) {
   const kmBase = Number(profile.kmSemanales);
@@ -175,9 +177,8 @@ export function generatePlan(raceData, profile) {
   return { weeks, totalWeeks, idealWeeks, insufficient, startWeek };
 }
 
-export default function App() {
+function AppFlow({ lang, setLang }) {
   const [screen, setScreen]       = useState('splash');
-  const [lang, setLang]           = useState('en');
   const [raceData, setRaceData]   = useState(null);
   const [profile, setProfile]     = useState(null);
   const [plan, setPlan]           = useState(null);
@@ -206,4 +207,18 @@ export default function App() {
   if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} />;
   if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
   if (screen === 'raceProfile') return <RaceProfileScreen {...props} onBack={() => setScreen('today')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} />;
+}
+
+export default function App() {
+  const [lang, setLang] = useState('en');
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage lang={lang} setLang={setLang} />} />
+        <Route path="/app" element={<AppFlow lang={lang} setLang={setLang} />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
