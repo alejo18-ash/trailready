@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build --prefix frontend/web-preview",
+  "buildCommand": "cd frontend/web-preview && npm install && npm run build",
   "outputDirectory": "frontend/web-preview/dist",
-  "installCommand": "npm install --prefix frontend/web-preview",
+  "installCommand": "cd frontend/web-preview && npm install",
   "framework": "vite"
 }
