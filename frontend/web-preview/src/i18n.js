@@ -12,6 +12,19 @@ export const translations = {
       sourcePdfSub: "Race rules or tech sheet",
       sourceManual: "Enter manually",
       sourceManualSub: "Distance, elevation, date",
+      sourceOptions: {
+        base: "Build My Base",
+        baseSubtitle: "No race yet — start from zero",
+      },
+      basePlan: {
+        title: "Base Plan",
+        subtitle: "8 weeks to build your running foundation",
+        weekPlanTitle: "8 Week Base Plan",
+        phase1: "Aerobic Base",
+        phase2: "Base Development",
+        todayMotivation:
+          "Building your base 🏃 — consistency beats intensity. Every easy run counts.",
+      },
       analyzeRace: "Analyze race",
       analyzingPage: "Analyzing page...",
       readingPdf: "Reading PDF...",
@@ -134,6 +147,19 @@ export const translations = {
       sourcePdfSub: "Reglamento o ficha técnica",
       sourceManual: "Ingresar manual",
       sourceManualSub: "Distancia, desnivel, fecha",
+      sourceOptions: {
+        base: "Construir Mi Base",
+        baseSubtitle: "Sin carrera aún — empezar desde cero",
+      },
+      basePlan: {
+        title: "Plan Base",
+        subtitle: "8 semanas para construir tu base de carrera",
+        weekPlanTitle: "Plan Base 8 Semanas",
+        phase1: "Base Aeróbica",
+        phase2: "Desarrollo de Base",
+        todayMotivation:
+          "Construyendo tu base 🏃 — la constancia supera la intensidad. Cada carrera fácil cuenta.",
+      },
       analyzeRace: "Analizar carrera",
       analyzingPage: "Analizando página...",
       readingPdf: "Leyendo PDF...",

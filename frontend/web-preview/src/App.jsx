@@ -177,6 +177,96 @@ export function generatePlan(raceData, profile) {
   return { weeks, totalWeeks, idealWeeks, insufficient, startWeek };
 }
 
+/** 8-week base-building plan (no race). Parallel to {@link generatePlan}; does not modify race logic. */
+export function generateBasePlan(profile) {
+  const kmBase = Number(profile.kmSemanales);
+  const multiplier = {
+    principiante: 0.8, intermedio: 1.0, avanzado: 1.2,
+    beginner: 0.8, intermediate: 1.0, advanced: 1.2,
+  }[profile.nivel] || 1.0;
+  const targetCap = Math.round(kmBase * multiplier);
+  const dias = Math.min(6, Math.max(3, Number(profile.diasDisponibles) || 5));
+  const startWeek = Number(profile.startWeek) || 1;
+
+  const workoutDetails = {
+    rest: { km: null, desc: { en: 'Easy walk or full rest', es: 'Caminata suave o descanso total' } },
+    easy: { pct: 0.15, desc: { en: 'Zone 2, conversational pace', es: 'Zona 2, ritmo conversacional' } },
+    tempo: { pct: 0.2, desc: { en: 'Zone 3, moderate effort', es: 'Zona 3, esfuerzo moderado' } },
+    recovery: { pct: 0.12, desc: { en: 'Zone 1, very easy', es: 'Zona 1, muy suave' } },
+    longTrail: { pct: 0.35, desc: { en: 'Easy aerobic, trails if available', es: 'Aeróbico suave, trail si puedes' } },
+    strides: { pct: 0.1, desc: { en: '6×100m progressive strides', es: '6×100m progresivos' } },
+  };
+
+  const dayKeys = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  const templateForWeek = (weekNum) => {
+    const phase2 = weekNum >= 5;
+    if (!phase2) {
+      if (dias <= 3) return ['rest', 'easy', 'recovery', 'longTrail', 'recovery', 'recovery', 'recovery'];
+      if (dias === 4) return ['rest', 'easy', 'recovery', 'longTrail', 'easy', 'recovery', 'recovery'];
+      if (dias === 5) return ['easy', 'easy', 'recovery', 'longTrail', 'recovery', 'rest', 'recovery'];
+      return ['easy', 'easy', 'recovery', 'longTrail', 'recovery', 'recovery', 'rest'];
+    }
+    if (dias <= 3) return ['rest', 'tempo', 'recovery', 'longTrail', 'recovery', 'rest', 'recovery'];
+    if (dias === 4) return ['rest', 'easy', 'tempo', 'longTrail', 'rest', 'recovery', 'recovery'];
+    if (dias === 5) return ['easy', 'easy', 'tempo', 'longTrail', 'recovery', 'rest', 'recovery'];
+    return ['easy', 'easy', 'tempo', 'strides', 'longTrail', 'recovery', 'rest'];
+  };
+
+  let km = 0.7 * kmBase * multiplier;
+  const kmByWeek = [];
+  for (let i = 0; i < 8; i++) {
+    kmByWeek.push(Math.round(km));
+    km = Math.min(km * 1.1, targetCap);
+  }
+
+  const weeks = [];
+  for (let w = 1; w <= 8; w++) {
+    if (w < startWeek) continue;
+    const kmTotal = kmByWeek[w - 1];
+    const template = templateForWeek(w);
+    const phaseName = w <= 4 ? 'basePlan1' : 'basePlan2';
+
+    const workouts = dayKeys.map((day, di) => {
+      const type = template[di];
+      const detail = workoutDetails[type] || workoutDetails.rest;
+      return {
+        day,
+        type,
+        km: detail.pct ? Math.round(kmTotal * detail.pct) : null,
+        desc: detail.desc,
+      };
+    });
+
+    let keyWorkout = null;
+    if (w <= 6) {
+      keyWorkout = workouts.find((x) => x.type === 'longTrail') || null;
+    } else {
+      keyWorkout = workouts.find((x) => x.type === 'tempo')
+        || workouts.find((x) => x.type === 'longTrail')
+        || null;
+    }
+
+    weeks.push({
+      week: w,
+      phase: phaseName,
+      kmTotal,
+      desnivel: 0,
+      workouts,
+      keyWorkout,
+    });
+  }
+
+  return {
+    weeks,
+    totalWeeks: 8,
+    idealWeeks: 8,
+    insufficient: false,
+    startWeek,
+    isBasePlan: true,
+  };
+}
+
 function AppFlow({ lang, setLang }) {
   const [screen, setScreen]       = useState('splash');
   const [raceData, setRaceData]   = useState(null);
@@ -191,7 +281,7 @@ function AppFlow({ lang, setLang }) {
 
   const handleProfile = (p) => {
     setProfile(p);
-    setPlan(generatePlan(raceData, p));
+    setPlan(raceData?.isBasePlan ? generateBasePlan(p) : generatePlan(raceData, p));
     setScreen('today');
   };
 

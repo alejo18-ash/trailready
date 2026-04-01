@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { t } from '../i18n';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-const phaseKey = { base:'basePhase', build:'buildPhase', peak:'peakPhase', taper:'taperPhase' };
+const phaseKey = {
+  base:'basePhase', build:'buildPhase', peak:'peakPhase', taper:'taperPhase',
+  basePlan1: 'basePlan.phase1',
+  basePlan2: 'basePlan.phase2',
+};
 
 const s = {
   wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:'system-ui, sans-serif' },
@@ -42,9 +46,11 @@ const s = {
   recoverySub: { fontSize:9, color:'rgba(255,255,255,0.25)', marginTop:2 },
   nav: { display:'flex', borderTop:'0.5px solid rgba(255,255,255,0.07)', marginTop:20 },
   navBtn: (active) => ({ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight: active ? 600 : 400, color: active ? '#4ade80' : 'rgba(255,255,255,0.35)', cursor:'pointer', background:'none', border:'none' }),
+  baseMotivationCard: { margin:'12px 20px', background:'rgba(29,158,117,0.12)', border:'1px solid rgba(29,158,117,0.28)', borderRadius:14, padding:14 },
+  baseMotivationText: { fontSize:13, color:'rgba(255,255,255,0.88)', lineHeight:1.55 },
 };
 
-export default function TodayScreen({ lang, plan, onWeek, onRecovery, onRaceProfile }) {
+export default function TodayScreen({ lang, plan, raceData, onWeek, onRecovery, onRaceProfile }) {
   const [conditions, setConditions]       = useState(null);
   const [locationError, setLocationError] = useState(false);
   const [trails, setTrails]               = useState([]);
@@ -98,6 +104,7 @@ export default function TodayScreen({ lang, plan, onWeek, onRecovery, onRaceProf
   const dayIndex     = todayIndex === 0 ? 6 : todayIndex - 1;
   const todayWorkout = week.workouts[dayIndex];
   const phaseLabel   = t(lang, phaseKey[week.phase] || 'buildPhase');
+  const isBasePlan   = Boolean(raceData?.isBasePlan);
   const isTreadmill  = todayWorkout.type === 'treadmillIntervals';
   const treadmillLabel = t(lang, 'workoutNames.treadmillIntervals') || t(lang, 'workouts.treadmillIntervals');
   const workoutName  = isTreadmill ? `🏃 ${treadmillLabel}` : (t(lang, `workouts.${todayWorkout.type}`) || todayWorkout.type);
@@ -191,6 +198,10 @@ export default function TodayScreen({ lang, plan, onWeek, onRecovery, onRaceProf
             <div style={{ fontSize:12, color:'rgba(255,255,255,0.45)' }}>{routeName} · ~{routeKm} km</div>
           </div>
         </>
+      ) : isBasePlan ? (
+        <div style={s.baseMotivationCard}>
+          <div style={s.baseMotivationText}>{t(lang, 'basePlan.todayMotivation')}</div>
+        </div>
       ) : (
         <div style={s.routeCard}>
           <div style={s.routeLabel}>{t(lang,'todaysRoute')}</div>

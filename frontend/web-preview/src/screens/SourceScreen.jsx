@@ -162,10 +162,23 @@ export default function SourceScreen({ lang, onNext }) {
     onNext({ name, distancia: Number(distancia), desnivel: Number(desnivel), fecha, weeksAvailable: calcWeeks(fecha), terreno: manual.terreno, source:'manual' });
   };
 
+  const handleBaseNext = () => {
+    onNext({
+      name: lang === 'es' ? 'Plan Base' : 'Base Plan',
+      nombre: lang === 'es' ? 'Plan Base' : 'Base Plan',
+      distancia: 0,
+      desnivel: 0,
+      isBasePlan: true,
+      weeksAvailable: 8,
+      source: 'base',
+    });
+  };
+
   const tabs = [
     { id:'gpx',    icon:'📍', label:'GPX File',     sub: lang==='es' ? 'Datos exactos del GPS' : 'Exact GPS data' },
     { id:'strava', icon:'🟠', label:'Strava',        sub: lang==='es' ? 'Desde tu cuenta' : 'From your account' },
     { id:'web',    icon:'🔗', label: lang==='es' ? 'Link oficial' : 'Official link', sub:'UltraSignup · UTMB' },
+    { id:'base',   icon:'🏃', label: t(lang, 'sourceOptions.base'), sub: t(lang, 'sourceOptions.baseSubtitle') },
     { id:'manual', icon:'✏️', label: lang==='es' ? 'Manual' : 'Manual',  sub: lang==='es' ? 'Ingresa los datos' : 'Enter the data' },
   ];
 
@@ -236,6 +249,18 @@ export default function SourceScreen({ lang, onNext }) {
                 : '1. Open the activity in Strava\n2. ··· → Export GPX\n3. Upload the file in the GPX tab'}
             </div>
           </div>
+        )}
+
+        {/* ── BASE PLAN ── */}
+        {tab==='base' && (
+          <>
+            <div style={{ fontSize:11, color:'rgba(255,255,255,0.45)', lineHeight:1.55, marginBottom:10 }}>
+              {t(lang, 'basePlan.subtitle')}
+            </div>
+            <button style={s.btn(false, false)} onClick={handleBaseNext}>
+              {lang==='es' ? 'Continuar →' : 'Continue →'}
+            </button>
+          </>
         )}
 
         {/* ── WEB LINK ── */}

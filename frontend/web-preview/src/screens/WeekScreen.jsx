@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { t } from '../i18n';
 
-const phaseKey = { base:'basePhase', build:'buildPhase', peak:'peakPhase', taper:'taperPhase' };
+const phaseKey = {
+  base:'basePhase', build:'buildPhase', peak:'peakPhase', taper:'taperPhase',
+  basePlan1: 'basePlan.phase1',
+  basePlan2: 'basePlan.phase2',
+};
 
 const workoutColors = {
   rest:       { bg:'rgba(255,255,255,0.04)', border:'rgba(255,255,255,0.05)', dot:'rgba(255,255,255,0.1)' },
@@ -59,6 +63,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, onToday, onR
   const [selectedWeek, setSelectedWeek] = useState(0);
   if (!plan || !plan.weeks.length) return null;
 
+  const isBasePlan = Boolean(raceData?.isBasePlan);
   const flatRunner = profile?.terrain === 'flat' && Number(raceData?.desnivel) > 1500;
   const week = plan.weeks[selectedWeek];
   const flatRunnerKeyBanner = flatRunner && week.keyWorkout && (
@@ -80,8 +85,14 @@ export default function WeekScreen({ lang, plan, profile, raceData, onToday, onR
           {t(lang,'week')} {week.week} {t(lang,'of')} {plan.totalWeeks} · {t(lang, phaseKey[week.phase]).toUpperCase()}
         </div>
         <div style={s.row}>
-          <div style={s.title}>{t(lang,'thisWeek')}</div>
-          <div style={s.kmLabel}>{week.kmTotal} km · {week.desnivel?.toLocaleString()}m D+</div>
+          <div style={s.title}>
+            {isBasePlan ? t(lang, 'basePlan.weekPlanTitle') : t(lang,'thisWeek')}
+          </div>
+          <div style={s.kmLabel}>
+            {isBasePlan
+              ? `${week.kmTotal} km`
+              : `${week.kmTotal} km · ${week.desnivel?.toLocaleString()}m D+`}
+          </div>
         </div>
         <div style={s.progressBg}>
           <div style={s.progressFill(pct)} />
