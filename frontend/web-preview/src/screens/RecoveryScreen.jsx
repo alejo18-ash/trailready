@@ -80,9 +80,18 @@ const s = {
   otherSub: { fontSize:10, color:'rgba(255,255,255,0.35)', marginTop:2 },
 };
 
-export default function RecoveryScreen({ lang, type, onBack }) {
+export default function RecoveryScreen({ lang, type, onBack, raceData, plan, currentWeek }) {
   const current = videos[type] || videos.stretching;
   const others  = Object.entries(videos).filter(([k]) => k !== type);
+
+  const weekNum = plan?.weeks?.[currentWeek ?? 0]?.weekNumber
+    ?? plan?.weeks?.[currentWeek ?? 0]?.week
+    ?? 1;
+  let filteredOthers = others;
+  if (raceData?.isBasePlan) {
+    if (weekNum <= 2) filteredOthers = [];
+    else if (weekNum <= 4) filteredOthers = others.filter(([k]) => k !== 'iceBath');
+  }
 
   const openVideo = (url) => window.open(url, '_blank');
 
@@ -120,17 +129,21 @@ export default function RecoveryScreen({ lang, type, onBack }) {
           </div>
         </div>
 
-        <div style={s.sectionLabel}>{lang==='es' ? 'TAMBIÉN RECOMENDADO' : 'ALSO RECOMMENDED'}</div>
+        {filteredOthers.length > 0 && (
+          <>
+            <div style={s.sectionLabel}>{lang==='es' ? 'TAMBIÉN RECOMENDADO' : 'ALSO RECOMMENDED'}</div>
 
-        {others.map(([key, vid]) => (
-          <div key={key} style={s.otherCard(vid.bg, vid.border)} onClick={() => openVideo(vid.url)}>
-            <div>
-              <div style={s.otherTitle}>{vid.icon} {titles[key]?.[lang]}</div>
-              <div style={s.otherSub}>{subs[key]?.[lang]}</div>
-            </div>
-            <span style={{fontSize:11, color:vid.color}}>↗ YouTube</span>
-          </div>
-        ))}
+            {filteredOthers.map(([key, vid]) => (
+              <div key={key} style={s.otherCard(vid.bg, vid.border)} onClick={() => openVideo(vid.url)}>
+                <div>
+                  <div style={s.otherTitle}>{vid.icon} {titles[key]?.[lang]}</div>
+                  <div style={s.otherSub}>{subs[key]?.[lang]}</div>
+                </div>
+                <span style={{fontSize:11, color:vid.color}}>↗ YouTube</span>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

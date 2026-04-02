@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { t } from '../i18n';
 
 const phaseKey = {
@@ -59,13 +59,18 @@ const s = {
   }),
 };
 
-export default function WeekScreen({ lang, plan, profile, raceData, onToday, onRecovery }) {
-  const [selectedWeek, setSelectedWeek] = useState(0);
+export default function WeekScreen({ lang, plan, profile, raceData, currentWeek, setCurrentWeek, onToday, onRecovery }) {
+  const [selectedWeek, setSelectedWeek] = useState(currentWeek ?? 0);
   if (!plan || !plan.weeks.length) return null;
+
+  useEffect(() => {
+    setSelectedWeek(currentWeek ?? 0);
+  }, [currentWeek]);
 
   const isBasePlan = Boolean(raceData?.isBasePlan);
   const flatRunner = profile?.terrain === 'flat' && Number(raceData?.desnivel) > 1500;
   const week = plan.weeks[selectedWeek];
+  const fmtDur = (n) => t(lang, 'workout.duration').replace('{n}', String(n));
   const flatRunnerKeyBanner = flatRunner && week.keyWorkout && (
     week.keyWorkout.type === 'treadmillIntervals'
     || (week.phase === 'taper' && week.keyWorkout.type === 'strides' && week.keyWorkout.day === 'Sat')
@@ -74,9 +79,10 @@ export default function WeekScreen({ lang, plan, profile, raceData, onToday, onR
   const todayDayIndex = todayIndex === 0 ? 6 : todayIndex - 1;
   const dayKeys = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
-  const totalKm = plan.weeks.reduce((a, w) => a + w.kmTotal, 0);
-  const doneKm  = plan.weeks.slice(0, selectedWeek).reduce((a, w) => a + w.kmTotal, 0);
-  const pct     = Math.round((doneKm / totalKm) * 100);
+  const vol = (w) => (isBasePlan ? (w.volumeMin ?? 0) : w.kmTotal);
+  const totalKm = plan.weeks.reduce((a, w) => a + vol(w), 0);
+  const doneKm  = plan.weeks.slice(0, selectedWeek).reduce((a, w) => a + vol(w), 0);
+  const pct     = totalKm > 0 ? Math.round((doneKm / totalKm) * 100) : 0;
 
   return (
     <div style={s.wrap}>
@@ -90,7 +96,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, onToday, onR
           </div>
           <div style={s.kmLabel}>
             {isBasePlan
-              ? `${week.kmTotal} km`
+              ? `${week.volumeMin ?? 0} min`
               : `${week.kmTotal} km · ${week.desnivel?.toLocaleString()}m D+`}
           </div>
         </div>
@@ -104,7 +110,11 @@ export default function WeekScreen({ lang, plan, profile, raceData, onToday, onR
 
       <div style={s.weekNav}>
         {plan.weeks.map((w, i) => (
-          <button key={i} style={s.weekBtn(selectedWeek === i)} onClick={() => setSelectedWeek(i)}>
+          <button
+            key={i}
+            style={s.weekBtn(selectedWeek === i)}
+            onClick={() => { setSelectedWeek(i); setCurrentWeek?.(i); }}
+          >
             W{w.week}
           </button>
         ))}
@@ -130,7 +140,13 @@ export default function WeekScreen({ lang, plan, profile, raceData, onToday, onR
               {week.keyWorkout.type === 'treadmillIntervals'
                 ? (t(lang, 'workoutNames.treadmillIntervals') || t(lang, 'workouts.treadmillIntervals'))
                 : t(lang, `workouts.${week.keyWorkout.type}`)}
-              {week.keyWorkout.km ? ` · ${week.keyWorkout.km} km` : week.keyWorkout.duration ? ` · ${week.keyWorkout.duration} min` : ''}
+              {isBasePlan && week.keyWorkout.duracion != null
+                ? ` · ${fmtDur(week.keyWorkout.duracion)}`
+                : week.keyWorkout.km
+                  ? ` · ${week.keyWorkout.km} km`
+                  : week.keyWorkout.duration
+                    ? ` · ${week.keyWorkout.duration} min`
+                    : ''}
               {' · '}
               {t(lang, `days.${week.keyWorkout.day}`)}
             </div>
@@ -161,11 +177,13 @@ export default function WeekScreen({ lang, plan, profile, raceData, onToday, onR
                   {workout.type === 'recovery' ? ' ↗' : ''}
                 </div>
                 <div style={s.workoutDesc(isDone)}>
-                  {workout.type === 'treadmillIntervals'
-                    ? `${workout.duration != null ? `${workout.duration} min · ` : ''}${workout.treadmillNote?.[lang] || workout.treadmillNote?.en || ''}`
-                    : workout.treadmillNote
-                      ? workout.treadmillNote[lang] || workout.treadmillNote.en
-                      : `${workout.km ? `${workout.km} km · ` : ''}${workout.desc?.[lang] || workout.desc?.en || ''}`}
+                  {isBasePlan && workout.duracion != null
+                    ? `${fmtDur(workout.duracion)} · ${workout.desc?.[lang] || workout.desc?.en || ''}`
+                    : workout.type === 'treadmillIntervals'
+                      ? `${workout.duration != null ? `${workout.duration} min · ` : ''}${workout.treadmillNote?.[lang] || workout.treadmillNote?.en || ''}`
+                      : workout.treadmillNote
+                        ? workout.treadmillNote[lang] || workout.treadmillNote.en
+                        : `${workout.km ? `${workout.km} km · ` : ''}${workout.desc?.[lang] || workout.desc?.en || ''}`}
                 </div>
               </div>
               {week.keyWorkout?.day === dayKeys[i] && (
@@ -178,7 +196,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, onToday, onR
       </div>
 
       <div style={s.nav}>
-        <button style={s.navBtn(false)} onClick={onToday}>
+        <button style={s.navBtn(false)} onClick={() => { setCurrentWeek?.(selectedWeek); onToday(); }}>
           {lang==='es' ? '⚡ Hoy' : '⚡ Today'}
         </button>
         <button style={s.navBtn(true)}>

@@ -50,13 +50,13 @@ const s = {
   baseMotivationText: { fontSize:13, color:'rgba(255,255,255,0.88)', lineHeight:1.55 },
 };
 
-export default function TodayScreen({ lang, plan, raceData, onWeek, onRecovery, onRaceProfile }) {
+export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile }) {
   const [conditions, setConditions]       = useState(null);
   const [locationError, setLocationError] = useState(false);
   const [trails, setTrails]               = useState([]);
   const [trailIndex, setTrailIndex]       = useState(0);
 
-  useEffect(() => { fetchConditions(); }, []);
+  useEffect(() => { fetchConditions(); }, [currentWeek]);
 
   const fetchTrails = (lat, lon, km, desnivel) => {
     // Get previously shown trail IDs from localStorage
@@ -85,8 +85,12 @@ export default function TodayScreen({ lang, plan, raceData, onWeek, onRecovery, 
       async (pos) => {
         try {
           const { latitude: lat, longitude: lon } = pos.coords;
-          const km = plan?.weeks[0]?.workouts[new Date().getDay() === 0 ? 6 : new Date().getDay()-1]?.km || 20;
-          const desnivel = plan?.weeks[0]?.desnivel || 800;
+          const cw = currentWeek ?? 0;
+          const wk = plan?.weeks?.[cw] ?? plan?.weeks?.[0];
+          const di = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+          const tw = wk?.workouts?.[di];
+          const km = tw?.km ?? (tw?.duracion != null ? Math.max(8, Math.round(tw.duracion / 4)) : 20);
+          const desnivel = wk?.desnivel || 800;
           fetchTrails(lat, lon, km, desnivel);
           const res = await fetch(`${API_URL}/api/conditions?lat=${lat}&lon=${lon}`);
           const data = await res.json();
@@ -99,12 +103,15 @@ export default function TodayScreen({ lang, plan, raceData, onWeek, onRecovery, 
 
   if (!plan || !plan.weeks.length) return null;
 
-  const week         = plan.weeks[0];
+  const cw = currentWeek ?? 0;
+  const week         = plan.weeks[cw] ?? plan.weeks[0];
   const todayIndex   = new Date().getDay();
   const dayIndex     = todayIndex === 0 ? 6 : todayIndex - 1;
   const todayWorkout = week.workouts[dayIndex];
   const phaseLabel   = t(lang, phaseKey[week.phase] || 'buildPhase');
   const isBasePlan   = Boolean(raceData?.isBasePlan);
+  const baseWeekNum  = week.weekNumber ?? week.week ?? 1;
+  const fmtDur = (n) => t(lang, 'workout.duration').replace('{n}', String(n));
   const isTreadmill  = todayWorkout.type === 'treadmillIntervals';
   const treadmillLabel = t(lang, 'workoutNames.treadmillIntervals') || t(lang, 'workouts.treadmillIntervals');
   const workoutName  = isTreadmill ? `🏃 ${treadmillLabel}` : (t(lang, `workouts.${todayWorkout.type}`) || todayWorkout.type);
@@ -116,7 +123,8 @@ export default function TodayScreen({ lang, plan, raceData, onWeek, onRecovery, 
   const routeKm =
     activeTrail != null && activeTrail.distancia != null && activeTrail.distancia !== ''
       ? Math.round(Number(activeTrail.distancia))
-      : (todayWorkout.km || 12);
+      : (todayWorkout.km
+        ?? (todayWorkout.duracion != null ? Math.max(8, Math.round(todayWorkout.duracion / 4)) : 12));
   const routeElev =
     activeTrail != null && activeTrail.desnivel != null && activeTrail.desnivel !== ''
       ? Number(activeTrail.desnivel)
@@ -135,11 +143,13 @@ export default function TodayScreen({ lang, plan, raceData, onWeek, onRecovery, 
           <div style={s.activityTitle}>{workoutName}</div>
           <div style={s.activitySub}>
             {phaseLabel}
-            {isTreadmill && todayWorkout.duration != null
-              ? ` · ${todayWorkout.duration} min`
-              : todayWorkout.km
-                ? ` · ${todayWorkout.km} km · ${Math.floor(todayWorkout.km / 7)}h${String(Math.round((todayWorkout.km / 7 % 1) * 60)).padStart(2, '0')}`
-                : ''}
+            {isBasePlan && todayWorkout.duracion != null
+              ? ` · ${fmtDur(todayWorkout.duracion)}`
+              : isTreadmill && todayWorkout.duration != null
+                ? ` · ${todayWorkout.duration} min`
+                : todayWorkout.km
+                  ? ` · ${todayWorkout.km} km · ${Math.floor(todayWorkout.km / 7)}h${String(Math.round((todayWorkout.km / 7 % 1) * 60)).padStart(2, '0')}`
+                  : ''}
           </div>
         </div>
 
@@ -257,23 +267,43 @@ export default function TodayScreen({ lang, plan, raceData, onWeek, onRecovery, 
             <div style={s.recoveryTitle('#a78bfa')}>{t(lang,'stretching')}</div>
             <div style={s.recoverySub}>15 {t(lang,'min')} ↗</div>
           </div>
-          <div style={s.recoveryCard('rgba(96,165,250,0.1)','rgba(96,165,250,0.2)')} onClick={() => onRecovery('iceBath')}>
-            <div style={s.recoveryIcon}>🧊</div>
-            <div style={s.recoveryTitle('#60a5fa')}>{t(lang,'iceBath')}</div>
-            <div style={s.recoverySub}>10 {t(lang,'min')} ↗</div>
-          </div>
-          <div style={s.recoveryCard('rgba(251,191,36,0.1)','rgba(251,191,36,0.2)')} onClick={() => onRecovery('nutrition')}>
-            <div style={s.recoveryIcon}>🍌</div>
-            <div style={s.recoveryTitle('#fbbf24')}>{t(lang,'nutrition')}</div>
-            <div style={s.recoverySub}>{t(lang,'guide')} ↗</div>
-          </div>
+          {!isBasePlan && (
+            <>
+              <div style={s.recoveryCard('rgba(96,165,250,0.1)','rgba(96,165,250,0.2)')} onClick={() => onRecovery('iceBath')}>
+                <div style={s.recoveryIcon}>🧊</div>
+                <div style={s.recoveryTitle('#60a5fa')}>{t(lang,'iceBath')}</div>
+                <div style={s.recoverySub}>10 {t(lang,'min')} ↗</div>
+              </div>
+              <div style={s.recoveryCard('rgba(251,191,36,0.1)','rgba(251,191,36,0.2)')} onClick={() => onRecovery('nutrition')}>
+                <div style={s.recoveryIcon}>🍌</div>
+                <div style={s.recoveryTitle('#fbbf24')}>{t(lang,'nutrition')}</div>
+                <div style={s.recoverySub}>{t(lang,'guide')} ↗</div>
+              </div>
+            </>
+          )}
+          {isBasePlan && baseWeekNum >= 3 && (
+            <div style={s.recoveryCard('rgba(251,191,36,0.1)','rgba(251,191,36,0.2)')} onClick={() => onRecovery('nutrition')}>
+              <div style={s.recoveryIcon}>🍌</div>
+              <div style={s.recoveryTitle('#fbbf24')}>{t(lang,'nutrition')}</div>
+              <div style={s.recoverySub}>{t(lang,'guide')} ↗</div>
+            </div>
+          )}
+          {isBasePlan && baseWeekNum >= 5 && (
+            <div style={s.recoveryCard('rgba(96,165,250,0.1)','rgba(96,165,250,0.2)')} onClick={() => onRecovery('iceBath')}>
+              <div style={s.recoveryIcon}>🧊</div>
+              <div style={s.recoveryTitle('#60a5fa')}>{t(lang,'iceBath')}</div>
+              <div style={s.recoverySub}>10 {t(lang,'min')} ↗</div>
+            </div>
+          )}
         </div>
       </div>
 
       <div style={s.nav}>
         <button style={s.navBtn(true)}>{lang==='es' ? '⚡ Hoy' : '⚡ Today'}</button>
         <button style={s.navBtn(false)} onClick={onWeek}>{lang==='es' ? '📅 Semana' : '📅 Week'}</button>
-        <button style={s.navBtn(false)} onClick={onRaceProfile}>{lang==='es' ? '🏁 Carrera' : '🏁 Race'}</button>
+        <button style={s.navBtn(false)} onClick={onRaceProfile}>
+          {isBasePlan ? t(lang, 'nav.myPlan') : (lang==='es' ? '🏁 Carrera' : '🏁 Race')}
+        </button>
       </div>
     </div>
   );

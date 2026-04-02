@@ -68,6 +68,12 @@ export const translations = {
       nutrition: "Nutrition",
       min: "min",
       guide: "guide",
+      nav: {
+        myPlan: "My Plan",
+      },
+      workout: {
+        duration: "{n} min",
+      },
   
       // Week screen
       thisWeek: "This week",
@@ -203,6 +209,12 @@ export const translations = {
       nutrition: "Nutrición",
       min: "min",
       guide: "guía",
+      nav: {
+        myPlan: "Mi Plan",
+      },
+      workout: {
+        duration: "{n} min",
+      },
   
       // Week screen
       thisWeek: "Esta semana",

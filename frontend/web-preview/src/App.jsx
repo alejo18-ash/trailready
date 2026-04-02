@@ -11,6 +11,27 @@ import RecoveryScreen from './screens/RecoveryScreen';
 import RaceProfileScreen from './screens/RaceProfileScreen';
 import LandingPage from './screens/LandingPage';
 
+/** Monday (index 0) is always an easy run — never rest/recovery/strength on day 1. */
+function ensureMondayIsEasy(template) {
+  const t = [...template];
+  if (t[0] === 'easy') return t;
+  const easyIdx = t.indexOf('easy');
+  if (easyIdx > 0) {
+    [t[0], t[easyIdx]] = [t[easyIdx], t[0]];
+    return t;
+  }
+  const prev = t[0];
+  t[0] = 'easy';
+  const restIdx = t.findIndex((x, i) => i > 0 && (x === 'rest' || x === 'recovery'));
+  if (restIdx > 0) {
+    t[restIdx] = prev;
+    return t;
+  }
+  const swapIdx = t.findIndex((x, i) => i > 0);
+  if (swapIdx > 0) t[swapIdx] = prev;
+  return t;
+}
+
 export function generatePlan(raceData, profile) {
   const kmBase = Number(profile.kmSemanales);
   const multiplier = { principiante: 0.8, intermedio: 1.0, avanzado: 1.2 }[profile.nivel] || 1.0;
@@ -115,11 +136,12 @@ export function generatePlan(raceData, profile) {
       if (weekNum < startWeek) { weekNum++; continue; }
       const progress = phase.weeks === 1 ? 1 : i / (phase.weeks - 1);
       const kmTotal = Math.round((phase.kmStart + (phase.kmEnd - phase.kmStart) * progress) * multiplier);
-      const template = [...templates[phase.name]];
+      let template = [...templates[phase.name]];
 
       const activeDays = Number(profile.diasDisponibles);
       if (activeDays <= 4) template[4] = 'rest';
       else if (activeDays >= 6) template[4] = 'cross';
+      template = ensureMondayIsEasy(template);
 
       const workouts = dayKeys.map((day, di) => {
         let type = template[di];
@@ -177,24 +199,18 @@ export function generatePlan(raceData, profile) {
   return { weeks, totalWeeks, idealWeeks, insufficient, startWeek };
 }
 
-/** 8-week base-building plan (no race). Parallel to {@link generatePlan}; does not modify race logic. */
+/** 8-week base-building plan (no race). Time-based volume; parallel to {@link generatePlan}. */
 export function generateBasePlan(profile) {
-  const kmBase = Number(profile.kmSemanales);
-  const multiplier = {
-    principiante: 0.8, intermedio: 1.0, avanzado: 1.2,
-    beginner: 0.8, intermediate: 1.0, advanced: 1.2,
-  }[profile.nivel] || 1.0;
-  const targetCap = Math.round(kmBase * multiplier);
   const dias = Math.min(6, Math.max(3, Number(profile.diasDisponibles) || 5));
   const startWeek = Number(profile.startWeek) || 1;
 
   const workoutDetails = {
-    rest: { km: null, desc: { en: 'Easy walk or full rest', es: 'Caminata suave o descanso total' } },
-    easy: { pct: 0.15, desc: { en: 'Zone 2, conversational pace', es: 'Zona 2, ritmo conversacional' } },
-    tempo: { pct: 0.2, desc: { en: 'Zone 3, moderate effort', es: 'Zona 3, esfuerzo moderado' } },
-    recovery: { pct: 0.12, desc: { en: 'Zone 1, very easy', es: 'Zona 1, muy suave' } },
-    longTrail: { pct: 0.35, desc: { en: 'Easy aerobic, trails if available', es: 'Aeróbico suave, trail si puedes' } },
-    strides: { pct: 0.1, desc: { en: '6×100m progressive strides', es: '6×100m progresivos' } },
+    rest: { desc: { en: 'Easy walk or full rest', es: 'Caminata suave o descanso total' } },
+    easy: { desc: { en: 'Zone 2, conversational pace', es: 'Zona 2, ritmo conversacional' } },
+    tempo: { desc: { en: 'Zone 3, moderate effort', es: 'Zona 3, esfuerzo moderado' } },
+    recovery: { desc: { en: 'Zone 1, very easy', es: 'Zona 1, muy suave' } },
+    longTrail: { desc: { en: 'Easy aerobic, trails if available', es: 'Aeróbico suave, trail si puedes' } },
+    strides: { desc: { en: '6×100m progressive strides', es: '6×100m progresivos' } },
   };
 
   const dayKeys = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -207,36 +223,55 @@ export function generateBasePlan(profile) {
       if (dias === 5) return ['easy', 'easy', 'recovery', 'longTrail', 'recovery', 'rest', 'recovery'];
       return ['easy', 'easy', 'recovery', 'longTrail', 'recovery', 'recovery', 'rest'];
     }
-    if (dias <= 3) return ['rest', 'tempo', 'recovery', 'longTrail', 'recovery', 'rest', 'recovery'];
+    if (dias <= 3) return ['easy', 'tempo', 'recovery', 'longTrail', 'recovery', 'rest', 'recovery'];
     if (dias === 4) return ['rest', 'easy', 'tempo', 'longTrail', 'rest', 'recovery', 'recovery'];
     if (dias === 5) return ['easy', 'easy', 'tempo', 'longTrail', 'recovery', 'rest', 'recovery'];
     return ['easy', 'easy', 'tempo', 'strides', 'longTrail', 'recovery', 'rest'];
   };
 
-  let km = 0.7 * kmBase * multiplier;
-  const kmByWeek = [];
-  for (let i = 0; i < 8; i++) {
-    kmByWeek.push(Math.round(km));
-    km = Math.min(km * 1.1, targetCap);
-  }
+  const duracionFor = (type, weekIndex1to8, dayIndex) => {
+    switch (type) {
+      case 'rest':
+        return null;
+      case 'easy':
+        return 30 + (dayIndex % 4) * 3;
+      case 'recovery':
+        return 25 + (weekIndex1to8 % 2) * 3;
+      case 'longTrail': {
+        const min = 50;
+        const max = 70;
+        return Math.round(min + ((max - min) * (weekIndex1to8 - 1)) / 7);
+      }
+      case 'tempo':
+        return 35 + (weekIndex1to8 % 3) * 3;
+      case 'strides':
+        return 20 + (weekIndex1to8 % 2) * 3;
+      default:
+        return null;
+    }
+  };
 
   const weeks = [];
   for (let w = 1; w <= 8; w++) {
     if (w < startWeek) continue;
-    const kmTotal = kmByWeek[w - 1];
-    const template = templateForWeek(w);
+    const rawTemplate = templateForWeek(w);
+    const template = ensureMondayIsEasy(rawTemplate);
     const phaseName = w <= 4 ? 'basePlan1' : 'basePlan2';
 
     const workouts = dayKeys.map((day, di) => {
       const type = template[di];
       const detail = workoutDetails[type] || workoutDetails.rest;
+      const duracion = duracionFor(type, w, di);
       return {
         day,
         type,
-        km: detail.pct ? Math.round(kmTotal * detail.pct) : null,
+        km: null,
+        duracion,
         desc: detail.desc,
       };
     });
+
+    const volumeMin = workouts.reduce((sum, x) => sum + (x.duracion || 0), 0);
 
     let keyWorkout = null;
     if (w <= 6) {
@@ -249,8 +284,10 @@ export function generateBasePlan(profile) {
 
     weeks.push({
       week: w,
+      weekNumber: w,
       phase: phaseName,
-      kmTotal,
+      kmTotal: 0,
+      volumeMin,
       desnivel: 0,
       workouts,
       keyWorkout,
