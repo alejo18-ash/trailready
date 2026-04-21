@@ -294,6 +294,18 @@ export function generateBasePlan(profile) {
     });
   }
 
+  // First active day of the plan must be easy (never recovery/rest as first run).
+  const easyDesc = workoutDetails.easy.desc;
+  for (const week of weeks) {
+    const firstActive = week.workouts.find((wo) => wo.type !== 'rest');
+    if (!firstActive) continue;
+    firstActive.type = 'easy';
+    firstActive.duracion = 30;
+    firstActive.desc = { ...easyDesc };
+    week.volumeMin = week.workouts.reduce((sum, x) => sum + (x.duracion || 0), 0);
+    break;
+  }
+
   return {
     weeks,
     totalWeeks: 8,
