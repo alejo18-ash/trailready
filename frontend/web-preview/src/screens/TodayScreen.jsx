@@ -50,7 +50,7 @@ const s = {
   baseMotivationText: { fontSize:13, color:'rgba(255,255,255,0.88)', lineHeight:1.55 },
 };
 
-export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile }) {
+export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan }) {
   const [conditions, setConditions]       = useState(null);
   const [locationError, setLocationError] = useState(false);
   const [trails, setTrails]               = useState([]);
@@ -298,6 +298,17 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         </div>
       </div>
 
+      {onNewPlan && (
+        <div style={{ textAlign: 'center', padding: '10px 0 2px' }}>
+          <button
+            type="button"
+            onClick={onNewPlan}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: 'rgba(255,255,255,0.25)', fontFamily: 'inherit', padding: '4px 8px' }}
+          >
+            {t(lang, 'actions.newPlan')}
+          </button>
+        </div>
+      )}
       <div style={s.nav}>
         <button style={s.navBtn(true)}>{lang==='es' ? '⚡ Hoy' : '⚡ Today'}</button>
         <button style={s.navBtn(false)} onClick={onWeek}>{lang==='es' ? '📅 Semana' : '📅 Week'}</button>

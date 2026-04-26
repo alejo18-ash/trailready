@@ -141,6 +141,10 @@ export const translations = {
         footerTagline: "Built for trail runners, by trail runners",
       },
   
+      actions: {
+        newPlan: "Start a new plan",
+      },
+
       // Recovery screen
       afterYourRun: "AFTER YOUR RUN",
       postStretching: "Post-trail stretching",
@@ -295,6 +299,10 @@ export const translations = {
         footerTagline: "Hecho para trail runners, por trail runners",
       },
   
+      actions: {
+        newPlan: "Empezar un nuevo plan",
+      },
+
       // Recovery screen
       afterYourRun: "DESPUÉS DE CORRER",
       postStretching: "Estiramiento post-trail",

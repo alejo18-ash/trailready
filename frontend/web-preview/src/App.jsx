@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { translations } from './i18n';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import SplashScreen from './screens/SplashScreen';
@@ -316,6 +316,9 @@ export function generateBasePlan(profile) {
   };
 }
 
+const STORAGE_KEY = 'trailready_plan';
+const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
+
 function AppFlow({ lang, setLang }) {
   const [screen, setScreen]       = useState('splash');
   const [raceData, setRaceData]   = useState(null);
@@ -324,17 +327,53 @@ function AppFlow({ lang, setLang }) {
   const [recovery, setRecovery]   = useState(null);
   const [currentWeek, setCurrentWeek] = useState(0);
 
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+    try {
+      const state = JSON.parse(saved);
+      if (Date.now() - state.savedAt < NINETY_DAYS) {
+        setPlan(state.plan);
+        setRaceData(state.raceData);
+        setProfile(state.profile);
+        setCurrentWeek(state.currentWeek || 0);
+        setLang(state.language || 'es');
+        setScreen('today');
+      }
+    } catch {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }, []);
+
   const handleLanguage = (l) => { setLang(l); setScreen('source'); };
 
   const handleRaceData = (data) => { setRaceData(data); setScreen('profile'); };
 
   const handleProfile = (p) => {
+    const newPlan = raceData?.isBasePlan ? generateBasePlan(p) : generatePlan(raceData, p);
     setProfile(p);
-    setPlan(raceData?.isBasePlan ? generateBasePlan(p) : generatePlan(raceData, p));
+    setPlan(newPlan);
     setScreen('today');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      plan: newPlan,
+      raceData,
+      profile: p,
+      currentWeek: 0,
+      language: lang,
+      savedAt: Date.now(),
+    }));
   };
 
   const handleRecovery = (type) => { setRecovery(type); setScreen('recovery'); };
+
+  const handleNewPlan = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setPlan(null);
+    setRaceData(null);
+    setProfile(null);
+    setCurrentWeek(0);
+    setScreen('source');
+  };
 
   const props = { lang, raceData, profile, plan, currentWeek, setCurrentWeek };
 
@@ -342,7 +381,7 @@ function AppFlow({ lang, setLang }) {
   if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} />;
   if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
   if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
-  if (screen === 'today')     return <TodayScreen {...props} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} />;
+  if (screen === 'today')     return <TodayScreen {...props} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} />;
   if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} />;
   if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
   if (screen === 'raceProfile') return <RaceProfileScreen {...props} onBack={() => setScreen('today')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} />;
