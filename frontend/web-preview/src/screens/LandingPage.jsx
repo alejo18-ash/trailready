@@ -484,6 +484,8 @@ const s = {
 export default function LandingPage({ lang, setLang }) {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
+  const [hasSavedPlan, setHasSavedPlan] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 20);
@@ -491,10 +493,64 @@ export default function LandingPage({ lang, setLang }) {
     return () => window.removeEventListener('scroll', h);
   }, []);
 
+  useEffect(() => {
+    const saved = localStorage.getItem('trailready_plan');
+    if (!saved) return;
+    try {
+      const state = JSON.parse(saved);
+      const ninetyDays = 90 * 24 * 60 * 60 * 1000;
+      if (Date.now() - state.savedAt < ninetyDays) setHasSavedPlan(true);
+    } catch {
+      localStorage.removeItem('trailready_plan');
+    }
+  }, []);
+
   return (
     <>
       <style>{CSS}</style>
       <div style={s.page} id="top">
+
+        {/* ── SAVED PLAN BANNER ── */}
+        {hasSavedPlan && !bannerDismissed && (
+          <div style={{
+            position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+            zIndex: 200, width: 'calc(100% - 48px)', maxWidth: 560,
+            background: 'rgba(10,10,10,0.97)', backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderLeft: `3px solid ${GREEN}`,
+            borderRadius: 14, padding: '14px 18px',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+            boxShadow: '0 8px 40px rgba(0,0,0,0.6)',
+          }}>
+            <div style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.4, flex: 1 }}>
+              {t(lang, 'landing.bannerText')}
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate('/app')}
+              style={{
+                background: GREEN, color: '#000', border: 'none', cursor: 'pointer',
+                fontWeight: 700, fontSize: '0.8rem', padding: '8px 16px',
+                borderRadius: 100, fontFamily: 'inherit', whiteSpace: 'nowrap', flexShrink: 0,
+              }}
+            >
+              {t(lang, 'landing.bannerCta')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setBannerDismissed(true)}
+              aria-label="Dismiss"
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: 'rgba(255,255,255,0.3)', fontSize: '1rem', lineHeight: 1,
+                padding: '4px', flexShrink: 0, fontFamily: 'inherit',
+              }}
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {/* ── NAV ── */}
         <nav style={s.navWrap(scrolled)}>

@@ -139,6 +139,9 @@ export const translations = {
 
         footerTop: "Back to top",
         footerTagline: "Built for trail runners, by trail runners",
+
+        bannerText: "Welcome back 👋 You have an active plan.",
+        bannerCta: "Continue →",
       },
   
       actions: {
@@ -297,6 +300,9 @@ export const translations = {
 
         footerTop: "Volver arriba",
         footerTagline: "Hecho para trail runners, por trail runners",
+
+        bannerText: "Bienvenido de nuevo 👋 Tienes un plan activo.",
+        bannerCta: "Continuar →",
       },
   
       actions: {
