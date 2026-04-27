@@ -10,6 +10,7 @@ import WeekScreen from './screens/WeekScreen';
 import RecoveryScreen from './screens/RecoveryScreen';
 import RaceProfileScreen from './screens/RaceProfileScreen';
 import LandingPage from './screens/LandingPage';
+import StrengthScreen from './screens/StrengthScreen';
 
 /** Monday (index 0) is always an easy run — never rest/recovery/strength on day 1. */
 function ensureMondayIsEasy(template) {
@@ -326,6 +327,7 @@ function AppFlow({ lang, setLang }) {
   const [plan, setPlan]           = useState(null);
   const [recovery, setRecovery]   = useState(null);
   const [currentWeek, setCurrentWeek] = useState(0);
+  const [currentPhase, setCurrentPhase] = useState(null);
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -366,6 +368,8 @@ function AppFlow({ lang, setLang }) {
 
   const handleRecovery = (type) => { setRecovery(type); setScreen('recovery'); };
 
+  const handleStrength = (phase) => { setCurrentPhase(phase); setScreen('strength'); };
+
   const handleNewPlan = () => {
     localStorage.removeItem(STORAGE_KEY);
     setPlan(null);
@@ -381,9 +385,10 @@ function AppFlow({ lang, setLang }) {
   if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} />;
   if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
   if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
-  if (screen === 'today')     return <TodayScreen {...props} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} />;
-  if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} />;
+  if (screen === 'today')     return <TodayScreen {...props} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} />;
+  if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} onStrength={handleStrength} />;
   if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
+  if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen('today')} />;
   if (screen === 'raceProfile') return <RaceProfileScreen {...props} onBack={() => setScreen('today')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} />;
 }
 

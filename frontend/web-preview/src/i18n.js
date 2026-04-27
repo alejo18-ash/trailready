@@ -148,6 +148,14 @@ export const translations = {
         newPlan: "Start a new plan",
       },
 
+      strength: {
+        title: "Strength Session",
+        subtitle: "{n} min · {x} exercises",
+        watchVideo: "Watch video",
+        whyStrength: "Strong trails start in the gym. Strength training reduces injury risk by 50% and improves running economy — especially on technical terrain.",
+        seeFullSession: "See full session →",
+      },
+
       // Recovery screen
       afterYourRun: "AFTER YOUR RUN",
       postStretching: "Post-trail stretching",
@@ -307,6 +315,14 @@ export const translations = {
   
       actions: {
         newPlan: "Empezar un nuevo plan",
+      },
+
+      strength: {
+        title: "Sesión de Fuerza",
+        subtitle: "{n} min · {x} ejercicios",
+        watchVideo: "Ver video",
+        whyStrength: "Los trails fuertes empiezan en el gimnasio. El entrenamiento de fuerza reduce el riesgo de lesión un 50% y mejora la economía de carrera — especialmente en terreno técnico.",
+        seeFullSession: "Ver sesión completa →",
       },
 
       // Recovery screen

@@ -59,7 +59,7 @@ const s = {
   }),
 };
 
-export default function WeekScreen({ lang, plan, profile, raceData, currentWeek, setCurrentWeek, onToday, onRecovery }) {
+export default function WeekScreen({ lang, plan, profile, raceData, currentWeek, setCurrentWeek, onToday, onRecovery, onStrength }) {
   const [selectedWeek, setSelectedWeek] = useState(currentWeek ?? 0);
   if (!plan || !plan.weeks.length) return null;
 
@@ -162,8 +162,11 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
           const isRecovery = ['stretching','iceBath','nutrition'].includes(workout.type);
 
           return (
-            <div key={i} style={s.dayRow(isToday, isDone, colors)}
-              onClick={() => isRecovery ? onRecovery(workout.type) : null}>
+            <div key={i} style={{ ...s.dayRow(isToday, isDone, colors), cursor: (isRecovery || workout.type === 'strength') ? 'pointer' : 'default' }}
+              onClick={() => {
+                if (isRecovery) onRecovery(workout.type);
+                else if (workout.type === 'strength') onStrength?.(week.phase);
+              }}>
               <div style={s.dayLabel(isToday)}>{t(lang, `days.${dayKeys[i]}`)}</div>
               <div style={{flex:1}}>
                 <div style={s.workoutName(isDone)}>
@@ -188,6 +191,9 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
               </div>
               {week.keyWorkout?.day === dayKeys[i] && (
                 <div style={{ fontSize: 10, color: '#fbbf24', marginRight: 4 }}>⭐</div>
+              )}
+              {workout.type === 'strength' && (
+                <div style={{ fontSize: 10, color: 'rgba(167,139,250,0.7)', marginRight: 2 }}>›</div>
               )}
               <div style={s.dot(isDone ? 'rgba(74,222,128,0.4)' : isToday ? '#4ade80' : colors.dot)} />
             </div>

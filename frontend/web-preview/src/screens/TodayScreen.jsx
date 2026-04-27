@@ -50,7 +50,7 @@ const s = {
   baseMotivationText: { fontSize:13, color:'rgba(255,255,255,0.88)', lineHeight:1.55 },
 };
 
-export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan }) {
+export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength }) {
   const [conditions, setConditions]       = useState(null);
   const [locationError, setLocationError] = useState(false);
   const [trails, setTrails]               = useState([]);
@@ -117,6 +117,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const workoutName  = isTreadmill ? `🏃 ${treadmillLabel}` : (t(lang, `workouts.${todayWorkout.type}`) || todayWorkout.type);
   const isGoodAqi    = !conditions?.aqi || conditions.aqi === 'Good' || conditions.aqi === 'Moderate';
 
+  const isStrength = todayWorkout.type === 'strength';
   const safeTrailIndex = trails.length ? Math.min(trailIndex, trails.length - 1) : 0;
   const activeTrail = trails[safeTrailIndex] ?? null;
   const routeName   = activeTrail?.name || 'Cerro La Campana — Norte';
@@ -182,7 +183,26 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
 
       <div style={s.divider} />
 
-      {isTreadmill ? (
+      {isStrength ? (
+        <div style={{ margin:'12px 20px', background:'rgba(167,139,250,0.08)', border:'1px solid rgba(167,139,250,0.22)', borderRadius:14, padding:14 }}>
+          <div style={{ fontSize:10, color:'rgba(167,139,250,0.7)', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
+            {lang==='es' ? 'SESIÓN DE FUERZA' : 'STRENGTH SESSION'}
+          </div>
+          <div style={{ fontSize:15, fontWeight:700, color:'#fff', marginBottom:4 }}>
+            💪 {t(lang,'strength.title')}
+          </div>
+          <div style={{ fontSize:12, color:'rgba(255,255,255,0.55)', lineHeight:1.55, marginBottom:12 }}>
+            {t(lang,'strength.whyStrength')}
+          </div>
+          <button
+            type="button"
+            onClick={() => onStrength?.(week.phase)}
+            style={{ background:'rgba(167,139,250,0.2)', border:'1px solid rgba(167,139,250,0.4)', borderRadius:10, padding:'10px 16px', fontSize:13, fontWeight:700, color:'#a78bfa', cursor:'pointer', fontFamily:'inherit', width:'100%' }}
+          >
+            {t(lang,'strength.seeFullSession')}
+          </button>
+        </div>
+      ) : isTreadmill ? (
         <>
           <div style={{ margin:'12px 20px', background:'rgba(251,191,36,0.12)', border:'1px solid rgba(251,191,36,0.35)', borderRadius:14, padding:14 }}>
             <div style={{ fontSize:10, color:'rgba(251,191,36,0.85)', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
