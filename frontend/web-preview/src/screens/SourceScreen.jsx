@@ -175,11 +175,10 @@ export default function SourceScreen({ lang, onNext }) {
   };
 
   const tabs = [
-    { id:'gpx',    icon:'📍', label:'GPX File',     sub: lang==='es' ? 'Datos exactos del GPS' : 'Exact GPS data' },
-    { id:'strava', icon:'🟠', label:'Strava',        sub: lang==='es' ? 'Desde tu cuenta' : 'From your account' },
-    { id:'web',    icon:'🔗', label: lang==='es' ? 'Link oficial' : 'Official link', sub:'UltraSignup · UTMB' },
+    { id:'gpx',    icon:'📁', label: t(lang, 'sourcePdf'),    sub: t(lang, 'sourcePdfSub') },
+    { id:'web',    icon:'🔗', label: t(lang, 'sourceWeb'),    sub: t(lang, 'sourceWebSub') },
+    { id:'manual', icon:'✏️', label: t(lang, 'sourceManual'), sub: t(lang, 'sourceManualSub') },
     { id:'base',   icon:'🏃', label: t(lang, 'sourceOptions.base'), sub: t(lang, 'sourceOptions.baseSubtitle') },
-    { id:'manual', icon:'✏️', label: lang==='es' ? 'Manual' : 'Manual',  sub: lang==='es' ? 'Ingresa los datos' : 'Enter the data' },
   ];
 
   return (

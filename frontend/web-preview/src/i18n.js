@@ -6,12 +6,17 @@ export const translations = {
   
       // Source screen
       sourceTitle: "How do we add your race?",
-      sourceWeb: "Official link",
-      sourceWebSub: "UltraSignup, UTMB, iRunFar",
-      sourcePdf: "Upload PDF",
-      sourcePdfSub: "Race rules or tech sheet",
-      sourceManual: "Enter manually",
+      sourceWeb: "I have the race link",
+      sourceWebSub: "Paste the race URL",
+      sourcePdf: "I have the race file",
+      sourcePdfSub: "Upload a .GPX file",
+      sourceManual: "I'll enter it manually",
       sourceManualSub: "Distance, elevation, date",
+
+      countdown: {
+        days: "days to your race",
+        raceWeek: "Race week! 🎉",
+      },
       sourceOptions: {
         base: "Build My Base",
         baseSubtitle: "No race yet — start from zero",
@@ -175,12 +180,17 @@ export const translations = {
   
       // Source screen
       sourceTitle: "¿Cómo agregamos tu carrera?",
-      sourceWeb: "Link oficial",
-      sourceWebSub: "UltraSignup, UTMB, iRunFar",
-      sourcePdf: "Subir PDF",
-      sourcePdfSub: "Reglamento o ficha técnica",
-      sourceManual: "Ingresar manual",
+      sourceWeb: "Tengo el link de la carrera",
+      sourceWebSub: "Pega el link de la carrera",
+      sourcePdf: "Tengo el archivo de la carrera",
+      sourcePdfSub: "Sube un archivo .GPX",
+      sourceManual: "Lo ingreso yo",
       sourceManualSub: "Distancia, desnivel, fecha",
+
+      countdown: {
+        days: "días para tu carrera",
+        raceWeek: "¡Semana de carrera! 🎉",
+      },
       sourceOptions: {
         base: "Construir Mi Base",
         baseSubtitle: "Sin carrera aún — empezar desde cero",

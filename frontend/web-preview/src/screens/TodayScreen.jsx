@@ -118,6 +118,11 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const isGoodAqi    = !conditions?.aqi || conditions.aqi === 'Good' || conditions.aqi === 'Moderate';
 
   const isStrength = todayWorkout.type === 'strength';
+
+  const daysToRace = (!isBasePlan && raceData?.fecha)
+    ? Math.round((new Date(raceData.fecha) - new Date()) / 86400000)
+    : null;
+  const isRaceWeek = daysToRace !== null && daysToRace >= 0 && daysToRace < 7;
   const safeTrailIndex = trails.length ? Math.min(trailIndex, trails.length - 1) : 0;
   const activeTrail = trails[safeTrailIndex] ?? null;
   const routeName   = activeTrail?.name || 'Cerro La Campana — Norte';
@@ -152,6 +157,11 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
                   ? ` · ${todayWorkout.km} km · ${Math.floor(todayWorkout.km / 7)}h${String(Math.round((todayWorkout.km / 7 % 1) * 60)).padStart(2, '0')}`
                   : ''}
           </div>
+          {daysToRace !== null && daysToRace >= 0 && (
+            <div style={{ fontSize: 11, marginTop: 4, color: isRaceWeek ? '#4ade80' : 'rgba(255,255,255,0.38)', fontWeight: isRaceWeek ? 600 : 400 }}>
+              🏁 {isRaceWeek ? t(lang, 'countdown.raceWeek') : `${daysToRace} ${t(lang, 'countdown.days')}`}
+            </div>
+          )}
         </div>
 
         <div style={s.weatherBox}>
