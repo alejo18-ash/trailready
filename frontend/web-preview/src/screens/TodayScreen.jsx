@@ -55,8 +55,18 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const [locationError, setLocationError] = useState(false);
   const [trails, setTrails]               = useState([]);
   const [trailIndex, setTrailIndex]       = useState(0);
+  const [workoutStatus, setWorkoutStatus] = useState(null);
 
   useEffect(() => { fetchConditions(); }, [currentWeek]);
+
+  useEffect(() => {
+    const cw = currentWeek ?? 0;
+    const ti = new Date().getDay();
+    const di = ti === 0 ? 6 : ti - 1;
+    const saved = localStorage.getItem(`trailready_workout_${cw}_${di}`);
+    if (!saved) { setWorkoutStatus(null); return; }
+    try { setWorkoutStatus(JSON.parse(saved).status ?? null); } catch { setWorkoutStatus(null); }
+  }, [currentWeek]);
 
   const fetchTrails = (lat, lon, km, desnivel) => {
     // Get previously shown trail IDs from localStorage
@@ -107,6 +117,11 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const week         = plan.weeks[cw] ?? plan.weeks[0];
   const todayIndex   = new Date().getDay();
   const dayIndex     = todayIndex === 0 ? 6 : todayIndex - 1;
+  const storageKey   = `trailready_workout_${cw}_${dayIndex}`;
+  const handleStatus = (status) => {
+    setWorkoutStatus(status);
+    localStorage.setItem(storageKey, JSON.stringify({ status, date: Date.now() }));
+  };
   const todayWorkout = week.workouts[dayIndex];
   const phaseLabel   = t(lang, phaseKey[week.phase] || 'buildPhase');
   const isBasePlan   = Boolean(raceData?.isBasePlan);
@@ -286,6 +301,47 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           <div style={{fontSize:12, color:'rgba(255,255,255,0.7)', lineHeight:1.6}}>
             {todayWorkout.flatTips?.[lang] || todayWorkout.flatTips?.en}
           </div>
+        </div>
+      )}
+
+      {todayWorkout.type !== 'rest' && (
+        <div style={{ margin: '12px 20px', background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 14px' }}>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', marginBottom: 10 }}>
+            {t(lang, 'workout.didYouComplete')}
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              type="button"
+              onClick={() => handleStatus('completed')}
+              style={{
+                flex: 1, padding: '10px 8px', borderRadius: 10, cursor: 'pointer',
+                fontFamily: 'inherit', fontSize: 12, fontWeight: 600,
+                background: workoutStatus === 'completed' ? '#4ade80' : 'transparent',
+                border: workoutStatus === 'completed' ? '1px solid #4ade80' : '1px solid rgba(74,222,128,0.35)',
+                color: workoutStatus === 'completed' ? '#0d0d1a' : '#4ade80',
+              }}
+            >
+              ✓ {t(lang, 'workout.yes')}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleStatus('missed')}
+              style={{
+                flex: 1, padding: '10px 8px', borderRadius: 10, cursor: 'pointer',
+                fontFamily: 'inherit', fontSize: 12, fontWeight: 600,
+                background: workoutStatus === 'missed' ? '#f87171' : 'transparent',
+                border: workoutStatus === 'missed' ? '1px solid #f87171' : '1px solid rgba(248,113,113,0.35)',
+                color: workoutStatus === 'missed' ? '#0d0d1a' : '#f87171',
+              }}
+            >
+              ✗ {t(lang, 'workout.missed')}
+            </button>
+          </div>
+          {workoutStatus && (
+            <div style={{ fontSize: 11, lineHeight: 1.55, marginTop: 10, color: workoutStatus === 'completed' ? '#4ade80' : '#f87171' }}>
+              {t(lang, workoutStatus === 'completed' ? 'workout.completedMsg' : 'workout.missedMsg')}
+            </div>
+          )}
         </div>
       )}
 

@@ -61,11 +61,23 @@ const s = {
 
 export default function WeekScreen({ lang, plan, profile, raceData, currentWeek, setCurrentWeek, onToday, onRecovery, onStrength }) {
   const [selectedWeek, setSelectedWeek] = useState(currentWeek ?? 0);
+  const [completions, setCompletions]   = useState({});
   if (!plan || !plan.weeks.length) return null;
 
   useEffect(() => {
     setSelectedWeek(currentWeek ?? 0);
   }, [currentWeek]);
+
+  useEffect(() => {
+    const result = {};
+    for (let i = 0; i < 7; i++) {
+      const saved = localStorage.getItem(`trailready_workout_${selectedWeek}_${i}`);
+      if (saved) {
+        try { result[i] = JSON.parse(saved).status; } catch {}
+      }
+    }
+    setCompletions(result);
+  }, [selectedWeek]);
 
   const isBasePlan = Boolean(raceData?.isBasePlan);
   const flatRunner = profile?.terrain === 'flat' && Number(raceData?.desnivel) > 1500;
@@ -194,6 +206,12 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
               )}
               {workout.type === 'strength' && (
                 <div style={{ fontSize: 10, color: 'rgba(167,139,250,0.7)', marginRight: 2 }}>›</div>
+              )}
+              {completions[i] === 'completed' && (
+                <div style={{ fontSize: 10, color: '#4ade80', marginRight: 2, fontWeight: 700 }}>✓</div>
+              )}
+              {completions[i] === 'missed' && (
+                <div style={{ fontSize: 10, color: '#f87171', marginRight: 2, fontWeight: 700 }}>✗</div>
               )}
               <div style={s.dot(isDone ? 'rgba(74,222,128,0.4)' : isToday ? '#4ade80' : colors.dot)} />
             </div>

@@ -78,8 +78,13 @@ export const translations = {
       },
       workout: {
         duration: "{n} min",
+        didYouComplete: "Did you complete this workout?",
+        yes: "Yes, completed",
+        missed: "Missed it",
+        completedMsg: "Great work! Consistency is everything. 🔥",
+        missedMsg: "No worries — one missed day doesn't break a plan. Keep going.",
       },
-  
+
       // Week screen
       thisWeek: "This week",
       toRaceDay: "to race day",
@@ -252,8 +257,13 @@ export const translations = {
       },
       workout: {
         duration: "{n} min",
+        didYouComplete: "¿Completaste este entrenamiento?",
+        yes: "Sí, completé",
+        missed: "No pude",
+        completedMsg: "¡Excelente! La constancia lo es todo. 🔥",
+        missedMsg: "Sin problema — un día perdido no arruina el plan. Sigue adelante.",
       },
-  
+
       // Week screen
       thisWeek: "Esta semana",
       toRaceDay: "para la carrera",
