@@ -49,7 +49,7 @@ const subs = {
 };
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:'system-ui, sans-serif', padding:'0 0 40px' },
+  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", padding:'0 0 40px' },
   header: { padding:'14px 20px 12px', display:'flex', alignItems:'center', gap:12 },
   back: { fontSize:12, color:'rgba(255,255,255,0.35)', cursor:'pointer' },
   headerTitle: { fontSize:16, fontWeight:700, color:'#fff' },
@@ -96,7 +96,7 @@ export default function RecoveryScreen({ lang, type, onBack, raceData, plan, cur
   const openVideo = (url) => window.open(url, '_blank');
 
   return (
-    <div style={s.wrap}>
+    <div className="screen-enter" style={s.wrap}>
       <div style={s.header}>
         <span style={s.back} onClick={onBack}>←</span>
         <div style={s.headerTitle}>{t(lang,'afterYourRun')}</div>

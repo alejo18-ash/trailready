@@ -207,7 +207,7 @@ function normalizePhase(phase) {
 }
 
 const s = {
-  wrap:      { minHeight: '100vh', background: '#0d0d1a', fontFamily: 'system-ui, sans-serif', paddingBottom: 40 },
+  wrap:      { minHeight: '100vh', background: '#0d0d1a', fontFamily: "'Inter', system-ui, sans-serif", paddingBottom: 40 },
   header:    { padding: '14px 20px 16px', borderBottom: '0.5px solid rgba(255,255,255,0.07)' },
   backBtn:   { background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.4)', fontSize: 13, padding: '0 0 10px', fontFamily: 'inherit', display: 'block' },
   title:     { fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 4 },
@@ -252,7 +252,7 @@ export default function StrengthScreen({ lang, phase, onBack }) {
     .replace('{x}', String(data.exercises.length));
 
   return (
-    <div style={s.wrap}>
+    <div className="screen-enter" style={s.wrap}>
       <div style={s.header}>
         <button type="button" style={s.backBtn} onClick={onBack}>
           ← {lang === 'es' ? 'Volver' : 'Back'}

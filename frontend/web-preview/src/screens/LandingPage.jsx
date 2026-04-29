@@ -2,11 +2,8 @@ import { useState, useEffect } from 'react';
 import { t } from '../i18n';
 import { useNavigate } from 'react-router-dom';
 
-const GREEN = '#00ff87';
-const BG = '#080808';
-
 const MARQUEE_SEG =
-  '\u00a0\u00a0\u00a0Runners training for UTMB\u00a0\u00a0·\u00a0\u00a0Western States\u00a0\u00a0·\u00a0\u00a0Leadville\u00a0\u00a0·\u00a0\u00a0Transgrancanaria\u00a0\u00a0·\u00a0\u00a0IAU World Championships\u00a0\u00a0·\u00a0\u00a0Tarawera\u00a0\u00a0·\u00a0\u00a0Hardrock 100\u00a0\u00a0·\u00a0\u00a0and local ultras in 40+ countries';
+  '   Runners training for UTMB  ·  Western States  ·  Leadville  ·  Transgrancanaria  ·  IAU World Championships  ·  Tarawera  ·  Hardrock 100  ·  and local ultras in 40+ countries';
 
 const COMMUNITY_RACES = [
   { emoji: '🏔️', name: 'UTMB 2026',        count: '247' },
@@ -24,11 +21,9 @@ const FEATURES = [
   { icon: '🇪🇸', tk: 'f6Title', bk: 'f6Body' },
 ];
 
+/* Injected styles — uses CSS variables from design-system.css */
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
-
 *, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; }
 
 @keyframes tr-marquee {
   from { transform: translateX(0); }
@@ -46,7 +41,7 @@ body { margin: 0; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: ${GREEN};
+  background: var(--green);
   color: #000;
   font-weight: 700;
   font-size: 1rem;
@@ -54,41 +49,41 @@ body { margin: 0; }
   border-radius: 100px;
   border: none;
   cursor: pointer;
-  box-shadow: 0 0 40px rgba(0,255,135,0.4), 0 0 80px rgba(0,255,135,0.15);
+  box-shadow: 0 0 40px rgba(var(--green-ch), 0.4), 0 0 80px rgba(var(--green-ch), 0.15);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  font-family: inherit;
+  font-family: var(--font);
   letter-spacing: -0.01em;
   line-height: 1;
 }
 
 .tr-cta-btn:hover {
   transform: scale(1.03);
-  box-shadow: 0 0 60px rgba(0,255,135,0.65), 0 0 120px rgba(0,255,135,0.3);
+  box-shadow: 0 0 60px rgba(var(--green-ch), 0.65), 0 0 120px rgba(var(--green-ch), 0.3);
 }
 
 .tr-feature-card {
   background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--border-card);
   border-radius: 16px;
   padding: 28px 24px;
   transition: border-color 0.25s ease, background 0.25s ease;
 }
 
 .tr-feature-card:hover {
-  border-color: rgba(0,255,135,0.3);
-  background: rgba(0,255,135,0.025);
+  border-color: rgba(var(--green-ch), 0.3);
+  background: rgba(var(--green-ch), 0.025);
 }
 
 .tr-community-card {
   background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--border-card);
   border-radius: 16px;
   padding: 28px 24px;
   transition: border-color 0.25s ease;
 }
 
 .tr-community-card:hover {
-  border-color: rgba(0,255,135,0.3);
+  border-color: rgba(var(--green-ch), 0.3);
 }
 
 .tr-outline-btn {
@@ -96,22 +91,22 @@ body { margin: 0; }
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid rgba(0,255,135,0.4);
-  color: ${GREEN};
+  border: 1px solid rgba(var(--green-ch), 0.4);
+  color: var(--green);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 8px 18px;
   border-radius: 100px;
   cursor: pointer;
   transition: background 0.2s ease;
-  font-family: inherit;
+  font-family: var(--font);
   margin-top: 18px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .tr-outline-btn:hover {
-  background: rgba(0,255,135,0.12);
+  background: rgba(var(--green-ch), 0.12);
 }
 
 @media (max-width: 900px) {
@@ -129,9 +124,9 @@ body { margin: 0; }
 const s = {
   page: {
     minHeight: '100vh',
-    background: BG,
-    color: '#fff',
-    fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+    background: 'var(--bg)',
+    color: 'var(--text)',
+    fontFamily: 'var(--font)',
     overflowX: 'hidden',
   },
 
@@ -141,8 +136,8 @@ const s = {
     left: 0,
     right: 0,
     zIndex: 100,
-    borderTop: '1px solid rgba(0,255,135,0.3)',
-    background: scrolled ? 'rgba(10,10,10,0.99)' : 'rgba(10,10,10,0.95)',
+    borderTop: `1px solid rgba(var(--green-ch), 0.3)`,
+    background: scrolled ? 'rgba(13,13,26,0.99)' : 'rgba(13,13,26,0.95)',
     backdropFilter: 'blur(10px)',
     WebkitBackdropFilter: 'blur(10px)',
     borderBottom: '1px solid rgba(255,255,255,0.05)',
@@ -164,17 +159,17 @@ const s = {
     fontWeight: 800,
     fontSize: 16,
     letterSpacing: -0.4,
-    color: '#fff',
+    color: 'var(--text)',
   },
   brandEmoji: {
     fontSize: 20,
-    filter: 'drop-shadow(0 0 8px rgba(0,255,135,0.8))',
+    filter: 'drop-shadow(0 0 8px rgba(var(--green-ch), 0.8))',
   },
   langToggle: {
     display: 'flex',
     gap: 4,
-    background: 'rgba(255,255,255,0.04)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border-card)',
     borderRadius: 999,
     padding: 4,
   },
@@ -183,19 +178,19 @@ const s = {
     borderRadius: 999,
     border: 'none',
     cursor: 'pointer',
-    background: active ? 'rgba(0,255,135,0.18)' : 'transparent',
-    color: active ? GREEN : 'rgba(255,255,255,0.5)',
+    background: active ? 'rgba(var(--green-ch), 0.18)' : 'transparent',
+    color: active ? 'var(--green)' : 'var(--text-40)',
     fontSize: 12,
     fontWeight: active ? 700 : 500,
-    fontFamily: 'inherit',
+    fontFamily: 'var(--font)',
     transition: 'all 0.15s ease',
   }),
 
   hero: {
     paddingTop: 64,
     background: `
-      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(0,255,135,0.08) 0%, transparent 65%),
-      ${BG}
+      radial-gradient(ellipse 90% 55% at 50% -5%, rgba(var(--green-ch), 0.08) 0%, transparent 65%),
+      var(--bg)
     `,
     position: 'relative',
     overflow: 'hidden',
@@ -210,8 +205,8 @@ const s = {
     position: 'absolute',
     inset: 0,
     backgroundImage: `
-      repeating-linear-gradient(-54deg, rgba(0,255,135,0.04) 0px, rgba(0,255,135,0.04) 1px, transparent 1px, transparent 80px),
-      repeating-linear-gradient(36deg, rgba(0,255,135,0.025) 0px, rgba(0,255,135,0.025) 1px, transparent 1px, transparent 60px)
+      repeating-linear-gradient(-54deg, rgba(var(--green-ch), 0.04) 0px, rgba(var(--green-ch), 0.04) 1px, transparent 1px, transparent 80px),
+      repeating-linear-gradient(36deg, rgba(var(--green-ch), 0.025) 0px, rgba(var(--green-ch), 0.025) 1px, transparent 1px, transparent 60px)
     `,
     pointerEvents: 'none',
     zIndex: 0,
@@ -229,7 +224,7 @@ const s = {
     fontWeight: 700,
     letterSpacing: '0.22em',
     textTransform: 'uppercase',
-    color: GREEN,
+    color: 'var(--green)',
     marginBottom: 20,
   },
   h1: {
@@ -237,14 +232,14 @@ const s = {
     fontWeight: 900,
     lineHeight: 1.04,
     letterSpacing: '-0.03em',
-    color: '#fff',
+    color: 'var(--text)',
     margin: '0 0 28px',
     whiteSpace: 'pre-line',
   },
   heroSub: {
     fontSize: 'clamp(0.95rem, 1.8vw, 1.1rem)',
     lineHeight: 1.75,
-    color: 'rgba(255,255,255,0.58)',
+    color: 'var(--text-60)',
     maxWidth: 580,
     margin: '0 auto 40px',
   },
@@ -256,13 +251,13 @@ const s = {
   },
   heroTrust: {
     fontSize: '0.76rem',
-    color: 'rgba(255,255,255,0.38)',
+    color: 'var(--text-40)',
     letterSpacing: '0.02em',
   },
 
   marqueeBar: {
-    borderTop: '1px solid rgba(255,255,255,0.07)',
-    borderBottom: '1px solid rgba(255,255,255,0.07)',
+    borderTop: '1px solid var(--border)',
+    borderBottom: '1px solid var(--border)',
     background: 'rgba(0,0,0,0.5)',
     padding: '14px 0',
     overflow: 'hidden',
@@ -272,7 +267,7 @@ const s = {
     fontWeight: 600,
     letterSpacing: '0.14em',
     textTransform: 'uppercase',
-    color: 'rgba(255,255,255,0.32)',
+    color: 'var(--text-30)',
     paddingRight: 0,
   },
 
@@ -288,7 +283,7 @@ const s = {
     fontWeight: 700,
     letterSpacing: '0.18em',
     textTransform: 'uppercase',
-    color: 'rgba(255,255,255,0.38)',
+    color: 'var(--text-40)',
     textAlign: 'center',
     marginBottom: 52,
     display: 'block',
@@ -301,7 +296,7 @@ const s = {
   },
   howCard: {
     background: 'rgba(255,255,255,0.025)',
-    border: '1px solid rgba(255,255,255,0.07)',
+    border: '1px solid var(--border)',
     borderRadius: 20,
     padding: '32px 28px',
     position: 'relative',
@@ -317,7 +312,7 @@ const s = {
     lineHeight: 1,
     pointerEvents: 'none',
     userSelect: 'none',
-    fontFamily: 'inherit',
+    fontFamily: 'var(--font)',
   },
   howIcon: {
     fontSize: '2rem',
@@ -329,7 +324,7 @@ const s = {
   howTitle: {
     fontSize: '1rem',
     fontWeight: 700,
-    color: '#fff',
+    color: 'var(--text)',
     marginBottom: 10,
     position: 'relative',
     zIndex: 1,
@@ -337,7 +332,7 @@ const s = {
   howBody: {
     fontSize: '0.875rem',
     lineHeight: 1.75,
-    color: 'rgba(255,255,255,0.55)',
+    color: 'var(--text-60)',
     position: 'relative',
     zIndex: 1,
   },
@@ -350,7 +345,7 @@ const s = {
   featIconBadge: {
     width: 44,
     height: 44,
-    background: 'rgba(0,255,135,0.1)',
+    background: 'rgba(var(--green-ch), 0.1)',
     borderRadius: 12,
     display: 'flex',
     alignItems: 'center',
@@ -361,12 +356,12 @@ const s = {
   featTitle: {
     fontSize: '0.9rem',
     fontWeight: 700,
-    color: '#fff',
+    color: 'var(--text)',
     marginBottom: 6,
   },
   featBody: {
     fontSize: '0.82rem',
-    color: 'rgba(255,255,255,0.5)',
+    color: 'var(--text-60)',
     lineHeight: 1.6,
   },
 
@@ -376,11 +371,11 @@ const s = {
     letterSpacing: '-0.03em',
     textAlign: 'center',
     marginBottom: 10,
-    color: '#fff',
+    color: 'var(--text)',
   },
   commDesc: {
     fontSize: '0.95rem',
-    color: 'rgba(255,255,255,0.5)',
+    color: 'var(--text-60)',
     textAlign: 'center',
     maxWidth: 520,
     margin: '0 auto',
@@ -400,18 +395,18 @@ const s = {
   commRaceName: {
     fontSize: '0.95rem',
     fontWeight: 700,
-    color: '#fff',
+    color: 'var(--text)',
     marginBottom: 4,
   },
   commRaceCount: {
     fontSize: '0.8rem',
-    color: 'rgba(255,255,255,0.45)',
+    color: 'var(--text-40)',
   },
 
   finalWrap: {
     background: `
-      radial-gradient(ellipse 60% 60% at 50% 100%, rgba(0,255,135,0.06) 0%, transparent 70%),
-      ${BG}
+      radial-gradient(ellipse 60% 60% at 50% 100%, rgba(var(--green-ch), 0.06) 0%, transparent 70%),
+      var(--bg)
     `,
     padding: 'clamp(80px, 10vw, 120px) 24px',
     textAlign: 'center',
@@ -423,18 +418,18 @@ const s = {
     letterSpacing: '-0.03em',
     marginBottom: 40,
     lineHeight: 1.1,
-    color: '#fff',
+    color: 'var(--text)',
   },
   finalNote: {
     fontSize: '0.8rem',
-    color: 'rgba(255,255,255,0.32)',
+    color: 'var(--text-30)',
     marginTop: 18,
   },
 
   footer: {
-    borderTop: '1px solid rgba(255,255,255,0.06)',
+    borderTop: '1px solid var(--border)',
     padding: '28px 24px',
-    background: BG,
+    background: 'var(--bg)',
   },
   footerInner: {
     maxWidth: 1100,
@@ -450,10 +445,10 @@ const s = {
     alignItems: 'center',
     gap: 6,
     fontSize: '0.85rem',
-    color: 'rgba(255,255,255,0.45)',
+    color: 'var(--text-40)',
   },
   footerBrandEmoji: {
-    filter: 'drop-shadow(0 0 5px rgba(0,255,135,0.6))',
+    filter: 'drop-shadow(0 0 5px rgba(var(--green-ch), 0.6))',
   },
   footerLangRow: {
     display: 'flex',
@@ -465,18 +460,18 @@ const s = {
     border: 'none',
     cursor: 'pointer',
     fontSize: '0.82rem',
-    color: active ? GREEN : 'rgba(255,255,255,0.35)',
+    color: active ? 'var(--green)' : 'var(--text-30)',
     fontWeight: active ? 700 : 400,
-    fontFamily: 'inherit',
+    fontFamily: 'var(--font)',
     padding: '2px 4px',
   }),
   footerDivider: {
-    color: 'rgba(255,255,255,0.15)',
+    color: 'var(--text-20)',
     fontSize: '0.8rem',
   },
   footerTagline: {
     fontSize: '0.8rem',
-    color: 'rgba(255,255,255,0.28)',
+    color: 'var(--text-30)',
     fontStyle: 'italic',
   },
 };
@@ -515,24 +510,24 @@ export default function LandingPage({ lang, setLang }) {
           <div style={{
             position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
             zIndex: 200, width: 'calc(100% - 48px)', maxWidth: 560,
-            background: 'rgba(10,10,10,0.97)', backdropFilter: 'blur(12px)',
+            background: 'rgba(13,13,26,0.97)', backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderLeft: `3px solid ${GREEN}`,
+            border: '1px solid var(--border-card)',
+            borderLeft: '3px solid var(--green)',
             borderRadius: 14, padding: '14px 18px',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
             boxShadow: '0 8px 40px rgba(0,0,0,0.6)',
           }}>
-            <div style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.4, flex: 1 }}>
+            <div style={{ fontSize: '0.88rem', color: 'var(--text-60)', lineHeight: 1.4, flex: 1 }}>
               {t(lang, 'landing.bannerText')}
             </div>
             <button
               type="button"
               onClick={() => navigate('/app')}
               style={{
-                background: GREEN, color: '#000', border: 'none', cursor: 'pointer',
+                background: 'var(--green)', color: '#000', border: 'none', cursor: 'pointer',
                 fontWeight: 700, fontSize: '0.8rem', padding: '8px 16px',
-                borderRadius: 100, fontFamily: 'inherit', whiteSpace: 'nowrap', flexShrink: 0,
+                borderRadius: 100, fontFamily: 'var(--font)', whiteSpace: 'nowrap', flexShrink: 0,
               }}
             >
               {t(lang, 'landing.bannerCta')}
@@ -543,8 +538,8 @@ export default function LandingPage({ lang, setLang }) {
               aria-label="Dismiss"
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
-                color: 'rgba(255,255,255,0.3)', fontSize: '1rem', lineHeight: 1,
-                padding: '4px', flexShrink: 0, fontFamily: 'inherit',
+                color: 'var(--text-30)', fontSize: '1rem', lineHeight: 1,
+                padding: '4px', flexShrink: 0, fontFamily: 'var(--font)',
               }}
             >
               ✕
@@ -569,7 +564,7 @@ export default function LandingPage({ lang, setLang }) {
         {/* ── HERO ── */}
         <section style={s.hero}>
           <div style={s.topoOverlay} />
-          <div style={s.heroInner}>
+          <div className="screen-enter" style={s.heroInner}>
             <div style={s.eyebrow}>{t(lang, 'landing.heroEyebrow')}</div>
             <h1 style={s.h1}>{t(lang, 'landing.heroHeadline')}</h1>
             <p style={s.heroSub}>{t(lang, 'landing.heroSubheadline')}</p>
@@ -628,7 +623,7 @@ export default function LandingPage({ lang, setLang }) {
         </section>
 
         {/* ── COMMUNITY ── */}
-        <section style={{ ...s.sectionWrap, borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+        <section style={{ ...s.sectionWrap, borderTop: '1px solid var(--border)' }}>
           <div style={s.sectionContent}>
             <div style={s.commTitle}>{t(lang, 'landing.communityTitle')}</div>
             <p style={s.commDesc}>{t(lang, 'landing.communityDesc')}</p>

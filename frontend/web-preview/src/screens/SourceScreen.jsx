@@ -4,7 +4,7 @@ import { t } from '../i18n';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:'system-ui, sans-serif' },
+  wrap: { minHeight:'100vh', background:'#0d0d1a', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:"'Inter', system-ui, sans-serif" },
   card: { width:'100%', maxWidth:340 },
   header: { textAlign:'center', marginBottom:20 },
   logo: { fontSize:11, color:'rgba(255,255,255,0.3)', letterSpacing:0.5, marginBottom:6 },
@@ -182,7 +182,7 @@ export default function SourceScreen({ lang, onNext }) {
   ];
 
   return (
-    <div style={s.wrap}>
+    <div className="screen-enter" style={s.wrap}>
       <div style={s.card}>
         <div style={s.header}>
           <div style={s.logo}>🏔️ TRAILREADY</div>

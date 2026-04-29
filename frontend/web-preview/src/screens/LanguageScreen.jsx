@@ -1,5 +1,5 @@
 const s = {
-    wrap: { minHeight:'100vh', background:'#0d0d1a', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:'system-ui, sans-serif' },
+    wrap: { minHeight:'100vh', background:'#0d0d1a', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:"'Inter', system-ui, sans-serif" },
     card: { width:'100%', maxWidth:340, },
     logo: { textAlign:'center', marginBottom:36 },
     logoBox: { width:64, height:64, margin:'0 auto 16px', background:'#0f6e56', borderRadius:18, display:'flex', alignItems:'center', justifyContent:'center', fontSize:30 },
@@ -27,7 +27,7 @@ const s = {
     ];
   
     return (
-      <div style={s.wrap}>
+      <div className="screen-enter" style={s.wrap}>
         <div style={s.card}>
           <div style={s.logo}>
             <div style={s.logoBox}>🏔️</div>

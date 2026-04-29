@@ -4,7 +4,7 @@ import { t } from '../i18n';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:'system-ui, sans-serif', paddingBottom:40 },
+  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:40 },
   header: { padding:'14px 20px 12px', display:'flex', alignItems:'center', gap:12 },
   back: { fontSize:12, color:'rgba(255,255,255,0.35)', cursor:'pointer' },
   headerTitle: { fontSize:16, fontWeight:700, color:'#fff' },
@@ -121,7 +121,7 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
   const phaseNames = { base:{en:'Base',es:'Base'}, build:{en:'Build',es:'Construc.'}, peak:{en:'Peak',es:'Pico'}, taper:{en:'Taper',es:'Taper'} };
 
   return (
-    <div style={s.wrap}>
+    <div className="screen-enter" style={s.wrap}>
       <div style={s.header}>
         <span style={s.back} onClick={onBack}>←</span>
         <div style={s.headerTitle}>🏁 {raceData?.name || 'Race Profile'}</div>

@@ -9,11 +9,11 @@ const phaseKey = {
 };
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:'system-ui, sans-serif' },
-  header: { padding:'14px 20px 10px', display:'flex', justifyContent:'space-between', alignItems:'flex-start' },
-  weekLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:0.5 },
-  activityTitle: { fontSize:20, fontWeight:700, color:'#fff', marginTop:3 },
-  activitySub: { fontSize:11, color:'rgba(255,255,255,0.35)', marginTop:2 },
+  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif" },
+  header: { padding:'20px 20px 14px', display:'flex', justifyContent:'space-between', alignItems:'flex-start' },
+  weekLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:1, textTransform:'uppercase' },
+  activityTitle: { fontSize:26, fontWeight:800, color:'#fff', marginTop:5, letterSpacing:'-0.02em', lineHeight:1.1 },
+  activitySub: { fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:4 },
   weatherBox: { textAlign:'right', minWidth:80 },
   weatherIcon: { fontSize:20 },
   weatherTemp: { fontSize:13, fontWeight:600, color:'#4ade80', marginTop:1 },
@@ -155,25 +155,29 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const routeTime   = `${Math.floor(routeKm/7)}:${String(Math.round((routeKm/7%1)*60)).padStart(2,'0')}h`;
 
   return (
-    <div style={s.wrap}>
+    <div className="screen-enter" style={s.wrap}>
       <div style={s.header}>
-        <div>
+        <div style={{ flex:1, paddingRight:12 }}>
           <div style={s.weekLabel}>
             {t(lang,'today')} · {t(lang,'week')} {week.week} {t(lang,'of')} {plan.totalWeeks}
           </div>
           <div style={s.activityTitle}>{workoutName}</div>
-          <div style={s.activitySub}>
-            {phaseLabel}
-            {isBasePlan && todayWorkout.duracion != null
-              ? ` · ${fmtDur(todayWorkout.duracion)}`
-              : isTreadmill && todayWorkout.duration != null
-                ? ` · ${todayWorkout.duration} min`
-                : todayWorkout.km
-                  ? ` · ${todayWorkout.km} km · ${Math.floor(todayWorkout.km / 7)}h${String(Math.round((todayWorkout.km / 7 % 1) * 60)).padStart(2, '0')}`
-                  : ''}
-          </div>
+          <div style={s.activitySub}>{phaseLabel}</div>
+          {isBasePlan && todayWorkout.duracion != null ? (
+            <div style={{ display:'inline-block', marginTop:7, background:'rgba(29,158,117,0.15)', border:'0.5px solid rgba(29,158,117,0.28)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#4ade80', fontWeight:600 }}>
+              {fmtDur(todayWorkout.duracion)}
+            </div>
+          ) : isTreadmill && todayWorkout.duration != null ? (
+            <div style={{ display:'inline-block', marginTop:7, background:'rgba(251,191,36,0.12)', border:'0.5px solid rgba(251,191,36,0.28)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#fbbf24', fontWeight:600 }}>
+              {todayWorkout.duration} min
+            </div>
+          ) : todayWorkout.km ? (
+            <div style={{ display:'inline-block', marginTop:7, background:'rgba(29,158,117,0.15)', border:'0.5px solid rgba(29,158,117,0.28)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#4ade80', fontWeight:600 }}>
+              {todayWorkout.km} km
+            </div>
+          ) : null}
           {daysToRace !== null && daysToRace >= 0 && (
-            <div style={{ fontSize: 11, marginTop: 4, color: isRaceWeek ? '#4ade80' : 'rgba(255,255,255,0.38)', fontWeight: isRaceWeek ? 600 : 400 }}>
+            <div style={{ fontSize:11, marginTop:7, color: isRaceWeek ? '#4ade80' : 'rgba(255,255,255,0.38)', fontWeight: isRaceWeek ? 600 : 400 }}>
               🏁 {isRaceWeek ? t(lang, 'countdown.raceWeek') : `${daysToRace} ${t(lang, 'countdown.days')}`}
             </div>
           )}

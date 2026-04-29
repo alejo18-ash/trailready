@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { t } from '../i18n';
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:'system-ui, sans-serif' },
+  wrap: { minHeight:'100vh', background:'#0d0d1a', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:"'Inter', system-ui, sans-serif" },
   card: { width:'100%', maxWidth:340 },
   back: { fontSize:12, color:'rgba(255,255,255,0.35)', cursor:'pointer', marginBottom:16, display:'block' },
   racePill: { display:'inline-flex', alignItems:'center', gap:6, background:'rgba(29,158,117,0.15)', border:'0.5px solid rgba(29,158,117,0.3)', borderRadius:20, padding:'5px 12px', marginBottom:16 },
@@ -46,7 +46,7 @@ export default function ProfileScreen({ lang, raceData, onNext, onBack }) {
   };
 
   return (
-    <div style={s.wrap}>
+    <div className="screen-enter" style={s.wrap}>
       <div style={s.card}>
         <span style={s.back} onClick={onBack}>← {lang==='es' ? 'Volver' : 'Back'}</span>
 

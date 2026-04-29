@@ -1,0 +1,61 @@
+/* TrailReady — Design System */
+
+:root {
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Backgrounds */
+  --bg: #0d0d1a;
+  --bg-card: rgba(255, 255, 255, 0.04);
+  --bg-raised: rgba(255, 255, 255, 0.07);
+
+  /* Brand green */
+  --green: #4ade80;
+  --green-deep: #1d9e75;
+  --green-glow: rgba(29, 158, 117, 0.2);
+  --green-border: rgba(29, 158, 117, 0.3);
+  --green-dim: rgba(74, 222, 128, 0.15);
+
+  /* Accent colors */
+  --blue: #60a5fa;
+  --blue-light: #93c5fd;
+  --yellow: #fbbf24;
+  --purple: #a78bfa;
+  --red: #f87171;
+  --teal: #2dd4bf;
+
+  /* RGB channels — for rgba() usage in CSS and inline styles */
+  --green-ch: 74, 222, 128;
+  --bg-ch: 13, 13, 26;
+  --green-deep-ch: 29, 158, 117;
+
+  /* Text hierarchy */
+  --text: #ffffff;
+  --text-60: rgba(255, 255, 255, 0.6);
+  --text-40: rgba(255, 255, 255, 0.4);
+  --text-30: rgba(255, 255, 255, 0.3);
+  --text-20: rgba(255, 255, 255, 0.2);
+
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.07);
+  --border-card: rgba(255, 255, 255, 0.08);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ── Screen entrance ─────────────────────────────── */
+@keyframes tr-screen-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.screen-enter {
+  animation: tr-screen-in 220ms var(--ease-out) both;
+}
+
+/* ── Tap feedback ────────────────────────────────── */
+.tap-active:active {
+  opacity: 0.7;
+  transform: scale(0.98);
+  transition: opacity 80ms ease, transform 80ms ease;
+}
