@@ -6,6 +6,8 @@ const phaseKey = {
   base:'basePhase', build:'buildPhase', peak:'peakPhase', taper:'taperPhase',
   basePlan1: 'basePlan.phase1',
   basePlan2: 'basePlan.phase2',
+  preBase1: 'prebase.phase1',
+  preBase2: 'prebase.phase2',
 };
 
 const s = {
@@ -125,6 +127,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const todayWorkout = week.workouts[dayIndex];
   const phaseLabel   = t(lang, phaseKey[week.phase] || 'buildPhase');
   const isBasePlan   = Boolean(raceData?.isBasePlan);
+  const isPreBase    = Boolean(raceData?.isPreBase);
   const baseWeekNum  = week.weekNumber ?? week.week ?? 1;
   const fmtDur = (n) => t(lang, 'workout.duration').replace('{n}', String(n));
   const isTreadmill  = todayWorkout.type === 'treadmillIntervals';
@@ -132,7 +135,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const workoutName  = isTreadmill ? `🏃 ${treadmillLabel}` : (t(lang, `workouts.${todayWorkout.type}`) || todayWorkout.type);
   const isGoodAqi    = !conditions?.aqi || conditions.aqi === 'Good' || conditions.aqi === 'Moderate';
 
-  const isStrength = todayWorkout.type === 'strength';
+  const isStrength = todayWorkout.type === 'strength' || todayWorkout.type === 'strength_beginner';
 
   const daysToRace = (!isBasePlan && raceData?.fecha)
     ? Math.round((new Date(raceData.fecha) - new Date()) / 86400000)
@@ -218,14 +221,16 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             {lang==='es' ? 'SESIÓN DE FUERZA' : 'STRENGTH SESSION'}
           </div>
           <div style={{ fontSize:15, fontWeight:700, color:'#fff', marginBottom:4 }}>
-            💪 {t(lang,'strength.title')}
+            💪 {todayWorkout.type === 'strength_beginner' ? workoutName : t(lang,'strength.title')}
           </div>
           <div style={{ fontSize:12, color:'rgba(255,255,255,0.55)', lineHeight:1.55, marginBottom:12 }}>
-            {t(lang,'strength.whyStrength')}
+            {todayWorkout.type === 'strength_beginner'
+              ? t(lang, 'prebase.coachNote')
+              : t(lang,'strength.whyStrength')}
           </div>
           <button
             type="button"
-            onClick={() => onStrength?.(week.phase)}
+            onClick={() => onStrength?.(todayWorkout.type === 'strength_beginner' ? 'beginner' : week.phase)}
             style={{ background:'rgba(167,139,250,0.2)', border:'1px solid rgba(167,139,250,0.4)', borderRadius:10, padding:'10px 16px', fontSize:13, fontWeight:700, color:'#a78bfa', cursor:'pointer', fontFamily:'inherit', width:'100%' }}
           >
             {t(lang,'strength.seeFullSession')}
@@ -257,6 +262,22 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             <div style={{ fontSize:12, color:'rgba(255,255,255,0.45)' }}>{routeName} · ~{routeKm} km</div>
           </div>
         </>
+      ) : isPreBase ? (
+        <div style={{ margin:'12px 20px', background:'rgba(0,255,135,0.06)', border:'1px solid rgba(0,255,135,0.15)', borderRadius:14, padding:14 }}>
+          <div style={{ fontSize:12, color:'rgba(255,255,255,0.6)', lineHeight:1.55, marginBottom:8 }}>
+            {t(lang, 'prebase.todayMotivation')}
+          </div>
+          {todayWorkout.duracion != null && (
+            <div style={{ display:'inline-flex', alignItems:'center', gap:6, background:'rgba(0,255,135,0.1)', border:'0.5px solid rgba(0,255,135,0.2)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#00FF87', fontWeight:600 }}>
+              ⏱ {fmtDur(todayWorkout.duracion)}
+            </div>
+          )}
+          {todayWorkout.desc?.[lang] && (
+            <div style={{ fontSize:12, color:'rgba(255,255,255,0.45)', lineHeight:1.5, marginTop:8 }}>
+              {todayWorkout.desc[lang]}
+            </div>
+          )}
+        </div>
       ) : isBasePlan ? (
         <div style={s.baseMotivationCard}>
           <div style={s.baseMotivationText}>{t(lang, 'basePlan.todayMotivation')}</div>

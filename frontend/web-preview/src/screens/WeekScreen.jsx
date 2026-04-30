@@ -5,6 +5,8 @@ const phaseKey = {
   base:'basePhase', build:'buildPhase', peak:'peakPhase', taper:'taperPhase',
   basePlan1: 'basePlan.phase1',
   basePlan2: 'basePlan.phase2',
+  preBase1: 'prebase.phase1',
+  preBase2: 'prebase.phase2',
 };
 
 const workoutColors = {
@@ -14,6 +16,7 @@ const workoutColors = {
   medium:     { bg:'rgba(74,222,128,0.09)',  border:'rgba(74,222,128,0.15)',  dot:'#4ade80' },
   intervals:  { bg:'rgba(251,191,36,0.08)',  border:'rgba(251,191,36,0.15)',  dot:'#fbbf24' },
   strength:   { bg:'rgba(167,139,250,0.08)', border:'rgba(167,139,250,0.15)', dot:'#a78bfa' },
+  strength_beginner: { bg:'rgba(167,139,250,0.08)', border:'rgba(167,139,250,0.15)', dot:'#a78bfa' },
   longTrail:  { bg:'rgba(74,222,128,0.09)',  border:'rgba(74,222,128,0.15)',  dot:'#4ade80' },
   shortTrail: { bg:'rgba(74,222,128,0.07)',  border:'rgba(74,222,128,0.12)',  dot:'#4ade80' },
   recovery:   { bg:'rgba(255,255,255,0.04)', border:'rgba(255,255,255,0.06)', dot:'rgba(255,255,255,0.2)' },
@@ -21,6 +24,9 @@ const workoutColors = {
   strides:    { bg:'rgba(45,212,191,0.07)',  border:'rgba(45,212,191,0.12)',  dot:'#2dd4bf' },
   cross:      { bg:'rgba(45,212,191,0.07)',  border:'rgba(45,212,191,0.12)',  dot:'#2dd4bf' },
   treadmillIntervals: { bg:'rgba(251,191,36,0.1)', border:'rgba(251,191,36,0.28)', dot:'#f59e0b' },
+  walk:       { bg:'rgba(74,222,128,0.06)',  border:'rgba(74,222,128,0.1)',   dot:'#4ade80' },
+  walk_run:   { bg:'rgba(0,255,135,0.07)',   border:'rgba(0,255,135,0.15)',   dot:'#00FF87' },
+  mobility:   { bg:'rgba(45,212,191,0.07)',  border:'rgba(45,212,191,0.12)',  dot:'#2dd4bf' },
 };
 
 const s = {
@@ -82,6 +88,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
   if (!plan || !plan.weeks.length) return null;
 
   const isBasePlan = Boolean(raceData?.isBasePlan);
+  const isPreBase  = Boolean(raceData?.isPreBase);
   const flatRunner = profile?.terrain === 'flat' && Number(raceData?.desnivel) > 1500;
   const week       = plan.weeks[selectedWeek];
   const fmtDur     = (n) => t(lang, 'workout.duration').replace('{n}', String(n));
@@ -112,10 +119,14 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
         </div>
         <div style={s.row}>
           <div style={s.title}>
-            {isBasePlan ? t(lang, 'basePlan.weekPlanTitle') : t(lang,'thisWeek')}
+            {isPreBase
+              ? t(lang, 'prebase.weekPlanTitle')
+              : isBasePlan
+                ? t(lang, 'basePlan.weekPlanTitle')
+                : t(lang,'thisWeek')}
           </div>
           <div style={s.kmLabel}>
-            {isBasePlan
+            {(isBasePlan || isPreBase)
               ? `${week.volumeMin ?? 0} min`
               : `${week.kmTotal} km · ${week.desnivel?.toLocaleString()}m D+`}
           </div>
@@ -123,7 +134,9 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
         <div style={s.progressBg}>
           <div style={s.progressFill(pct)} />
         </div>
-        <div style={s.progressLabel}>{pct}% {t(lang,'toRaceDay')}</div>
+        {isPreBase
+          ? <div style={s.progressLabel}>{t(lang, 'prebase.encouragement')}</div>
+          : <div style={s.progressLabel}>{pct}% {t(lang,'toRaceDay')}</div>}
       </div>
 
       <div style={s.divider} />
@@ -142,7 +155,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
       </div>
 
       {/* ── Key workout banner ── */}
-      {week.keyWorkout && (
+      {week.keyWorkout && !isPreBase && (
         <div style={{
           margin: '4px 20px 8px',
           background: 'rgba(251,191,36,0.1)',

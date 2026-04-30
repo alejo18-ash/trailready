@@ -317,6 +317,73 @@ export function generateBasePlan(profile) {
   };
 }
 
+/** 4-week pre-base plan for complete beginners. Fixed content — no profile needed. */
+export function generatePreBasePlan() {
+  const dayKeys = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  const workoutDetails = {
+    rest:               { desc: { en: 'Full rest or gentle walk', es: 'Descanso total o caminata suave' } },
+    walk:               { desc: { en: 'Active walk at comfortable pace', es: 'Caminata activa a ritmo cómodo' } },
+    walk_run:           { desc: { en: 'Walk/run intervals — jog easy, walk to recover', es: 'Intervalos caminar/trotar — trota suave, camina para recuperar' } },
+    mobility:           { desc: { en: 'Hip openers, ankles, stretching — 20 min', es: 'Apertura de caderas, tobillos, estiramientos — 20 min' } },
+    strength_beginner:  { desc: { en: 'Beginner strength — 8 runner exercises, 30 min', es: 'Fuerza principiante — 8 ejercicios para corredores, 30 min' } },
+  };
+
+  // Week template: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+  const templates = [
+    ['walk',    'rest',     'mobility',          'walk',    'rest',     'strength_beginner', 'rest'],      // wk1 activation
+    ['walk',    'walk_run', 'mobility',          'walk',    'rest',     'strength_beginner', 'rest'],      // wk2 activation
+    ['walk_run','rest',     'strength_beginner', 'walk',    'walk_run', 'mobility',          'rest'],      // wk3 transition
+    ['walk_run','rest',     'strength_beginner', 'walk_run','walk',     'mobility',          'rest'],      // wk4 transition
+  ];
+
+  const duracionFor = (type, weekNum) => {
+    switch (type) {
+      case 'walk':              return 20 + weekNum * 5;
+      case 'walk_run':          return 20 + weekNum * 5;
+      case 'mobility':          return 20;
+      case 'strength_beginner': return 30;
+      default:                  return null;
+    }
+  };
+
+  const weeks = templates.map((template, i) => {
+    const w = i + 1;
+    const phaseName = w <= 2 ? 'preBase1' : 'preBase2';
+    const workouts = dayKeys.map((day, di) => {
+      const type = template[di];
+      const detail = workoutDetails[type];
+      return {
+        day,
+        type,
+        km: null,
+        duracion: duracionFor(type, w),
+        desc: detail.desc,
+      };
+    });
+    const volumeMin = workouts.reduce((sum, x) => sum + (x.duracion || 0), 0);
+    return {
+      week: w,
+      weekNumber: w,
+      phase: phaseName,
+      kmTotal: 0,
+      volumeMin,
+      desnivel: 0,
+      workouts,
+      keyWorkout: null,
+    };
+  });
+
+  return {
+    weeks,
+    totalWeeks: 4,
+    idealWeeks: 4,
+    insufficient: false,
+    startWeek: 1,
+    isPreBase: true,
+  };
+}
+
 const STORAGE_KEY = 'trailready_plan';
 const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
 
@@ -349,7 +416,24 @@ function AppFlow({ lang, setLang }) {
 
   const handleLanguage = (l) => { setLang(l); setScreen('source'); };
 
-  const handleRaceData = (data) => { setRaceData(data); setScreen('profile'); };
+  const handleRaceData = (data) => {
+    setRaceData(data);
+    if (data?.isPreBase) {
+      const newPlan = generatePreBasePlan();
+      setPlan(newPlan);
+      setScreen('today');
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        plan: newPlan,
+        raceData: data,
+        profile: null,
+        currentWeek: 0,
+        language: lang,
+        savedAt: Date.now(),
+      }));
+    } else {
+      setScreen('profile');
+    }
+  };
 
   const handleProfile = (p) => {
     const newPlan = raceData?.isBasePlan ? generateBasePlan(p) : generatePlan(raceData, p);

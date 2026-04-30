@@ -1,6 +1,11 @@
 import { t } from '../i18n';
+import { BEGINNER_EXERCISES } from '../data/beginnerStrength';
 
 const LIBRARY = {
+  beginner: {
+    duration: 30,
+    exercises: BEGINNER_EXERCISES,
+  },
   base: {
     duration: 35,
     exercises: [
@@ -195,14 +200,16 @@ const LIBRARY = {
 };
 
 const PHASE_LABEL = {
-  base:  { en: 'BASE — Tissue Resilience',      es: 'BASE — Resiliencia Tisular'    },
-  build: { en: 'BUILD — Power & Endurance',     es: 'BUILD — Potencia y Resistencia'},
-  peak:  { en: 'PEAK — Race-Specific Power',    es: 'PEAK — Potencia Específica'    },
-  taper: { en: 'TAPER — Maintain & Activate',   es: 'TAPER — Mantener y Activar'   },
+  base:     { en: 'BASE — Tissue Resilience',        es: 'BASE — Resiliencia Tisular'      },
+  build:    { en: 'BUILD — Power & Endurance',       es: 'BUILD — Potencia y Resistencia'  },
+  peak:     { en: 'PEAK — Race-Specific Power',      es: 'PEAK — Potencia Específica'      },
+  taper:    { en: 'TAPER — Maintain & Activate',     es: 'TAPER — Mantener y Activar'      },
+  beginner: { en: 'BEGINNER — Build Your Foundation', es: 'PRINCIPIANTE — Construye Tu Base' },
 };
 
 function normalizePhase(phase) {
   if (phase === 'basePlan1' || phase === 'basePlan2') return 'base';
+  if (phase === 'beginner') return 'beginner';
   return LIBRARY[phase] ? phase : 'base';
 }
 
@@ -275,13 +282,15 @@ export default function StrengthScreen({ lang, phase, onBack }) {
             </div>
             <div style={s.cardFocus}>📍 {ex.focus[lang] || ex.focus.en}</div>
             <div style={s.cardNote}>"{ex.note[lang] || ex.note.en}"</div>
-            <button
-              type="button"
-              style={s.videoBtn}
-              onClick={() => window.open(ex.video, '_blank')}
-            >
-              {t(lang, 'strength.watchVideo')} ↗
-            </button>
+            {ex.video && (
+              <button
+                type="button"
+                style={s.videoBtn}
+                onClick={() => window.open(ex.video, '_blank')}
+              >
+                {t(lang, 'strength.watchVideo')} ↗
+              </button>
+            )}
           </div>
         ))}
       </div>

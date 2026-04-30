@@ -174,11 +174,24 @@ export default function SourceScreen({ lang, onNext }) {
     });
   };
 
+  const handlePreBaseNext = () => {
+    onNext({
+      name: lang === 'es' ? 'Plan Pre-Base' : 'Pre-Base Plan',
+      nombre: lang === 'es' ? 'Plan Pre-Base' : 'Pre-Base Plan',
+      distancia: 0,
+      desnivel: 0,
+      isPreBase: true,
+      weeksAvailable: 4,
+      source: 'prebase',
+    });
+  };
+
   const tabs = [
-    { id:'gpx',    icon:'📁', label: t(lang, 'sourcePdf'),    sub: t(lang, 'sourcePdfSub') },
-    { id:'web',    icon:'🔗', label: t(lang, 'sourceWeb'),    sub: t(lang, 'sourceWebSub') },
-    { id:'manual', icon:'✏️', label: t(lang, 'sourceManual'), sub: t(lang, 'sourceManualSub') },
-    { id:'base',   icon:'🏃', label: t(lang, 'sourceOptions.base'), sub: t(lang, 'sourceOptions.baseSubtitle') },
+    { id:'gpx',     icon:'📁', label: t(lang, 'sourcePdf'),    sub: t(lang, 'sourcePdfSub') },
+    { id:'web',     icon:'🔗', label: t(lang, 'sourceWeb'),    sub: t(lang, 'sourceWebSub') },
+    { id:'manual',  icon:'✏️', label: t(lang, 'sourceManual'), sub: t(lang, 'sourceManualSub') },
+    { id:'base',    icon:'🏃', label: t(lang, 'sourceOptions.base'),    sub: t(lang, 'sourceOptions.baseSubtitle') },
+    { id:'prebase', icon:'🚶', label: t(lang, 'sourceOptions.prebase'), sub: t(lang, 'sourceOptions.prebaseSubtitle') },
   ];
 
   return (
@@ -257,6 +270,21 @@ export default function SourceScreen({ lang, onNext }) {
               {t(lang, 'basePlan.subtitle')}
             </div>
             <button style={s.btn(false, false)} onClick={handleBaseNext}>
+              {lang==='es' ? 'Continuar →' : 'Continue →'}
+            </button>
+          </>
+        )}
+
+        {/* ── PRE-BASE PLAN ── */}
+        {tab==='prebase' && (
+          <>
+            <div style={{ fontSize:11, color:'rgba(255,255,255,0.45)', lineHeight:1.55, marginBottom:10 }}>
+              {t(lang, 'prebase.subtitle')}
+            </div>
+            <div style={{ fontSize:11, color:'rgba(255,255,255,0.35)', lineHeight:1.55, marginBottom:16, fontStyle:'italic' }}>
+              {t(lang, 'prebase.coachNote')}
+            </div>
+            <button style={s.btn(false, false)} onClick={handlePreBaseNext}>
               {lang==='es' ? 'Continuar →' : 'Continue →'}
             </button>
           </>

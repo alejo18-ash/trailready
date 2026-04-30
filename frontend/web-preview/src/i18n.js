@@ -20,6 +20,8 @@ export const translations = {
       sourceOptions: {
         base: "Build My Base",
         baseSubtitle: "No race yet — start from zero",
+        prebase: "Start from zero",
+        prebaseSubtitle: "Never run before or need to strengthen first",
       },
       basePlan: {
         title: "Base Plan",
@@ -29,6 +31,19 @@ export const translations = {
         phase2: "Base Development",
         todayMotivation:
           "Building your base 🏃 — consistency beats intensity. Every easy run counts.",
+      },
+      prebase: {
+        title: "Pre-Base Plan",
+        subtitle: "4 weeks to your first real run",
+        weekPlanTitle: "Pre-Base Plan · 4 Weeks",
+        walkRun: "Walk/Run Interval",
+        walk: "Active Walk",
+        mobility: "Mobility",
+        coachNote: "The jog should feel easy — if you can't hold a conversation, slow down or walk.",
+        phase1: "Activation",
+        phase2: "Transition",
+        todayMotivation: "Keep it very easy 🚶 — if you can talk, you're doing it right. Every step counts.",
+        encouragement: "Building your foundation — 4 weeks to your first real run 🚶→🏃",
       },
       analyzeRace: "Analyze race",
       analyzingPage: "Analyzing page...",
@@ -96,6 +111,10 @@ export const translations = {
         recovery: "Recovery", strides: "Strides", backToBack: "Back-to-back",
         shortTrail: "Short trail",
         treadmillIntervals: "Treadmill Intervals",
+        walk: "Active Walk",
+        walk_run: "Walk/Run",
+        mobility: "Mobility",
+        strength_beginner: "Beginner Strength",
       },
 
       workoutNames: {
@@ -199,6 +218,8 @@ export const translations = {
       sourceOptions: {
         base: "Construir Mi Base",
         baseSubtitle: "Sin carrera aún — empezar desde cero",
+        prebase: "Empezar desde cero",
+        prebaseSubtitle: "Nunca he corrido o necesito fortalecer primero",
       },
       basePlan: {
         title: "Plan Base",
@@ -208,6 +229,19 @@ export const translations = {
         phase2: "Desarrollo de Base",
         todayMotivation:
           "Construyendo tu base 🏃 — la constancia supera la intensidad. Cada carrera fácil cuenta.",
+      },
+      prebase: {
+        title: "Plan Pre-Base",
+        subtitle: "4 semanas hasta tu primera carrera real",
+        weekPlanTitle: "Plan Pre-Base · 4 Semanas",
+        walkRun: "Intervalo Caminar/Trotar",
+        walk: "Caminata Activa",
+        mobility: "Movilidad",
+        coachNote: "El trote debe sentirse fácil — si no puedes mantener una conversación, camina o disminuye el ritmo.",
+        phase1: "Activación",
+        phase2: "Transición",
+        todayMotivation: "Muy suave 🚶 — si puedes hablar, lo estás haciendo bien. Cada paso cuenta.",
+        encouragement: "Construyendo tu base — 4 semanas hasta tu primera carrera real 🚶→🏃",
       },
       analyzeRace: "Analizar carrera",
       analyzingPage: "Analizando página...",
@@ -275,6 +309,10 @@ export const translations = {
         recovery: "Recuperación", strides: "Strides", backToBack: "Back-to-back",
         shortTrail: "Trail corto",
         treadmillIntervals: "Intervalos en Cinta",
+        walk: "Caminata Activa",
+        walk_run: "Caminar/Trotar",
+        mobility: "Movilidad",
+        strength_beginner: "Fuerza Principiante",
       },
 
       workoutNames: {

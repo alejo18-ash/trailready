@@ -8,6 +8,9 @@
   --bg-card: rgba(255, 255, 255, 0.04);
   --bg-raised: rgba(255, 255, 255, 0.07);
 
+  /* Accent — electric green used for hero moments and CTAs */
+  --accent: #00FF87;
+
   /* Brand green */
   --green: #4ade80;
   --green-deep: #1d9e75;
