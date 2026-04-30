@@ -295,15 +295,16 @@ export function generateBasePlan(profile) {
     });
   }
 
-  // First active day of the plan must be easy (never recovery/rest as first run).
+  // Force first active day to always be easy (never recovery/rest as first run).
   const easyDesc = workoutDetails.easy.desc;
   for (const week of weeks) {
-    const firstActive = week.workouts.find((wo) => wo.type !== 'rest');
+    const firstActive = week.workouts.find((wo) => wo.type !== 'rest' && wo.type !== 'recovery');
     if (!firstActive) continue;
     firstActive.type = 'easy';
     firstActive.duracion = 30;
     firstActive.desc = { ...easyDesc };
     week.volumeMin = week.workouts.reduce((sum, x) => sum + (x.duracion || 0), 0);
+    console.log('Day 1 fixed:', firstActive);
     break;
   }
 
@@ -373,6 +374,20 @@ export function generatePreBasePlan() {
       keyWorkout: null,
     };
   });
+
+  // Force first active day to always be walk (never rest as first session).
+  for (const week of weeks) {
+    const firstActive = week.workouts.find((wo) => wo.type !== 'rest');
+    if (!firstActive) continue;
+    if (firstActive.type !== 'walk') {
+      firstActive.type = 'walk';
+      firstActive.duracion = 25;
+      firstActive.desc = { ...workoutDetails.walk.desc };
+      week.volumeMin = week.workouts.reduce((sum, x) => sum + (x.duracion || 0), 0);
+    }
+    console.log('Day 1 fixed:', firstActive);
+    break;
+  }
 
   return {
     weeks,
