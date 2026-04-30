@@ -378,7 +378,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             <div style={s.recoveryTitle('#a78bfa')}>{t(lang,'stretching')}</div>
             <div style={s.recoverySub}>15 {t(lang,'min')} ↗</div>
           </div>
-          {!isBasePlan && (
+          {!isBasePlan && !isPreBase && (
             <>
               <div style={s.recoveryCard('rgba(96,165,250,0.1)','rgba(96,165,250,0.2)')} onClick={() => onRecovery('iceBath')}>
                 <div style={s.recoveryIcon}>🧊</div>
@@ -392,7 +392,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
               </div>
             </>
           )}
-          {isBasePlan && baseWeekNum >= 3 && (
+          {(isBasePlan || isPreBase) && baseWeekNum >= 2 && (
             <div style={s.recoveryCard('rgba(251,191,36,0.1)','rgba(251,191,36,0.2)')} onClick={() => onRecovery('nutrition')}>
               <div style={s.recoveryIcon}>🍌</div>
               <div style={s.recoveryTitle('#fbbf24')}>{t(lang,'nutrition')}</div>
@@ -400,6 +400,13 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             </div>
           )}
           {isBasePlan && baseWeekNum >= 5 && (
+            <div style={s.recoveryCard('rgba(96,165,250,0.1)','rgba(96,165,250,0.2)')} onClick={() => onRecovery('iceBath')}>
+              <div style={s.recoveryIcon}>🧊</div>
+              <div style={s.recoveryTitle('#60a5fa')}>{t(lang,'iceBath')}</div>
+              <div style={s.recoverySub}>10 {t(lang,'min')} ↗</div>
+            </div>
+          )}
+          {isPreBase && baseWeekNum >= 3 && (
             <div style={s.recoveryCard('rgba(96,165,250,0.1)','rgba(96,165,250,0.2)')} onClick={() => onRecovery('iceBath')}>
               <div style={s.recoveryIcon}>🧊</div>
               <div style={s.recoveryTitle('#60a5fa')}>{t(lang,'iceBath')}</div>
@@ -424,7 +431,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         <button style={s.navBtn(true)}>{lang==='es' ? '⚡ Hoy' : '⚡ Today'}</button>
         <button style={s.navBtn(false)} onClick={onWeek}>{lang==='es' ? '📅 Semana' : '📅 Week'}</button>
         <button style={s.navBtn(false)} onClick={onRaceProfile}>
-          {isBasePlan ? t(lang, 'nav.myPlan') : (lang==='es' ? '🏁 Carrera' : '🏁 Race')}
+          {(isBasePlan || isPreBase) ? t(lang, 'nav.myPlan') : (lang==='es' ? '🏁 Carrera' : '🏁 Race')}
         </button>
       </div>
     </div>
