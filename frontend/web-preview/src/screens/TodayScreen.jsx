@@ -52,12 +52,25 @@ const s = {
   baseMotivationText: { fontSize:13, color:'rgba(255,255,255,0.88)', lineHeight:1.55 },
 };
 
+const getWhatsAppUrl = (raceName) => {
+  if (!raceName) return 'https://chat.whatsapp.com/trailready-general';
+  const name = raceName.toLowerCase();
+  if (name.includes('utmb'))                         return 'https://chat.whatsapp.com/utmb-trailready';
+  if (name.includes('western') || name.includes('states')) return 'https://chat.whatsapp.com/westernstates-trailready';
+  if (name.includes('javelina'))                     return 'https://chat.whatsapp.com/javelina-trailready';
+  if (name.includes('leadville'))                    return 'https://chat.whatsapp.com/leadville-trailready';
+  if (name.includes('transgran') || name.includes('tgc')) return 'https://chat.whatsapp.com/tgc-trailready';
+  if (name.includes('hardrock'))                     return 'https://chat.whatsapp.com/hardrock-trailready';
+  return 'https://chat.whatsapp.com/trailready-general';
+};
+
 export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength }) {
-  const [conditions, setConditions]       = useState(null);
-  const [locationError, setLocationError] = useState(false);
-  const [trails, setTrails]               = useState([]);
-  const [trailIndex, setTrailIndex]       = useState(0);
-  const [workoutStatus, setWorkoutStatus] = useState(null);
+  const [conditions, setConditions]           = useState(null);
+  const [locationError, setLocationError]     = useState(false);
+  const [trails, setTrails]                   = useState([]);
+  const [trailIndex, setTrailIndex]           = useState(0);
+  const [workoutStatus, setWorkoutStatus]     = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   useEffect(() => { fetchConditions(); }, [currentWeek]);
 
@@ -329,6 +342,29 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         </div>
       )}
 
+      {!isBasePlan && !isPreBase && (
+        <div style={{ margin: '12px 20px', background: '#111111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: 16 }}>
+          <div style={{ fontSize: 11, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 6 }}>
+            {lang === 'es' ? 'COMUNIDAD · TU CARRERA' : 'COMMUNITY · YOUR RACE'}
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#fff', margin: '6px 0' }}>
+            {lang === 'es' ? 'Entrena con otros runners 💬' : 'Train with other runners 💬'}
+          </div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 14 }}>
+            {lang === 'es'
+              ? 'Únete al grupo de WhatsApp de runners preparando la misma carrera.'
+              : 'Join the WhatsApp group of runners preparing for the same race.'}
+          </div>
+          <button
+            type="button"
+            onClick={() => window.open(getWhatsAppUrl(raceData?.name || raceData?.nombre), '_blank')}
+            style={{ background: 'rgba(0,255,135,0.12)', border: '1px solid rgba(0,255,135,0.3)', color: '#00FF87', borderRadius: 100, padding: '10px 20px', fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' }}
+          >
+            {lang === 'es' ? 'Unirse al grupo →' : 'Join the group →'}
+          </button>
+        </div>
+      )}
+
       {todayWorkout.type !== 'rest' && (
         <div style={{ margin: '12px 20px', background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 14px' }}>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', marginBottom: 10 }}>
@@ -420,7 +456,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         <div style={{ textAlign: 'center', padding: '10px 0 2px' }}>
           <button
             type="button"
-            onClick={onNewPlan}
+            onClick={() => setShowConfirmModal(true)}
             style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: 'rgba(255,255,255,0.25)', fontFamily: 'inherit', padding: '4px 8px' }}
           >
             {t(lang, 'actions.newPlan')}
@@ -434,6 +470,33 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           {(isBasePlan || isPreBase) ? t(lang, 'nav.myPlan') : (lang==='es' ? '🏁 Carrera' : '🏁 Race')}
         </button>
       </div>
+
+      {showConfirmModal && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000, padding:'0 24px' }}>
+          <div style={{ background:'#111111', border:'1px solid rgba(255,255,255,0.1)', borderRadius:16, padding:'28px 24px', maxWidth:320, width:'100%' }}>
+            <div style={{ fontSize:18, fontWeight:600, color:'#fff', marginBottom:8 }}>
+              {t(lang, 'modal.newPlan.title')}
+            </div>
+            <div style={{ fontSize:14, color:'rgba(255,255,255,0.5)', marginBottom:24, lineHeight:1.5 }}>
+              {t(lang, 'modal.newPlan.subtitle')}
+            </div>
+            <button
+              type="button"
+              onClick={() => { onNewPlan?.(); setShowConfirmModal(false); }}
+              style={{ display:'block', width:'100%', background:'#FF4444', color:'#fff', border:'none', borderRadius:100, padding:14, fontSize:15, fontWeight:600, cursor:'pointer', fontFamily:'inherit', marginBottom:10 }}
+            >
+              {t(lang, 'modal.newPlan.confirm')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowConfirmModal(false)}
+              style={{ display:'block', width:'100%', background:'transparent', color:'rgba(255,255,255,0.5)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:100, padding:14, fontSize:15, cursor:'pointer', fontFamily:'inherit' }}
+            >
+              {t(lang, 'modal.newPlan.cancel')}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

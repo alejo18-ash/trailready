@@ -177,6 +177,15 @@ export const translations = {
         newPlan: "Start a new plan",
       },
 
+      modal: {
+        newPlan: {
+          title: "Start a new plan?",
+          subtitle: "You'll lose your current progress. This can't be undone.",
+          confirm: "Yes, start over",
+          cancel: "Cancel",
+        },
+      },
+
       strength: {
         title: "Strength Session",
         subtitle: "{n} min · {x} exercises",
@@ -373,6 +382,15 @@ export const translations = {
   
       actions: {
         newPlan: "Empezar un nuevo plan",
+      },
+
+      modal: {
+        newPlan: {
+          title: "¿Empezar un plan nuevo?",
+          subtitle: "Perderás tu progreso actual. Esta acción no se puede deshacer.",
+          confirm: "Sí, empezar de cero",
+          cancel: "Cancelar",
+        },
       },
 
       strength: {

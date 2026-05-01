@@ -6,10 +6,10 @@ const MARQUEE_SEG =
   '   Runners training for UTMB  ·  Western States  ·  Leadville  ·  Transgrancanaria  ·  IAU World Championships  ·  Tarawera  ·  Hardrock 100  ·  and local ultras in 40+ countries';
 
 const COMMUNITY_RACES = [
-  { emoji: '🏔️', name: 'UTMB 2026',        count: '247' },
-  { emoji: '🌵', name: 'Javelina Jundred',  count: '89'  },
-  { emoji: '🏃', name: 'Western States',    count: '134' },
-  { emoji: '🌋', name: 'Transgrancanaria',  count: '67'  },
+  { emoji: '🏔️', name: 'UTMB 2026',        count: '247', url: 'https://chat.whatsapp.com/utmb-trailready'         },
+  { emoji: '🌵', name: 'Javelina Jundred',  count: '89',  url: 'https://chat.whatsapp.com/javelina-trailready'    },
+  { emoji: '🏃', name: 'Western States',    count: '134', url: 'https://chat.whatsapp.com/westernstates-trailready'},
+  { emoji: '🌋', name: 'Transgrancanaria',  count: '67',  url: 'https://chat.whatsapp.com/tgc-trailready'         },
 ];
 
 const FEATURES = [
@@ -628,14 +628,14 @@ export default function LandingPage({ lang, setLang }) {
             <div style={s.commTitle}>{t(lang, 'landing.communityTitle')}</div>
             <p style={s.commDesc}>{t(lang, 'landing.communityDesc')}</p>
             <div style={s.communityGrid} className="tr-comm-grid">
-              {COMMUNITY_RACES.map(({ emoji, name, count }) => (
+              {COMMUNITY_RACES.map(({ emoji, name, count, url }) => (
                 <div key={name} className="tr-community-card">
                   <span style={s.commEmoji}>{emoji}</span>
                   <div style={s.commRaceName}>{name}</div>
                   <div style={s.commRaceCount}>
                     {count} {lang === 'es' ? 'corredores entrenando' : 'runners training'}
                   </div>
-                  <button type="button" className="tr-outline-btn">
+                  <button type="button" className="tr-outline-btn" onClick={() => window.open(url, '_blank')}>
                     {t(lang, 'landing.communityJoin')}
                   </button>
                 </div>

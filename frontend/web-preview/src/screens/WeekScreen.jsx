@@ -10,53 +10,32 @@ const phaseKey = {
 };
 
 const workoutColors = {
-  rest:       { bg:'rgba(255,255,255,0.04)', border:'rgba(255,255,255,0.05)', dot:'rgba(255,255,255,0.1)' },
-  easy:       { bg:'rgba(74,222,128,0.07)',  border:'rgba(74,222,128,0.12)',  dot:'#4ade80' },
-  tempo:      { bg:'rgba(96,165,250,0.07)',  border:'rgba(96,165,250,0.12)',  dot:'#60a5fa' },
-  medium:     { bg:'rgba(74,222,128,0.09)',  border:'rgba(74,222,128,0.15)',  dot:'#4ade80' },
-  intervals:  { bg:'rgba(251,191,36,0.08)',  border:'rgba(251,191,36,0.15)',  dot:'#fbbf24' },
-  strength:   { bg:'rgba(167,139,250,0.08)', border:'rgba(167,139,250,0.15)', dot:'#a78bfa' },
-  strength_beginner: { bg:'rgba(167,139,250,0.08)', border:'rgba(167,139,250,0.15)', dot:'#a78bfa' },
-  longTrail:  { bg:'rgba(74,222,128,0.09)',  border:'rgba(74,222,128,0.15)',  dot:'#4ade80' },
-  shortTrail: { bg:'rgba(74,222,128,0.07)',  border:'rgba(74,222,128,0.12)',  dot:'#4ade80' },
-  recovery:   { bg:'rgba(255,255,255,0.04)', border:'rgba(255,255,255,0.06)', dot:'rgba(255,255,255,0.2)' },
-  backToBack: { bg:'rgba(248,113,113,0.07)', border:'rgba(248,113,113,0.15)', dot:'#f87171' },
-  strides:    { bg:'rgba(45,212,191,0.07)',  border:'rgba(45,212,191,0.12)',  dot:'#2dd4bf' },
-  cross:      { bg:'rgba(45,212,191,0.07)',  border:'rgba(45,212,191,0.12)',  dot:'#2dd4bf' },
-  treadmillIntervals: { bg:'rgba(251,191,36,0.1)', border:'rgba(251,191,36,0.28)', dot:'#f59e0b' },
-  walk:       { bg:'rgba(74,222,128,0.06)',  border:'rgba(74,222,128,0.1)',   dot:'#4ade80' },
-  walk_run:   { bg:'rgba(0,255,135,0.07)',   border:'rgba(0,255,135,0.15)',   dot:'#00FF87' },
-  mobility:   { bg:'rgba(45,212,191,0.07)',  border:'rgba(45,212,191,0.12)',  dot:'#2dd4bf' },
-};
-
-const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif" },
-  header: { padding:'14px 20px 10px' },
-  weekLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:1, textTransform:'uppercase' },
-  row: { display:'flex', justifyContent:'space-between', alignItems:'center', marginTop:4 },
-  title: { fontSize:20, fontWeight:800, color:'#fff', letterSpacing:'-0.02em' },
-  kmLabel: { fontSize:11, color:'rgba(255,255,255,0.35)' },
-  progressBg: { background:'rgba(255,255,255,0.07)', borderRadius:6, height:3, margin:'10px 0 4px' },
-  progressFill: (pct) => ({ width:`${pct}%`, height:'100%', background:'#1d9e75', borderRadius:6 }),
-  progressLabel: { fontSize:9, color:'rgba(255,255,255,0.25)' },
-  divider: { height:'0.5px', background:'rgba(255,255,255,0.07)', margin:'8px 20px 0' },
-  weekNav: { display:'flex', gap:4, padding:'10px 20px', overflowX:'auto' },
-  weekBtn: (active) => ({
-    padding:'6px 11px', borderRadius:8,
-    border: active ? '1px solid rgba(29,158,117,0.5)' : '0.5px solid rgba(255,255,255,0.08)',
-    background: active ? 'rgba(29,158,117,0.2)' : 'rgba(255,255,255,0.04)',
-    color: active ? '#4ade80' : 'rgba(255,255,255,0.4)',
-    fontSize:11, fontWeight: active ? 600 : 400,
-    cursor:'pointer', whiteSpace:'nowrap', flexShrink:0,
-  }),
-  nav: { display:'flex', borderTop:'0.5px solid rgba(255,255,255,0.07)' },
-  navBtn: (active) => ({
-    flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight: active ? 600 : 400,
-    color: active ? '#4ade80' : 'rgba(255,255,255,0.35)', cursor:'pointer', background:'none', border:'none',
-  }),
+  rest:              { dot:'rgba(255,255,255,0.15)' },
+  easy:              { dot:'#4ade80' },
+  tempo:             { dot:'#60a5fa' },
+  medium:            { dot:'#4ade80' },
+  intervals:         { dot:'#fbbf24' },
+  strength:          { dot:'#a78bfa' },
+  strength_beginner: { dot:'#a78bfa' },
+  longTrail:         { dot:'#4ade80' },
+  shortTrail:        { dot:'#4ade80' },
+  recovery:          { dot:'rgba(255,255,255,0.2)' },
+  backToBack:        { dot:'#f87171' },
+  strides:           { dot:'#2dd4bf' },
+  cross:             { dot:'#2dd4bf' },
+  treadmillIntervals:{ dot:'#f59e0b' },
+  walk:              { dot:'#4ade80' },
+  walk_run:          { dot:'#00FF87' },
+  mobility:          { dot:'#2dd4bf' },
 };
 
 const dayKeys = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+const zoneMap = {
+  easy:'Zone 2', tempo:'Zone 3', intervals:'Zone 4–5', longTrail:'Zone 2',
+  recovery:'Zone 1', backToBack:'Zone 2–3', strides:'Zone 4', shortTrail:'Zone 2',
+  cross:'Zone 2', treadmillIntervals:'Zone 3–4',
+};
 
 export default function WeekScreen({ lang, plan, profile, raceData, currentWeek, setCurrentWeek, onToday, onRecovery, onStrength }) {
   const todayIndex    = new Date().getDay();
@@ -66,21 +45,13 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
   const [completions, setCompletions]   = useState({});
   const [selectedDay, setSelectedDay]   = useState(todayDayIndex);
 
-  useEffect(() => {
-    setSelectedWeek(currentWeek ?? 0);
-  }, [currentWeek]);
-
-  useEffect(() => {
-    setSelectedDay(selectedWeek === 0 ? todayDayIndex : 0);
-  }, [selectedWeek]);
-
+  useEffect(() => { setSelectedWeek(currentWeek ?? 0); }, [currentWeek]);
+  useEffect(() => { setSelectedDay(selectedWeek === 0 ? todayDayIndex : 0); }, [selectedWeek]);
   useEffect(() => {
     const result = {};
     for (let i = 0; i < 7; i++) {
       const saved = localStorage.getItem(`trailready_workout_${selectedWeek}_${i}`);
-      if (saved) {
-        try { result[i] = JSON.parse(saved).status; } catch {}
-      }
+      if (saved) { try { result[i] = JSON.parse(saved).status; } catch {} }
     }
     setCompletions(result);
   }, [selectedWeek]);
@@ -98,211 +69,240 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
     || (week.phase === 'taper' && week.keyWorkout.type === 'strides' && week.keyWorkout.day === 'Sat')
   );
 
-  const vol      = (w) => (isBasePlan ? (w.volumeMin ?? 0) : w.kmTotal);
-  const totalKm  = plan.weeks.reduce((a, w) => a + vol(w), 0);
-  const doneKm   = plan.weeks.slice(0, selectedWeek).reduce((a, w) => a + vol(w), 0);
-  const pct      = totalKm > 0 ? Math.round((doneKm / totalKm) * 100) : 0;
+  const vol     = (w) => ((isBasePlan || isPreBase) ? (w.volumeMin ?? 0) : w.kmTotal);
+  const totalVol = plan.weeks.reduce((a, w) => a + vol(w), 0);
+  const doneVol  = plan.weeks.slice(0, selectedWeek).reduce((a, w) => a + vol(w), 0);
+  const pct      = totalVol > 0 ? Math.round((doneVol / totalVol) * 100) : 0;
 
-  // Selected day detail
-  const selWorkout  = week.workouts[selectedDay];
-  const selIsToday  = selectedWeek === 0 && selectedDay === todayDayIndex;
-  const selIsDone   = selectedWeek === 0 && selectedDay < todayDayIndex;
-  const selColors   = workoutColors[selWorkout?.type] || workoutColors.rest;
+  const selWorkout    = week.workouts[selectedDay];
+  const selIsToday    = selectedWeek === 0 && selectedDay === todayDayIndex;
+  const selIsDone     = selectedWeek === 0 && selectedDay < todayDayIndex;
   const selIsRecovery = selWorkout && ['stretching','iceBath','nutrition'].includes(selWorkout.type);
+  const selIsStrength = selWorkout && (selWorkout.type === 'strength' || selWorkout.type === 'strength_beginner');
+
+  // Compute actual calendar date for each day in the selected week
+  const weekStartDate = (() => {
+    const today = new Date();
+    const dow = today.getDay();
+    const toMonday = dow === 0 ? -6 : 1 - dow;
+    const d = new Date(today);
+    d.setDate(today.getDate() + toMonday + selectedWeek * 7);
+    return d;
+  })();
+  const dayDate = (i) => {
+    const d = new Date(weekStartDate);
+    d.setDate(weekStartDate.getDate() + i);
+    return d.getDate();
+  };
+
+  const dayLetters = lang === 'es'
+    ? ['L','M','X','J','V','S','D']
+    : ['M','T','W','T','F','S','S'];
+
+  // Key workout duration string
+  const kwDur = week.keyWorkout
+    ? (week.keyWorkout.duracion != null
+        ? fmtDur(week.keyWorkout.duracion)
+        : week.keyWorkout.km
+          ? `${week.keyWorkout.km} km`
+          : week.keyWorkout.duration
+            ? `${week.keyWorkout.duration} min`
+            : null)
+    : null;
+
+  // Selected day metadata
+  const selDuration = selWorkout?.duracion != null
+    ? fmtDur(selWorkout.duracion)
+    : selWorkout?.km
+      ? `${selWorkout.km} km`
+      : selWorkout?.duration
+        ? `${selWorkout.duration} min`
+        : null;
+  const selZone = zoneMap[selWorkout?.type] ?? null;
+  const selMeta = [selDuration, selZone].filter(Boolean).join(' · ');
+
+  // Plan title for header
+  const planTitle = isPreBase
+    ? t(lang, 'prebase.title')
+    : isBasePlan
+      ? t(lang, 'basePlan.title')
+      : (raceData?.name || raceData?.nombre || t(lang, 'thisWeek'));
+
+  // Weekly volume string
+  const weekVol = (isBasePlan || isPreBase)
+    ? `${week.volumeMin ?? 0} min`
+    : `${week.kmTotal} km`;
 
   return (
-    <div className="screen-enter" style={s.wrap}>
-      {/* ── Header ── */}
-      <div style={s.header}>
-        <div style={s.weekLabel}>
-          {t(lang,'week')} {week.week} {t(lang,'of')} {plan.totalWeeks} · {t(lang, phaseKey[week.phase]).toUpperCase()}
-        </div>
-        <div style={s.row}>
-          <div style={s.title}>
-            {isPreBase
-              ? t(lang, 'prebase.weekPlanTitle')
-              : isBasePlan
-                ? t(lang, 'basePlan.weekPlanTitle')
-                : t(lang,'thisWeek')}
+    <div className="screen-enter" style={{ minHeight:'100vh', background:'#080808', fontFamily:"'Inter', system-ui, sans-serif", display:'flex', flexDirection:'column' }}>
+
+      {/* ── SECTION 1: HEADER ── */}
+      <div style={{ background:'#080808', padding:'20px 24px 0' }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+          <div style={{ fontSize:20, fontWeight:600, color:'#fff', letterSpacing:'-0.02em' }}>
+            {planTitle}
           </div>
-          <div style={s.kmLabel}>
-            {(isBasePlan || isPreBase)
-              ? `${week.volumeMin ?? 0} min`
-              : `${week.kmTotal} km · ${week.desnivel?.toLocaleString()}m D+`}
+          <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)' }}>
+            {weekVol}
           </div>
         </div>
-        <div style={s.progressBg}>
-          <div style={s.progressFill(pct)} />
+        <div style={{ fontSize:11, letterSpacing:'0.1em', color:'rgba(255,255,255,0.3)', marginTop:4, textTransform:'uppercase' }}>
+          {t(lang,'week')} {week.week} {t(lang,'of')} {plan.totalWeeks} · {t(lang, phaseKey[week.phase] || 'buildPhase').toUpperCase()}
         </div>
-        {isPreBase
-          ? <div style={s.progressLabel}>{t(lang, 'prebase.encouragement')}</div>
-          : <div style={s.progressLabel}>{pct}% {t(lang,'toRaceDay')}</div>}
+        <div style={{ height:2, background:'rgba(255,255,255,0.08)', borderRadius:100, margin:'12px 0 0' }}>
+          <div style={{ width:`${pct}%`, height:'100%', background:'#00FF87', borderRadius:100, minWidth: pct > 0 ? 4 : 0 }} />
+        </div>
       </div>
 
-      <div style={s.divider} />
-
-      {/* ── Week navigation ── */}
-      <div style={s.weekNav}>
+      {/* ── SECTION 2: WEEK SELECTOR ── */}
+      <div style={{ display:'flex', gap:8, padding:'16px 24px', overflowX:'auto' }}>
         {plan.weeks.map((w, i) => (
           <button
             key={i}
-            style={s.weekBtn(selectedWeek === i)}
+            type="button"
             onClick={() => { setSelectedWeek(i); setCurrentWeek?.(i); }}
+            style={{
+              padding:'6px 14px', borderRadius:100, fontSize:13, cursor:'pointer',
+              fontFamily:'inherit', flexShrink:0, whiteSpace:'nowrap',
+              background: selectedWeek === i ? '#00FF87' : 'transparent',
+              border: selectedWeek === i ? '1px solid #00FF87' : '1px solid rgba(255,255,255,0.1)',
+              color: selectedWeek === i ? '#000000' : 'rgba(255,255,255,0.4)',
+              fontWeight: selectedWeek === i ? 600 : 400,
+            }}
           >
-            W{w.week}
+            {lang === 'es' ? `SEM ${w.week}` : `W${w.week}`}
           </button>
         ))}
       </div>
 
-      {/* ── Key workout banner ── */}
+      {/* ── SECTION 3: KEY WORKOUT CARD ── */}
       {week.keyWorkout && !isPreBase && (
-        <div style={{
-          margin: '4px 20px 8px',
-          background: 'rgba(251,191,36,0.1)',
-          border: '0.5px solid rgba(251,191,36,0.25)',
-          borderRadius: 12,
-          padding: '10px 14px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
-        }}>
-          <div style={{ fontSize: 14 }}>⭐</div>
-          <div>
-            <div style={{ fontSize: 10, color: 'rgba(251,191,36,0.8)', fontWeight: 600, letterSpacing: 0.5 }}>
-              {flatRunnerKeyBanner ? t(lang, 'keyWorkoutFlatRunner') : (lang === 'es' ? 'ENTRENO CLAVE DE LA SEMANA' : 'KEY WORKOUT THIS WEEK')}
+        <div style={{ margin:'0 16px 12px', background:'rgba(255,184,0,0.08)', border:'1px solid rgba(255,184,0,0.2)', borderRadius:16, padding:'14px 16px' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
+            <div style={{ display:'flex', alignItems:'center', gap:10, flex:1 }}>
+              <span style={{ fontSize:20 }}>⭐</span>
+              <div style={{ fontSize:15, fontWeight:600, color:'#FFB800' }}>
+                {flatRunnerKeyBanner
+                  ? t(lang, 'keyWorkoutFlatRunner')
+                  : week.keyWorkout.type === 'treadmillIntervals'
+                    ? (t(lang, 'workoutNames.treadmillIntervals') || t(lang, 'workouts.treadmillIntervals'))
+                    : t(lang, `workouts.${week.keyWorkout.type}`)}
+              </div>
             </div>
-            <div style={{ fontSize: 13, color: '#fff', fontWeight: 600, marginTop: 2 }}>
-              {week.keyWorkout.type === 'treadmillIntervals'
-                ? (t(lang, 'workoutNames.treadmillIntervals') || t(lang, 'workouts.treadmillIntervals'))
-                : t(lang, `workouts.${week.keyWorkout.type}`)}
-              {isBasePlan && week.keyWorkout.duracion != null
-                ? ` · ${fmtDur(week.keyWorkout.duracion)}`
-                : week.keyWorkout.km
-                  ? ` · ${week.keyWorkout.km} km`
-                  : week.keyWorkout.duration
-                    ? ` · ${week.keyWorkout.duration} min`
-                    : ''}
-              {' · '}
+            <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', marginLeft:8 }}>
               {t(lang, `days.${week.keyWorkout.day}`)}
             </div>
           </div>
+          {(kwDur || week.keyWorkout.desc) && (
+            <div style={{ fontSize:13, color:'rgba(255,255,255,0.5)', marginTop:8 }}>
+              {[kwDur, week.keyWorkout.desc?.[lang] || week.keyWorkout.desc?.en].filter(Boolean).join(' · ')}
+            </div>
+          )}
         </div>
       )}
 
-      {/* ── Horizontal 7-day strip ── */}
-      <div style={{ display:'flex', gap:4, padding:'4px 20px 10px', overflowX:'auto' }}>
+      {/* ── SECTION 4: 7-DAY STRIP ── */}
+      <div style={{ display:'flex', padding:'0 16px 12px' }}>
         {week.workouts.map((workout, i) => {
           const isToday  = selectedWeek === 0 && i === todayDayIndex;
-          const isPast   = selectedWeek === 0 && i < todayDayIndex;
           const isSelect = selectedDay === i;
-          const colors   = workoutColors[workout.type] || workoutColors.rest;
           const done     = completions[i] === 'completed';
           const missed   = completions[i] === 'missed';
-          const isKey    = week.keyWorkout?.day === dayKeys[i];
+          const isKey    = !isPreBase && week.keyWorkout?.day === dayKeys[i];
+          const dotColor = (workoutColors[workout.type] || workoutColors.rest).dot;
 
           return (
             <div
               key={i}
               onClick={() => setSelectedDay(i)}
               style={{
-                flex: '1 0 36px',
-                padding: '9px 3px 7px',
-                borderRadius: 10,
-                textAlign: 'center',
-                cursor: 'pointer',
-                background: isSelect ? 'rgba(29,158,117,0.18)' : colors.bg,
-                border: isSelect
-                  ? '1px solid rgba(29,158,117,0.48)'
-                  : isToday
-                    ? '1px solid rgba(74,222,128,0.22)'
-                    : `0.5px solid ${colors.border}`,
-                opacity: isPast && !isSelect ? 0.65 : 1,
+                flex:1, textAlign:'center', padding:'10px 4px', borderRadius:12, cursor:'pointer',
+                background: isSelect ? 'rgba(0,255,135,0.12)' : 'transparent',
+                border: isSelect ? '1px solid rgba(0,255,135,0.25)' : '1px solid transparent',
               }}
             >
-              <div style={{
-                fontSize: 8,
-                color: isSelect ? '#4ade80' : isToday ? 'rgba(74,222,128,0.85)' : 'rgba(255,255,255,0.3)',
-                fontWeight: isSelect || isToday ? 700 : 400,
-                letterSpacing: 0.3,
-                marginBottom: 6,
-                textTransform: 'uppercase',
-              }}>
-                {t(lang, `days.${dayKeys[i]}`)}
+              <div style={{ fontSize:11, color: isSelect ? '#00FF87' : isToday ? 'rgba(74,222,128,0.8)' : 'rgba(255,255,255,0.3)', fontWeight: isSelect || isToday ? 600 : 400, marginBottom:6 }}>
+                {dayLetters[i]}
               </div>
-              <div style={{ width:6, height:6, borderRadius:'50%', background: isSelect ? '#4ade80' : colors.dot, margin:'0 auto' }} />
-              <div style={{ height:12, display:'flex', alignItems:'center', justifyContent:'center', marginTop:2 }}>
-                {isKey && !done && !missed && <div style={{ fontSize:7, color:'#fbbf24' }}>★</div>}
-                {done  && <div style={{ fontSize:8, color:'#4ade80', fontWeight:700 }}>✓</div>}
-                {missed && <div style={{ fontSize:8, color:'#f87171', fontWeight:700 }}>✗</div>}
+              <div style={{ fontSize:15, fontWeight:500, color: isSelect ? '#fff' : isToday ? '#fff' : 'rgba(255,255,255,0.6)' }}>
+                {dayDate(i)}
+              </div>
+              <div style={{ height:14, display:'flex', alignItems:'center', justifyContent:'center', marginTop:4 }}>
+                {done   && <div style={{ width:6, height:6, borderRadius:'50%', background:'#00FF87' }} />}
+                {missed && <div style={{ width:6, height:6, borderRadius:'50%', background:'#FF4444' }} />}
+                {!done && !missed && isKey && <span style={{ fontSize:10 }}>⭐</span>}
+                {!done && !missed && !isKey && workout.type !== 'rest' && <div style={{ width:6, height:6, borderRadius:'50%', background: dotColor }} />}
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* ── Selected day detail card ── */}
+      {/* ── SECTION 5: SELECTED DAY DETAIL ── */}
       {selWorkout && (
-        <div style={{
-          margin: '0 20px 12px',
-          background: selIsToday ? 'rgba(29,158,117,0.12)' : selColors.bg,
-          border: selIsToday ? '1px solid rgba(29,158,117,0.35)' : `0.5px solid ${selColors.border}`,
-          borderRadius: 14,
-          padding: '14px 16px',
-        }}>
+        <div style={{ margin:'0 16px', background:'#111111', border:'1px solid rgba(255,255,255,0.08)', borderRadius:16, padding:16 }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
             <div style={{ flex:1 }}>
-              <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:0.5, marginBottom:5, textTransform:'uppercase' }}>
+              <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', marginBottom:8 }}>
                 {t(lang, `days.${dayKeys[selectedDay]}`)}
-                {selIsToday ? ` · ${lang==='es' ? 'HOY' : 'TODAY'}` : selIsDone ? ` · ${lang==='es' ? 'PASADO' : 'PAST'}` : ''}
+                {selIsToday ? ` · ${lang==='es' ? 'HOY' : 'TODAY'}` : ''}
               </div>
-              <div style={{ fontSize:17, fontWeight:700, letterSpacing:'-0.01em', color: selIsDone ? 'rgba(255,255,255,0.35)' : '#fff', textDecoration: selIsDone ? 'line-through' : 'none' }}>
-                {selWorkout.type === 'treadmillIntervals'
-                  ? (t(lang, 'workoutNames.treadmillIntervals') || t(lang, 'workouts.treadmillIntervals'))
-                  : (t(lang, `workouts.${selWorkout.type}`) || selWorkout.type)}
-                {selWorkout.type === 'recovery' ? ' ↗' : ''}
-              </div>
-              <div style={{ fontSize:11, color:'rgba(255,255,255,0.38)', marginTop:4, lineHeight:1.45 }}>
-                {isBasePlan && selWorkout.duracion != null
-                  ? `${fmtDur(selWorkout.duracion)} · ${selWorkout.desc?.[lang] || selWorkout.desc?.en || ''}`
+              <div style={{ fontSize:20, fontWeight:600, color: selIsDone ? 'rgba(255,255,255,0.3)' : '#fff', letterSpacing:'-0.01em' }}>
+                {selWorkout.type === 'rest'
+                  ? (lang === 'es' ? 'Descanso' : 'Rest')
                   : selWorkout.type === 'treadmillIntervals'
-                    ? `${selWorkout.duration != null ? `${selWorkout.duration} min · ` : ''}${selWorkout.treadmillNote?.[lang] || selWorkout.treadmillNote?.en || ''}`
-                    : `${selWorkout.km ? `${selWorkout.km} km · ` : ''}${selWorkout.desc?.[lang] || selWorkout.desc?.en || ''}`}
+                    ? (t(lang, 'workoutNames.treadmillIntervals') || t(lang, 'workouts.treadmillIntervals'))
+                    : (t(lang, `workouts.${selWorkout.type}`) || selWorkout.type)}
               </div>
+              {selWorkout.type === 'rest' ? (
+                <div style={{ fontSize:13, color:'rgba(255,255,255,0.3)', marginTop:6 }}>
+                  {lang === 'es' ? 'Descanso · Recuperación activa' : 'Rest · Active recovery'}
+                </div>
+              ) : selMeta ? (
+                <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', marginTop:6 }}>
+                  {selMeta}
+                </div>
+              ) : null}
             </div>
-            <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:5, marginLeft:12, paddingTop:2 }}>
-              {week.keyWorkout?.day === dayKeys[selectedDay] && <div style={{ fontSize:13, color:'#fbbf24' }}>⭐</div>}
-              {completions[selectedDay] === 'completed' && <div style={{ fontSize:16, color:'#4ade80', fontWeight:700 }}>✓</div>}
-              {completions[selectedDay] === 'missed'    && <div style={{ fontSize:16, color:'#f87171', fontWeight:700 }}>✗</div>}
-              <div style={{ width:9, height:9, borderRadius:'50%', background:selColors.dot }} />
+            <div style={{ marginLeft:12, paddingTop:2 }}>
+              {completions[selectedDay] === 'completed'
+                ? <div style={{ width:24, height:24, borderRadius:'50%', background:'rgba(0,255,135,0.2)', border:'1px solid #00FF87', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, color:'#00FF87', fontWeight:700 }}>✓</div>
+                : completions[selectedDay] === 'missed'
+                  ? <div style={{ width:24, height:24, borderRadius:'50%', background:'rgba(255,68,68,0.2)', border:'1px solid #FF4444', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, color:'#FF4444', fontWeight:700 }}>✗</div>
+                  : <div style={{ width:24, height:24, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.15)' }} />}
             </div>
           </div>
 
-          {selWorkout.flatAlternative && selWorkout.type !== 'treadmillIntervals' && (
-            <div style={{ marginTop:8, fontSize:10, color:'#fbbf24' }}>🏔️ +sim</div>
-          )}
-
-          {(selIsRecovery || selWorkout.type === 'strength') && (
-            <div
-              style={{ marginTop:12, background:'rgba(255,255,255,0.05)', border:'0.5px solid rgba(255,255,255,0.08)', borderRadius:8, padding:'9px', textAlign:'center', fontSize:11, color:'rgba(255,255,255,0.55)', cursor:'pointer', fontFamily:'inherit' }}
+          {(selIsRecovery || selIsStrength) && (
+            <button
+              type="button"
+              style={{ marginTop:14, width:'100%', background:'rgba(255,255,255,0.05)', border:'0.5px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'10px', textAlign:'center', fontSize:13, color:'rgba(255,255,255,0.6)', cursor:'pointer', fontFamily:'inherit' }}
               onClick={() => {
-                if (selIsRecovery) onRecovery(selWorkout.type);
-                else if (selWorkout.type === 'strength') onStrength?.(week.phase);
+                if (selIsRecovery) onRecovery?.(selWorkout.type);
+                else if (selIsStrength) onStrength?.(selWorkout.type === 'strength_beginner' ? 'beginner' : week.phase);
               }}
             >
-              {selWorkout.type === 'strength'
+              {selIsStrength
                 ? t(lang, 'strength.seeFullSession')
                 : `${lang==='es' ? 'Ver guía' : 'Open guide'} ↗`}
-            </div>
+            </button>
           )}
         </div>
       )}
 
-      {/* ── Bottom nav ── */}
-      <div style={{ ...s.nav, marginTop:'auto' }}>
-        <button style={s.navBtn(false)} onClick={() => { setCurrentWeek?.(selectedWeek); onToday(); }}>
+      {/* ── BOTTOM NAV ── */}
+      <div style={{ display:'flex', borderTop:'0.5px solid rgba(255,255,255,0.07)', marginTop:'auto' }}>
+        <button
+          type="button"
+          style={{ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight:400, color:'rgba(255,255,255,0.35)', cursor:'pointer', background:'none', border:'none', fontFamily:'inherit' }}
+          onClick={() => { setCurrentWeek?.(selectedWeek); onToday(); }}
+        >
           {lang==='es' ? '⚡ Hoy' : '⚡ Today'}
         </button>
-        <button style={s.navBtn(true)}>
+        <button
+          type="button"
+          style={{ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight:600, color:'#4ade80', cursor:'pointer', background:'none', border:'none', fontFamily:'inherit' }}
+        >
           {lang==='es' ? '📅 Semana' : '📅 Week'}
         </button>
       </div>
