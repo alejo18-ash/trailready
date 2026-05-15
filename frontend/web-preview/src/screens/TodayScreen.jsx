@@ -365,7 +365,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         </div>
       )}
 
-      {todayWorkout.type !== 'rest' && (
+      {todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && (
         <div style={{ margin: '12px 20px', background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 14px' }}>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', marginBottom: 10 }}>
             {t(lang, 'workout.didYouComplete')}

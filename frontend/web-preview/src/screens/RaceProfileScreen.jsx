@@ -118,7 +118,9 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
     road:      { en:'Road',      es:'Ruta',     color:'#9ca3af', bg:'rgba(156,163,175,0.12)' },
   };
   const terrain = terrainMap[raceData?.terreno] || terrainMap.mixed;
-  const phaseNames = { base:{en:'Base',es:'Base'}, build:{en:'Build',es:'Construc.'}, peak:{en:'Peak',es:'Pico'}, taper:{en:'Taper',es:'Taper'} };
+  const isPreBase  = Boolean(raceData?.isPreBase);
+  const isBasePlan = Boolean(raceData?.isBasePlan);
+  const phaseNames = { base:{en:'Base',es:'Base'}, build:{en:'Build',es:'Construc.'}, peak:{en:'Peak',es:'Pico'}, taper:{en:'Taper',es:'Taper'}, preBase1:{en:'Intro',es:'Intro'}, preBase2:{en:'Progresión',es:'Progresión'} };
 
   return (
     <div className="screen-enter" style={s.wrap}>
@@ -135,12 +137,21 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
             <span style={s.badge(terrain.color, terrain.bg)}>{terrain[lang] || terrain.en}</span>
             {raceData?.source && <span style={s.badge('rgba(255,255,255,0.5)','rgba(255,255,255,0.06)')}>{raceData.source.toUpperCase()}</span>}
           </div>
-          <div style={s.statsRow}>
-            <div style={s.statBox}><div style={s.statVal('#4ade80')}>{raceData?.distancia}km</div><div style={s.statLbl}>{lang==='es'?'distancia':'distance'}</div></div>
-            <div style={s.statBox}><div style={s.statVal('#fbbf24')}>{raceData?.desnivel?.toLocaleString()||'—'}m</div><div style={s.statLbl}>D+</div></div>
-            <div style={s.statBox}><div style={s.statVal('#f87171')}>{raceData?.desnivelNeg?.toLocaleString()||'—'}m</div><div style={s.statLbl}>D-</div></div>
-            <div style={s.statBox}><div style={s.statVal('#60a5fa')}>{raceData?.elevMax||'—'}m</div><div style={s.statLbl}>{lang==='es'?'máx':'max elev'}</div></div>
-          </div>
+          {(!isPreBase && !isBasePlan) && (
+            <div style={s.statsRow}>
+              <div style={s.statBox}><div style={s.statVal('#4ade80')}>{raceData?.distancia}km</div><div style={s.statLbl}>{lang==='es'?'distancia':'distance'}</div></div>
+              <div style={s.statBox}><div style={s.statVal('#fbbf24')}>{raceData?.desnivel?.toLocaleString()||'—'}m</div><div style={s.statLbl}>D+</div></div>
+              <div style={s.statBox}><div style={s.statVal('#f87171')}>{raceData?.desnivelNeg?.toLocaleString()||'—'}m</div><div style={s.statLbl}>D-</div></div>
+              <div style={s.statBox}><div style={s.statVal('#60a5fa')}>{raceData?.elevMax||'—'}m</div><div style={s.statLbl}>{lang==='es'?'máx':'max elev'}</div></div>
+            </div>
+          )}
+          {(isPreBase || isBasePlan) && (
+            <div style={s.statsRow}>
+              <div style={s.statBox}><div style={s.statVal('#4ade80')}>{plan?.totalWeeks}</div><div style={s.statLbl}>{lang==='es'?'semanas':'weeks'}</div></div>
+              <div style={s.statBox}><div style={s.statVal('#a78bfa')}>{plan?.weeks ? [...new Set(plan.weeks.map(w=>w.phase).filter(Boolean))].length : '—'}</div><div style={s.statLbl}>{lang==='es'?'fases':'phases'}</div></div>
+              <div style={s.statBox}><div style={s.statVal('#fbbf24')}>{plan?.weeks ? plan.weeks.reduce((a,w)=>a+(w.volumeMin||0),0) : '—'}</div><div style={s.statLbl}>{lang==='es'?'min total':'total min'}</div></div>
+            </div>
+          )}
           {raceProfile
             ? <ElevationChart profile={raceProfile} color="#4ade80" height={120} />
             : <div style={{background:'rgba(255,255,255,0.03)',borderRadius:8,padding:16,textAlign:'center'}}>
@@ -173,8 +184,8 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
         <div style={s.card}>
           <div style={s.statsRow}>
             <div style={s.statBox}><div style={s.statVal('#4ade80')}>{plan?.totalWeeks}</div><div style={s.statLbl}>{lang==='es'?'semanas':'weeks'}</div></div>
-            <div style={s.statBox}><div style={s.statVal('#fbbf24')}>{plan?.weeks?plan.weeks.reduce((a,w)=>a+w.kmTotal,0).toLocaleString():'—'}</div><div style={s.statLbl}>km total</div></div>
-            <div style={s.statBox}><div style={s.statVal('#f87171')}>{plan?.weeks?Math.round(plan.weeks.reduce((a,w)=>a+w.desnivel,0)/1000)+'k':'—'}</div><div style={s.statLbl}>D+ total</div></div>
+            <div style={s.statBox}><div style={s.statVal('#fbbf24')}>{plan?.weeks ? (isBasePlan||isPreBase) ? plan.weeks.reduce((a,w)=>a+(w.volumeMin||0),0)+' min' : plan.weeks.reduce((a,w)=>a+w.kmTotal,0).toLocaleString()+'km' : '—'}</div><div style={s.statLbl}>{lang==='es'?'volumen':'volume'}</div></div>
+            <div style={s.statBox}><div style={s.statVal('#f87171')}>{plan?.weeks && !isPreBase && !isBasePlan ? Math.round(plan.weeks.reduce((a,w)=>a+w.desnivel,0)/1000)+'k' : '—'}</div><div style={s.statLbl}>D+ total</div></div>
             <div style={s.statBox}><div style={s.statVal('#60a5fa')}>4</div><div style={s.statLbl}>{lang==='es'?'fases':'phases'}</div></div>
           </div>
         </div>
