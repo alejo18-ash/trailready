@@ -37,7 +37,7 @@ const zoneMap = {
   cross:'Zone 2', treadmillIntervals:'Zone 3–4',
 };
 
-export default function WeekScreen({ lang, plan, profile, raceData, currentWeek, setCurrentWeek, onToday, onRecovery, onStrength }) {
+export default function WeekScreen({ lang, plan, profile, raceData, currentWeek, setCurrentWeek, onToday, onRecovery, onStrength, onOlympus, onProfile }) {
   const todayIndex    = new Date().getDay();
   const todayDayIndex = todayIndex === 0 ? 6 : todayIndex - 1;
 
@@ -303,7 +303,21 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
           type="button"
           style={{ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight:600, color:'#4ade80', cursor:'pointer', background:'none', border:'none', fontFamily:'inherit' }}
         >
-          {lang==='es' ? '📅 Semana' : '📅 Week'}
+          {'📅 Plan'}
+        </button>
+        <button
+          type="button"
+          style={{ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight:400, color:'rgba(255,255,255,0.35)', cursor:'pointer', background:'none', border:'none', fontFamily:'inherit' }}
+          onClick={onOlympus}
+        >
+          {'🏛️ Olimpo'}
+        </button>
+        <button
+          type="button"
+          style={{ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight:400, color:'rgba(255,255,255,0.35)', cursor:'pointer', background:'none', border:'none', fontFamily:'inherit' }}
+          onClick={onProfile}
+        >
+          {lang==='es' ? '👤 Perfil' : '👤 Profile'}
         </button>
       </div>
     </div>

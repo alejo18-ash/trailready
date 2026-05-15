@@ -11,6 +11,7 @@ import RecoveryScreen from './screens/RecoveryScreen';
 import RaceProfileScreen from './screens/RaceProfileScreen';
 import LandingPage from './screens/LandingPage';
 import StrengthScreen from './screens/StrengthScreen';
+import OlympusScreen from './screens/OlympusScreen';
 
 /** Monday (index 0) is always an easy run — never rest/recovery/strength on day 1. */
 function ensureMondayIsEasy(template) {
@@ -484,11 +485,12 @@ function AppFlow({ lang, setLang }) {
   if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} />;
   if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
   if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
-  if (screen === 'today')     return <TodayScreen {...props} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} />;
-  if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} onStrength={handleStrength} />;
+  if (screen === 'today')     return <TodayScreen {...props} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onOlympus={() => setScreen('olympus')} onProfile={() => setScreen('raceProfile')} />;
+  if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} onStrength={handleStrength} onOlympus={() => setScreen('olympus')} onProfile={() => setScreen('raceProfile')} />;
   if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
   if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen('today')} />;
   if (screen === 'raceProfile') return <RaceProfileScreen {...props} onBack={() => setScreen('today')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} />;
+  if (screen === 'olympus')   return <OlympusScreen lang={lang} plan={plan} raceData={raceData} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} />;
 }
 
 export default function App() {

@@ -64,7 +64,7 @@ const getWhatsAppUrl = (raceName) => {
   return 'https://chat.whatsapp.com/trailready-general';
 };
 
-export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength }) {
+export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength, onOlympus, onProfile }) {
   const [conditions, setConditions]           = useState(null);
   const [locationError, setLocationError]     = useState(false);
   const [trails, setTrails]                   = useState([]);
@@ -465,10 +465,9 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
       )}
       <div style={s.nav}>
         <button style={s.navBtn(true)}>{lang==='es' ? '⚡ Hoy' : '⚡ Today'}</button>
-        <button style={s.navBtn(false)} onClick={onWeek}>{lang==='es' ? '📅 Semana' : '📅 Week'}</button>
-        <button style={s.navBtn(false)} onClick={onRaceProfile}>
-          {(isBasePlan || isPreBase) ? t(lang, 'nav.myPlan') : (lang==='es' ? '🏁 Carrera' : '🏁 Race')}
-        </button>
+        <button style={s.navBtn(false)} onClick={onWeek}>{lang==='es' ? '📅 Plan' : '📅 Plan'}</button>
+        <button style={s.navBtn(false)} onClick={onOlympus}>{'🏛️ Olimpo'}</button>
+        <button style={s.navBtn(false)} onClick={onProfile || onRaceProfile}>{lang==='es' ? '👤 Perfil' : '👤 Profile'}</button>
       </div>
 
       {showConfirmModal && (

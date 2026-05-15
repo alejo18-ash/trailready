@@ -57,6 +57,7 @@ const s = {
 };
 
 export default function SourceScreen({ lang, onNext }) {
+  const [goal, setGoal]           = useState(null); // null | 'race' | 'base' | 'prebase'
   const [tab, setTab]             = useState('gpx');
   const [gpxFile, setGpxFile]     = useState(null);
   const [gpxData, setGpxData]     = useState(null);
@@ -186,85 +187,171 @@ export default function SourceScreen({ lang, onNext }) {
     });
   };
 
-  const tabs = [
-    { id:'gpx',     icon:'📁', label: t(lang, 'sourcePdf'),    sub: t(lang, 'sourcePdfSub') },
-    { id:'web',     icon:'🔗', label: t(lang, 'sourceWeb'),    sub: t(lang, 'sourceWebSub') },
-    { id:'manual',  icon:'✏️', label: t(lang, 'sourceManual'), sub: t(lang, 'sourceManualSub') },
-    { id:'base',    icon:'🏃', label: t(lang, 'sourceOptions.base'),    sub: t(lang, 'sourceOptions.baseSubtitle') },
-    { id:'prebase', icon:'🚶', label: t(lang, 'sourceOptions.prebase'), sub: t(lang, 'sourceOptions.prebaseSubtitle') },
+  const GOAL_CARDS = [
+    { id:'race',    icon:'🏹', label: lang==='es' ? 'Artemisa — Tengo una carrera' : 'Artemisa — I have a race', sub: lang==='es' ? 'Trail o asfalto, 21K–100K' : 'Trail or road, 21K–100K', disabled: false },
+    { id:'base',    icon:'⏳', label: lang==='es' ? 'Cronos — Construir mi base' : 'Cronos — Build my base', sub: lang==='es' ? 'Aeróbico sólido antes de un plan' : 'Solid aerobic engine before a plan', disabled: false },
+    { id:'prebase', icon:'🚶', label: lang==='es' ? 'Soy principiante' : "I'm a beginner", sub: lang==='es' ? 'Empezar desde cero, 4 semanas' : 'Start from scratch, 4 weeks', disabled: false },
+    { id:'rehab',   icon:'🐍', label: lang==='es' ? 'Asclepio — Rehab' : 'Asclepio — Rehab', sub: lang==='es' ? 'Próximamente' : 'Coming soon', disabled: true },
+  ];
+
+  const RACE_TABS = [
+    { id:'gpx',    icon:'📁', label: t(lang, 'sourcePdf'),    sub: t(lang, 'sourcePdfSub') },
+    { id:'web',    icon:'🔗', label: t(lang, 'sourceWeb'),    sub: t(lang, 'sourceWebSub') },
+    { id:'manual', icon:'✏️', label: t(lang, 'sourceManual'), sub: t(lang, 'sourceManualSub') },
   ];
 
   return (
     <div className="screen-enter" style={s.wrap}>
       <div style={s.card}>
         <div style={s.header}>
-          <div style={s.logo}>🏔️ TRAILREADY</div>
-          <div style={s.heading}>{lang==='es' ? '¿Cómo agregamos tu carrera?' : 'How do we add your race?'}</div>
+          <div style={s.logo}>🏔️ OLYMPUS</div>
+          {goal && (
+            <button
+              type="button"
+              onClick={() => { setGoal(null); setError(''); }}
+              style={{ background:'none', border:'none', color:'rgba(255,255,255,0.35)', fontSize:11, cursor:'pointer', marginBottom:6, fontFamily:'inherit', padding:0 }}
+            >
+              ← {lang==='es' ? 'Volver' : 'Back'}
+            </button>
+          )}
+          <div style={s.heading}>
+            {!goal
+              ? (lang==='es' ? '¿Cuál es tu objetivo?' : "What's your goal?")
+              : goal === 'race'
+                ? (lang==='es' ? '¿Cómo agregamos tu carrera?' : 'How do we add your race?')
+                : goal === 'base'
+                  ? t(lang, 'sourceOptions.base')
+                  : t(lang, 'sourceOptions.prebase')
+            }
+          </div>
         </div>
 
-        {tabs.map(tb => (
-          <div key={tb.id} style={s.option(tab===tb.id)} onClick={() => { setTab(tb.id); setError(''); }}>
-            <div style={s.iconBox(tab===tb.id)}>{tb.icon}</div>
+        {/* ── STEP 1: Goal selection ── */}
+        {!goal && GOAL_CARDS.map(gc => (
+          <div
+            key={gc.id}
+            style={{
+              ...s.option(false),
+              opacity: gc.disabled ? 0.4 : 1,
+              cursor: gc.disabled ? 'default' : 'pointer',
+            }}
+            onClick={() => { if (!gc.disabled) { setGoal(gc.id); setError(''); } }}
+          >
+            <div style={s.iconBox(false)}>{gc.icon}</div>
             <div style={{flex:1}}>
-              <div style={s.optTitle(tab===tb.id)}>{tb.label}</div>
-              <div style={s.optSub}>{tb.sub}</div>
+              <div style={s.optTitle(false)}>{gc.label}</div>
+              <div style={s.optSub}>{gc.sub}</div>
             </div>
-            {tab===tb.id && <div style={s.check}>✓</div>}
           </div>
         ))}
 
-        <div style={s.divider} />
-
-        {/* ── GPX ── */}
-        {tab==='gpx' && (
+        {/* ── STEP 2a: Race — sub-tabs ── */}
+        {goal === 'race' && (
           <>
-            <label style={s.upload(!!gpxFile)}>
-              <input type="file" accept=".gpx" style={{display:'none'}} onChange={handleGpxChange} />
-              {loading ? (lang==='es' ? '⏳ Analizando GPX...' : '⏳ Parsing GPX...') :
-               gpxFile ? `📍 ${gpxFile.name}` :
-               (lang==='es' ? '+ Subir archivo .gpx' : '+ Upload .gpx file')}
-            </label>
-            {gpxData && (
-              <div style={s.gpxInfo}>
+            {RACE_TABS.map(tb => (
+              <div key={tb.id} style={s.option(tab===tb.id)} onClick={() => { setTab(tb.id); setError(''); }}>
+                <div style={s.iconBox(tab===tb.id)}>{tb.icon}</div>
+                <div style={{flex:1}}>
+                  <div style={s.optTitle(tab===tb.id)}>{tb.label}</div>
+                  <div style={s.optSub}>{tb.sub}</div>
+                </div>
+                {tab===tb.id && <div style={s.check}>✓</div>}
+              </div>
+            ))}
+
+            <div style={s.divider} />
+
+            {tab==='gpx' && (
+              <>
+                <label style={s.upload(!!gpxFile)}>
+                  <input type="file" accept=".gpx" style={{display:'none'}} onChange={handleGpxChange} />
+                  {loading ? (lang==='es' ? '⏳ Analizando GPX...' : '⏳ Parsing GPX...') :
+                   gpxFile ? `📍 ${gpxFile.name}` :
+                   (lang==='es' ? '+ Subir archivo .gpx' : '+ Upload .gpx file')}
+                </label>
+                {gpxData && (
+                  <div style={s.gpxInfo}>
+                    {[
+                      [lang==='es' ? 'Nombre' : 'Name', gpxData.name],
+                      [lang==='es' ? 'Distancia' : 'Distance', `${gpxData.distancia} km`],
+                      ['D+', `${Number(gpxData.desnivel).toLocaleString()} m`],
+                      ['D-', `${Number(gpxData.desnivelNeg).toLocaleString()} m`],
+                      [lang==='es' ? 'Elevación máx' : 'Max elevation', `${Number(gpxData.elevMax).toLocaleString()} m`],
+                      [lang==='es' ? 'Elevación mín' : 'Min elevation', `${Number(gpxData.elevMin).toLocaleString()} m`],
+                      [lang==='es' ? 'Terreno' : 'Terrain', gpxData.terreno],
+                    ].map(([k, v]) => (
+                      <div key={k} style={s.gpxRow}>
+                        <span style={s.gpxKey}>{k}</span>
+                        <span style={s.gpxVal}>{v}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <button style={s.btn(loading, !gpxData)} onClick={handleGpxNext} disabled={!gpxData || loading}>
+                  {lang==='es' ? 'Continuar →' : 'Continue →'}
+                </button>
+              </>
+            )}
+
+            {tab==='web' && (
+              <>
+                <input style={s.input} placeholder="https://ultrasignup.com/..." value={url} onChange={e => setUrl(e.target.value)} />
+                {urlData?.availableDistances?.length > 1 && (
+                  <div style={s.distancePicker}>
+                    <label style={s.label}>{lang==='es' ? '¿Qué distancia vas a correr?' : 'Which distance are you running?'}</label>
+                    <div style={s.distanceRow}>
+                      {urlData.availableDistances.map(d => (
+                        <div key={d} style={s.distBtn(selectedDist===d)} onClick={() => setDist(d)}>{d}K</div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {urlData && (
+                  <div style={s.gpxInfo}>
+                    <div style={s.gpxRow}><span style={s.gpxKey}>{lang==='es' ? 'Carrera' : 'Race'}</span><span style={s.gpxVal}>{urlData.name}</span></div>
+                    <div style={s.gpxRow}><span style={s.gpxKey}>{lang==='es' ? 'Distancia seleccionada' : 'Selected distance'}</span><span style={s.gpxVal}>{selectedDist}km</span></div>
+                  </div>
+                )}
+                <button style={s.btn(loading, false)} onClick={urlData ? handleWebNext : handleWeb} disabled={loading}>
+                  {loading ? (lang==='es' ? 'Analizando...' : 'Analyzing...') :
+                   urlData ? (lang==='es' ? 'Continuar →' : 'Continue →') :
+                   (lang==='es' ? 'Analizar carrera' : 'Analyze race')}
+                </button>
+              </>
+            )}
+
+            {tab==='manual' && (
+              <>
                 {[
-                  [lang==='es' ? 'Nombre' : 'Name', gpxData.name],
-                  [lang==='es' ? 'Distancia' : 'Distance', `${gpxData.distancia} km`],
-                  ['D+', `${Number(gpxData.desnivel).toLocaleString()} m`],
-                  ['D-', `${Number(gpxData.desnivelNeg).toLocaleString()} m`],
-                  [lang==='es' ? 'Elevación máx' : 'Max elevation', `${Number(gpxData.elevMax).toLocaleString()} m`],
-                  [lang==='es' ? 'Elevación mín' : 'Min elevation', `${Number(gpxData.elevMin).toLocaleString()} m`],
-                  [lang==='es' ? 'Terreno' : 'Terrain', gpxData.terreno],
-                ].map(([k, v]) => (
-                  <div key={k} style={s.gpxRow}>
-                    <span style={s.gpxKey}>{k}</span>
-                    <span style={s.gpxVal}>{v}</span>
+                  { key:'name',      label: lang==='es' ? 'Nombre de la carrera' : 'Race name',       placeholder:'Thunderbunny Trail Race', type:'text' },
+                  { key:'distancia', label: lang==='es' ? 'Distancia (km)'       : 'Distance (km)',    placeholder:'21',  type:'number' },
+                  { key:'desnivel',  label: lang==='es' ? 'Desnivel positivo (m)': 'Elevation gain (m)', placeholder:'2500', type:'number' },
+                  { key:'fecha',     label: lang==='es' ? 'Fecha de la carrera'  : 'Race date',        placeholder:'', type:'date' },
+                ].map(f => (
+                  <div key={f.key} style={s.manualRow}>
+                    <label style={s.label}>{f.label}</label>
+                    <input style={s.input} type={f.type} placeholder={f.placeholder} value={manual[f.key]} onChange={e => set(f.key, e.target.value)} />
                   </div>
                 ))}
-              </div>
+                <div style={s.manualRow}>
+                  <label style={s.label}>{lang==='es' ? 'Tipo de terreno' : 'Terrain type'}</label>
+                  <select style={s.select} value={manual.terreno} onChange={e => set('terreno', e.target.value)}>
+                    <option value="mountain">{lang==='es' ? 'Montaña' : 'Mountain'}</option>
+                    <option value="technical">{lang==='es' ? 'Técnico' : 'Technical'}</option>
+                    <option value="mixed">{lang==='es' ? 'Mixto' : 'Mixed'}</option>
+                    <option value="road">{lang==='es' ? 'Ruta' : 'Road'}</option>
+                  </select>
+                </div>
+                <button style={s.btn(false, false)} onClick={handleManual}>
+                  {lang==='es' ? 'Continuar →' : 'Continue →'}
+                </button>
+              </>
             )}
-            <button style={s.btn(loading, !gpxData)} onClick={handleGpxNext} disabled={!gpxData || loading}>
-              {lang==='es' ? 'Continuar →' : 'Continue →'}
-            </button>
           </>
         )}
 
-        {/* ── STRAVA ── */}
-        {tab==='strava' && (
-          <div style={s.stravaBox}>
-            <button style={s.stravaBtn} onClick={() => setError('Strava OAuth coming soon!')}>
-              🟠 {lang==='es' ? 'Conectar con Strava' : 'Connect with Strava'}
-            </button>
-            <div style={s.stravaOr}>{lang==='es' ? '— o exporta el GPX desde Strava —' : '— or export GPX from Strava —'}</div>
-            <div style={{fontSize:11, color:'rgba(255,255,255,0.4)', lineHeight:1.6}}>
-              {lang==='es'
-                ? '1. Abre la actividad en Strava\n2. ··· → Exportar GPX\n3. Sube el archivo en la pestaña GPX'
-                : '1. Open the activity in Strava\n2. ··· → Export GPX\n3. Upload the file in the GPX tab'}
-            </div>
-          </div>
-        )}
-
-        {/* ── BASE PLAN ── */}
-        {tab==='base' && (
+        {/* ── STEP 2b: Base plan ── */}
+        {goal === 'base' && (
           <>
             <div style={{ fontSize:11, color:'rgba(255,255,255,0.45)', lineHeight:1.55, marginBottom:10 }}>
               {t(lang, 'basePlan.subtitle')}
@@ -275,8 +362,8 @@ export default function SourceScreen({ lang, onNext }) {
           </>
         )}
 
-        {/* ── PRE-BASE PLAN ── */}
-        {tab==='prebase' && (
+        {/* ── STEP 2c: Pre-base plan ── */}
+        {goal === 'prebase' && (
           <>
             <div style={{ fontSize:11, color:'rgba(255,255,255,0.45)', lineHeight:1.55, marginBottom:10 }}>
               {t(lang, 'prebase.subtitle')}
@@ -285,63 +372,6 @@ export default function SourceScreen({ lang, onNext }) {
               {t(lang, 'prebase.coachNote')}
             </div>
             <button style={s.btn(false, false)} onClick={handlePreBaseNext}>
-              {lang==='es' ? 'Continuar →' : 'Continue →'}
-            </button>
-          </>
-        )}
-
-        {/* ── WEB LINK ── */}
-        {tab==='web' && (
-          <>
-            <input style={s.input} placeholder="https://ultrasignup.com/..." value={url} onChange={e => setUrl(e.target.value)} />
-            {urlData?.availableDistances?.length > 1 && (
-              <div style={s.distancePicker}>
-                <label style={s.label}>{lang==='es' ? '¿Qué distancia vas a correr?' : 'Which distance are you running?'}</label>
-                <div style={s.distanceRow}>
-                  {urlData.availableDistances.map(d => (
-                    <div key={d} style={s.distBtn(selectedDist===d)} onClick={() => setDist(d)}>{d}K</div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {urlData && (
-              <div style={s.gpxInfo}>
-                <div style={s.gpxRow}><span style={s.gpxKey}>{lang==='es' ? 'Carrera' : 'Race'}</span><span style={s.gpxVal}>{urlData.name}</span></div>
-                <div style={s.gpxRow}><span style={s.gpxKey}>{lang==='es' ? 'Distancia seleccionada' : 'Selected distance'}</span><span style={s.gpxVal}>{selectedDist}km</span></div>
-              </div>
-            )}
-            <button style={s.btn(loading, false)} onClick={urlData ? handleWebNext : handleWeb} disabled={loading}>
-              {loading ? (lang==='es' ? 'Analizando...' : 'Analyzing...') :
-               urlData ? (lang==='es' ? 'Continuar →' : 'Continue →') :
-               (lang==='es' ? 'Analizar carrera' : 'Analyze race')}
-            </button>
-          </>
-        )}
-
-        {/* ── MANUAL ── */}
-        {tab==='manual' && (
-          <>
-            {[
-              { key:'name',      label: lang==='es' ? 'Nombre de la carrera' : 'Race name',       placeholder:'Thunderbunny Trail Race', type:'text' },
-              { key:'distancia', label: lang==='es' ? 'Distancia (km)'       : 'Distance (km)',    placeholder:'21',  type:'number' },
-              { key:'desnivel',  label: lang==='es' ? 'Desnivel positivo (m)': 'Elevation gain (m)', placeholder:'2500', type:'number' },
-              { key:'fecha',     label: lang==='es' ? 'Fecha de la carrera'  : 'Race date',        placeholder:'', type:'date' },
-            ].map(f => (
-              <div key={f.key} style={s.manualRow}>
-                <label style={s.label}>{f.label}</label>
-                <input style={s.input} type={f.type} placeholder={f.placeholder} value={manual[f.key]} onChange={e => set(f.key, e.target.value)} />
-              </div>
-            ))}
-            <div style={s.manualRow}>
-              <label style={s.label}>{lang==='es' ? 'Tipo de terreno' : 'Terrain type'}</label>
-              <select style={s.select} value={manual.terreno} onChange={e => set('terreno', e.target.value)}>
-                <option value="mountain">{lang==='es' ? 'Montaña' : 'Mountain'}</option>
-                <option value="technical">{lang==='es' ? 'Técnico' : 'Technical'}</option>
-                <option value="mixed">{lang==='es' ? 'Mixto' : 'Mixed'}</option>
-                <option value="road">{lang==='es' ? 'Ruta' : 'Road'}</option>
-              </select>
-            </div>
-            <button style={s.btn(false, false)} onClick={handleManual}>
               {lang==='es' ? 'Continuar →' : 'Continue →'}
             </button>
           </>

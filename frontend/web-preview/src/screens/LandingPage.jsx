@@ -21,6 +21,14 @@ const FEATURES = [
   { icon: '🇪🇸', tk: 'f6Title', bk: 'f6Body' },
 ];
 
+const GODS = [
+  { icon: '🏹', nk: 'god1Name', sk: 'god1Sub', bk: 'god1Body', active: true },
+  { icon: '⚔️', nk: 'god2Name', sk: 'god2Sub', bk: 'god2Body', active: true },
+  { icon: '⏳', nk: 'god3Name', sk: 'god3Sub', bk: 'god3Body', active: true },
+  { icon: '🪽', nk: 'god4Name', sk: 'god4Sub', bk: 'god4Body', active: false },
+  { icon: '🐍', nk: 'god5Name', sk: 'god5Sub', bk: 'god5Body', active: false },
+];
+
 /* Injected styles — uses CSS variables from design-system.css */
 const CSS = `
 *, *::before, *::after { box-sizing: border-box; }
@@ -109,13 +117,37 @@ const CSS = `
   background: rgba(var(--green-ch), 0.12);
 }
 
+.tr-god-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-card);
+  border-radius: 20px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+  cursor: default;
+}
+
+.tr-god-card.tr-god-active:hover {
+  border-color: rgba(var(--green-ch), 0.35);
+  background: rgba(var(--green-ch), 0.04);
+  transform: translateY(-2px);
+}
+
+.tr-god-card.tr-god-soon {
+  opacity: 0.45;
+}
+
 @media (max-width: 900px) {
   .tr-how-grid     { grid-template-columns: 1fr !important; }
+  .tr-god-grid     { grid-template-columns: repeat(2, 1fr) !important; }
   .tr-feat-grid    { grid-template-columns: repeat(2, 1fr) !important; }
   .tr-comm-grid    { grid-template-columns: repeat(2, 1fr) !important; }
 }
 
 @media (max-width: 540px) {
+  .tr-god-grid     { grid-template-columns: 1fr !important; }
   .tr-feat-grid    { grid-template-columns: 1fr !important; }
   .tr-comm-grid    { grid-template-columns: 1fr !important; }
 }
@@ -337,6 +369,62 @@ const s = {
     zIndex: 1,
   },
 
+  godGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(5, 1fr)',
+    gap: 16,
+  },
+  godIcon: {
+    fontSize: '2.25rem',
+    marginBottom: 12,
+    display: 'block',
+  },
+  godBadge: (active) => ({
+    display: 'inline-block',
+    fontSize: '0.65rem',
+    fontWeight: 700,
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase',
+    padding: '3px 10px',
+    borderRadius: 100,
+    background: active ? 'rgba(var(--green-ch), 0.15)' : 'rgba(255,255,255,0.07)',
+    color: active ? 'var(--green)' : 'var(--text-30)',
+    marginBottom: 12,
+  }),
+  godName: {
+    fontSize: '1.05rem',
+    fontWeight: 800,
+    color: 'var(--text)',
+    marginBottom: 4,
+    letterSpacing: '-0.01em',
+  },
+  godSub: {
+    fontSize: '0.75rem',
+    color: 'var(--text-30)',
+    marginBottom: 10,
+    fontWeight: 500,
+  },
+  godBody: {
+    fontSize: '0.8rem',
+    lineHeight: 1.65,
+    color: 'var(--text-60)',
+  },
+  godCta: {
+    marginTop: 16,
+    background: 'transparent',
+    border: '1px solid rgba(var(--green-ch), 0.35)',
+    color: 'var(--green)',
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    padding: '7px 16px',
+    borderRadius: 100,
+    cursor: 'pointer',
+    fontFamily: 'var(--font)',
+    letterSpacing: '0.03em',
+    transition: 'background 0.2s',
+    alignSelf: 'flex-start',
+  },
+
   featGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
@@ -552,7 +640,7 @@ export default function LandingPage({ lang, setLang }) {
           <div style={s.navInner}>
             <div style={s.brand}>
               <span style={s.brandEmoji}>🏔️</span>
-              TrailReady
+              Olympus
             </div>
             <div style={s.langToggle}>
               <button type="button" style={s.langBtn(lang === 'en')} onClick={() => setLang('en')}>EN</button>
@@ -585,21 +673,23 @@ export default function LandingPage({ lang, setLang }) {
           </div>
         </div>
 
-        {/* ── HOW IT WORKS ── */}
+        {/* ── THE OLYMPUS PLANS ── */}
         <section style={s.sectionWrap}>
           <div style={s.sectionContent}>
             <span style={s.sectionLabel}>{t(lang, 'landing.howTitle')}</span>
-            <div style={s.howGrid} className="tr-how-grid">
-              {[
-                { num: '1', icon: '🎯', tk: 'how1Title', bk: 'how1Body' },
-                { num: '2', icon: '📅', tk: 'how2Title', bk: 'how2Body' },
-                { num: '3', icon: '🗺️', tk: 'how3Title', bk: 'how3Body' },
-              ].map(({ num, icon, tk, bk }) => (
-                <div key={num} style={s.howCard}>
-                  <div style={s.howNum}>{num}</div>
-                  <span style={s.howIcon}>{icon}</span>
-                  <div style={s.howTitle}>{t(lang, `landing.${tk}`)}</div>
-                  <div style={s.howBody}>{t(lang, `landing.${bk}`)}</div>
+            <div style={s.godGrid} className="tr-god-grid">
+              {GODS.map(({ icon, nk, sk, bk, active }) => (
+                <div key={nk} className={`tr-god-card ${active ? 'tr-god-active' : 'tr-god-soon'}`}>
+                  <span style={s.godIcon}>{icon}</span>
+                  <span style={s.godBadge(active)}>{active ? (lang === 'es' ? 'ACTIVO' : 'ACTIVE') : (lang === 'es' ? 'PRÓXIMAMENTE' : 'COMING SOON')}</span>
+                  <div style={s.godName}>{t(lang, `landing.${nk}`)}</div>
+                  <div style={s.godSub}>{t(lang, `landing.${sk}`)}</div>
+                  <div style={s.godBody}>{t(lang, `landing.${bk}`)}</div>
+                  {active && (
+                    <button type="button" style={s.godCta} onClick={() => navigate('/app')}>
+                      {lang === 'es' ? 'Ver mi plan →' : 'See my plan →'}
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -658,7 +748,7 @@ export default function LandingPage({ lang, setLang }) {
           <div style={s.footerInner}>
             <div style={s.footerBrand}>
               <span style={s.footerBrandEmoji}>🏔️</span>
-              TrailReady · 2026
+              Olympus · 2026
             </div>
             <div style={s.footerLangRow}>
               <button type="button" style={s.footerLangBtn(lang === 'en')} onClick={() => setLang('en')}>EN</button>
