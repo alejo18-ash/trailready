@@ -1,4 +1,5 @@
 import { t } from '../i18n';
+import BottomNav from '../components/BottomNav';
 
 const GODS = [
   { icon: '🏹', nk: 'god1Name', sk: 'god1Sub', bk: 'god1Body', active: true },
@@ -109,45 +110,7 @@ export default function OlympusScreen({ lang, plan, raceData, onToday, onWeek })
         ))}
       </div>
 
-      {/* Bottom nav */}
-      <div style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        display: 'flex',
-        borderTop: '1px solid var(--border)',
-        background: 'var(--bg)',
-      }}>
-        {[
-          { label: lang === 'es' ? 'Hoy' : 'Today', icon: '⚡', active: false, action: onToday },
-          { label: lang === 'es' ? 'Plan' : 'Plan', icon: '📅', active: false, action: onWeek },
-          { label: 'Olimpo', icon: '🏛️', active: true, action: null },
-          { label: lang === 'es' ? 'Perfil' : 'Profile', icon: '👤', active: false, action: onToday },
-        ].map(({ label, icon, active, action }) => (
-          <button
-            key={label}
-            type="button"
-            onClick={action}
-            style={{
-              flex: 1,
-              background: 'none',
-              border: 'none',
-              cursor: action ? 'pointer' : 'default',
-              padding: '10px 0',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 3,
-              color: active ? 'var(--green)' : 'var(--text-30)',
-              fontFamily: 'var(--font)',
-            }}
-          >
-            <span style={{ fontSize: '1.1rem' }}>{icon}</span>
-            <span style={{ fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.03em' }}>{label}</span>
-          </button>
-        ))}
-      </div>
+      <BottomNav lang={lang} active="olympus" onToday={onToday} onWeek={onWeek} onProfile={onToday} />
     </div>
   );
 }

@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { t } from '../i18n';
+import BottomNav from '../components/BottomNav';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:40 },
+  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:64 },
   header: { padding:'14px 20px 12px', display:'flex', alignItems:'center', gap:12 },
   back: { fontSize:12, color:'rgba(255,255,255,0.35)', cursor:'pointer' },
   headerTitle: { fontSize:16, fontWeight:700, color:'#fff' },
@@ -20,8 +21,6 @@ const s = {
   chartWrap: { position:'relative', height:120, marginTop:8 },
   noData: { textAlign:'center', padding:'20px 0', fontSize:12, color:'rgba(255,255,255,0.3)' },
   badge: (color, bg) => ({ display:'inline-block', padding:'3px 10px', borderRadius:20, fontSize:10, fontWeight:600, color, background:bg, marginRight:6, marginBottom:6 }),
-  nav: { display:'flex', borderTop:'0.5px solid rgba(255,255,255,0.07)', marginTop:20 },
-  navBtn: (active) => ({ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight: active ? 600 : 400, color: active ? '#4ade80' : 'rgba(255,255,255,0.35)', cursor:'pointer', background:'none', border:'none' }),
 };
 
 function ElevationChart({ profile, color, height = 120 }) {
@@ -80,7 +79,7 @@ function ElevationChart({ profile, color, height = 120 }) {
   return <div style={s.chartWrap}><canvas ref={canvasRef} style={{ width:'100%', height }} /></div>;
 }
 
-export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToday, onWeek }) {
+export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToday, onWeek, onOlympus }) {
   const [dailyProfile, setDailyProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
 
@@ -191,11 +190,7 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
         </div>
       </div>
 
-      <div style={s.nav}>
-        <button style={s.navBtn(false)} onClick={onToday}>{lang==='es'?'⚡ Hoy':'⚡ Today'}</button>
-        <button style={s.navBtn(false)} onClick={onWeek}>{lang==='es'?'📅 Semana':'📅 Week'}</button>
-        <button style={s.navBtn(true)}>{lang==='es'?'🏁 Carrera':'🏁 Race'}</button>
-      </div>
+      <BottomNav lang={lang} active="profile" onToday={onToday} onWeek={onWeek} onOlympus={onOlympus} />
     </div>
   );
 }

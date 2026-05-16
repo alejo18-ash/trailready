@@ -489,7 +489,7 @@ function AppFlow({ lang, setLang }) {
   if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} onStrength={handleStrength} onOlympus={() => setScreen('olympus')} onProfile={() => setScreen('raceProfile')} />;
   if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
   if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen('today')} />;
-  if (screen === 'raceProfile') return <RaceProfileScreen {...props} onBack={() => setScreen('today')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} />;
+  if (screen === 'raceProfile') return <RaceProfileScreen {...props} onBack={() => setScreen('today')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onOlympus={() => setScreen('olympus')} />;
   if (screen === 'olympus')   return <OlympusScreen lang={lang} plan={plan} raceData={raceData} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} />;
 }
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { t } from '../i18n';
+import BottomNav from '../components/BottomNav';
 
 const phaseKey = {
   base:'basePhase', build:'buildPhase', peak:'peakPhase', taper:'taperPhase',
@@ -134,7 +135,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
     : `${week.kmTotal} km`;
 
   return (
-    <div className="screen-enter" style={{ minHeight:'100vh', background:'#080808', fontFamily:"'Inter', system-ui, sans-serif", display:'flex', flexDirection:'column' }}>
+    <div className="screen-enter" style={{ minHeight:'100vh', background:'#080808', fontFamily:"'Inter', system-ui, sans-serif", display:'flex', flexDirection:'column', paddingBottom:64 }}>
 
       {/* ── SECTION 1: HEADER ── */}
       <div style={{ background:'#080808', padding:'20px 24px 0' }}>
@@ -290,36 +291,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
         </div>
       )}
 
-      {/* ── BOTTOM NAV ── */}
-      <div style={{ display:'flex', borderTop:'0.5px solid rgba(255,255,255,0.07)', marginTop:'auto' }}>
-        <button
-          type="button"
-          style={{ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight:400, color:'rgba(255,255,255,0.35)', cursor:'pointer', background:'none', border:'none', fontFamily:'inherit' }}
-          onClick={() => { setCurrentWeek?.(selectedWeek); onToday(); }}
-        >
-          {lang==='es' ? '⚡ Hoy' : '⚡ Today'}
-        </button>
-        <button
-          type="button"
-          style={{ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight:600, color:'#4ade80', cursor:'pointer', background:'none', border:'none', fontFamily:'inherit' }}
-        >
-          {'📅 Plan'}
-        </button>
-        <button
-          type="button"
-          style={{ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight:400, color:'rgba(255,255,255,0.35)', cursor:'pointer', background:'none', border:'none', fontFamily:'inherit' }}
-          onClick={onOlympus}
-        >
-          {'🏛️ Olimpo'}
-        </button>
-        <button
-          type="button"
-          style={{ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight:400, color:'rgba(255,255,255,0.35)', cursor:'pointer', background:'none', border:'none', fontFamily:'inherit' }}
-          onClick={onProfile}
-        >
-          {lang==='es' ? '👤 Perfil' : '👤 Profile'}
-        </button>
-      </div>
+      <BottomNav lang={lang} active="week" onToday={() => { setCurrentWeek?.(selectedWeek); onToday(); }} onOlympus={onOlympus} onProfile={onProfile} />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { t } from '../i18n';
+import BottomNav from '../components/BottomNav';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const phaseKey = {
@@ -11,7 +12,7 @@ const phaseKey = {
 };
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif" },
+  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:64 },
   header: { padding:'20px 20px 14px', display:'flex', justifyContent:'space-between', alignItems:'flex-start' },
   weekLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:1, textTransform:'uppercase' },
   activityTitle: { fontSize:26, fontWeight:800, color:'#fff', marginTop:5, letterSpacing:'-0.02em', lineHeight:1.1 },
@@ -46,8 +47,6 @@ const s = {
   recoveryIcon: { fontSize:16, marginBottom:3 },
   recoveryTitle: (color) => ({ fontSize:10, color, fontWeight:500 }),
   recoverySub: { fontSize:9, color:'rgba(255,255,255,0.25)', marginTop:2 },
-  nav: { display:'flex', borderTop:'0.5px solid rgba(255,255,255,0.07)', marginTop:20 },
-  navBtn: (active) => ({ flex:1, padding:'14px 0', textAlign:'center', fontSize:11, fontWeight: active ? 600 : 400, color: active ? '#4ade80' : 'rgba(255,255,255,0.35)', cursor:'pointer', background:'none', border:'none' }),
   baseMotivationCard: { margin:'12px 20px', background:'rgba(29,158,117,0.12)', border:'1px solid rgba(29,158,117,0.28)', borderRadius:14, padding:14 },
   baseMotivationText: { fontSize:13, color:'rgba(255,255,255,0.88)', lineHeight:1.55 },
 };
@@ -228,7 +227,19 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
 
       <div style={s.divider} />
 
-      {isStrength ? (
+      {(todayWorkout.type === 'rest' || todayWorkout.type === 'recovery') ? (
+        <div style={{ margin:'12px 20px', background:'rgba(255,255,255,0.03)', border:'0.5px solid rgba(255,255,255,0.07)', borderRadius:14, padding:'20px 16px', textAlign:'center' }}>
+          <div style={{ fontSize:28, marginBottom:8 }}>{todayWorkout.type === 'recovery' ? '🧘' : '😴'}</div>
+          <div style={{ fontSize:13, fontWeight:600, color:'rgba(255,255,255,0.7)', marginBottom:4 }}>
+            {todayWorkout.type === 'recovery'
+              ? (lang==='es' ? 'Día de recuperación activa' : 'Active recovery day')
+              : (lang==='es' ? 'Día de descanso' : 'Rest day')}
+          </div>
+          <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', lineHeight:1.6 }}>
+            {lang==='es' ? 'Tu cuerpo se adapta mientras descansas. Es parte del plan.' : 'Your body adapts while you rest. This is part of the plan.'}
+          </div>
+        </div>
+      ) : isStrength ? (
         <div style={{ margin:'12px 20px', background:'rgba(167,139,250,0.08)', border:'1px solid rgba(167,139,250,0.22)', borderRadius:14, padding:14 }}>
           <div style={{ fontSize:10, color:'rgba(167,139,250,0.7)', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
             {lang==='es' ? 'SESIÓN DE FUERZA' : 'STRENGTH SESSION'}
@@ -406,6 +417,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         </div>
       )}
 
+      {todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && (
       <div style={s.section}>
         <div style={s.sectionLabel}>{t(lang,'afterRun')}</div>
         <div style={s.recoveryRow}>
@@ -451,6 +463,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           )}
         </div>
       </div>
+      )}
 
       {onNewPlan && (
         <div style={{ textAlign: 'center', padding: '10px 0 2px' }}>
@@ -463,12 +476,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           </button>
         </div>
       )}
-      <div style={s.nav}>
-        <button style={s.navBtn(true)}>{lang==='es' ? '⚡ Hoy' : '⚡ Today'}</button>
-        <button style={s.navBtn(false)} onClick={onWeek}>{lang==='es' ? '📅 Plan' : '📅 Plan'}</button>
-        <button style={s.navBtn(false)} onClick={onOlympus}>{'🏛️ Olimpo'}</button>
-        <button style={s.navBtn(false)} onClick={onProfile || onRaceProfile}>{lang==='es' ? '👤 Perfil' : '👤 Profile'}</button>
-      </div>
+      <BottomNav lang={lang} active="today" onWeek={onWeek} onOlympus={onOlympus} onProfile={onProfile || onRaceProfile} />
 
       {showConfirmModal && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000, padding:'0 24px' }}>
