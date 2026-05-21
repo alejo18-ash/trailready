@@ -46,7 +46,7 @@ const s = {
   recoveryCard: (_bg, border) => ({ flex:1, background:'#FFFFFF', border:`0.5px solid ${border}`, borderRadius:11, padding:'10px 8px', textAlign:'center', cursor:'pointer', boxShadow:'0 1px 3px rgba(18,29,41,0.05)' }),
   recoveryIcon: { fontSize:16, marginBottom:3 },
   recoveryTitle: (color) => ({ fontSize:10, color, fontWeight:500 }),
-  recoverySub: { fontSize:9, color:'rgba(18,29,41,0.35)', marginTop:2 },
+  recoverySub: { fontSize:9, color:'rgba(18,29,41,0.5)', marginTop:2 },
   baseMotivationCard: { margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' },
   baseMotivationText: { fontSize:13, color:'#121D29', lineHeight:1.55 },
 };
@@ -355,7 +355,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
 
       {!isBasePlan && !isPreBase && !isStrength && todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && todayWorkout.type !== 'treadmillIntervals' && (
         <div style={{ margin: '12px 20px', background: '#FFFFFF', border: '1px solid rgba(234,42,48,0.15)', borderRadius: 16, padding: 16, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
-          <div style={{ fontSize: 11, letterSpacing: '0.1em', color: 'rgba(18,29,41,0.35)', textTransform: 'uppercase', marginBottom: 6 }}>
+          <div style={{ fontSize: 11, letterSpacing: '0.1em', color: 'rgba(18,29,41,0.5)', textTransform: 'uppercase', marginBottom: 6 }}>
             {lang === 'es' ? 'COMUNIDAD · TU CARRERA' : 'COMMUNITY · YOUR RACE'}
           </div>
           <div style={{ fontSize: 16, fontWeight: 600, color: '#121D29', margin: '6px 0' }}>

@@ -250,7 +250,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
                 {t(lang, `days.${dayKeys[selectedDay]}`)}
                 {selIsToday ? ` · ${lang==='es' ? 'HOY' : 'TODAY'}` : ''}
               </div>
-              <div style={{ fontSize:20, fontWeight:600, color: selIsDone ? 'rgba(18,29,41,0.3)' : '#121D29', letterSpacing:'-0.01em' }}>
+              <div style={{ fontSize:20, fontWeight:600, color: selIsDone ? 'rgba(18,29,41,0.4)' : '#121D29', letterSpacing:'-0.01em' }}>
                 {selWorkout.type === 'rest'
                   ? (lang === 'es' ? 'Descanso' : 'Rest')
                   : selWorkout.type === 'treadmillIntervals'

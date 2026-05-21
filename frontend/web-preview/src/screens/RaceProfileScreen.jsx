@@ -19,7 +19,7 @@ const s = {
   statVal: (color) => ({ fontSize:14, fontWeight:700, color }),
   statLbl: { fontSize:9, color:'rgba(18,29,41,0.4)', marginTop:1 },
   chartWrap: { position:'relative', height:120, marginTop:8 },
-  noData: { textAlign:'center', padding:'20px 0', fontSize:12, color:'rgba(18,29,41,0.35)' },
+  noData: { textAlign:'center', padding:'20px 0', fontSize:12, color:'rgba(18,29,41,0.5)' },
   badge: (color, bg) => ({ display:'inline-block', padding:'3px 10px', borderRadius:20, fontSize:10, fontWeight:600, color, background:bg, marginRight:6, marginBottom:6 }),
 };
 
@@ -154,7 +154,7 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
           {raceProfile
             ? <ElevationChart profile={raceProfile} color="#EA2A30" height={120} />
             : <div style={{background:'rgba(18,29,41,0.03)',borderRadius:8,padding:16,textAlign:'center'}}>
-                <div style={{fontSize:11,color:'rgba(18,29,41,0.3)',marginBottom:4}}>{lang==='es'?'Perfil no disponible':'Elevation profile not available'}</div>
+                <div style={{fontSize:11,color:'rgba(18,29,41,0.5)',marginBottom:4}}>{lang==='es'?'Perfil no disponible':'Elevation profile not available'}</div>
                 <div style={{fontSize:10,color:'rgba(18,29,41,0.2)'}}>{lang==='es'?'Sube el GPX para ver el perfil':'Upload the race GPX to see the profile'}</div>
               </div>
           }
