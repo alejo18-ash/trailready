@@ -5,7 +5,7 @@ import BottomNav from '../components/BottomNav';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80 },
+  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80, maxWidth:600, margin:'0 auto' },
   header: { padding:'14px 20px 12px', display:'flex', alignItems:'center', gap:12 },
   back: { fontSize:12, color:'rgba(255,255,255,0.35)', cursor:'pointer' },
   headerTitle: { fontSize:16, fontWeight:700, color:'#fff' },

@@ -12,7 +12,7 @@ const phaseKey = {
 };
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80 },
+  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80, maxWidth:600, margin:'0 auto' },
   header: { padding:'20px 20px 14px', display:'flex', justifyContent:'space-between', alignItems:'flex-start' },
   weekLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:1, textTransform:'uppercase' },
   activityTitle: { fontSize:26, fontWeight:800, color:'#fff', marginTop:5, letterSpacing:'-0.02em', lineHeight:1.1 },
@@ -353,7 +353,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         </div>
       )}
 
-      {!isBasePlan && !isPreBase && (
+      {!isBasePlan && !isPreBase && todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && (
         <div style={{ margin: '12px 20px', background: '#111111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: 16 }}>
           <div style={{ fontSize: 11, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 6 }}>
             {lang === 'es' ? 'COMUNIDAD · TU CARRERA' : 'COMMUNITY · YOUR RACE'}
