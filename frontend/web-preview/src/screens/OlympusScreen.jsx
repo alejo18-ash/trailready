@@ -22,17 +22,17 @@ export default function OlympusScreen({ lang, plan, raceData, onToday, onWeek })
     }}>
       {/* Header */}
       <div style={{
-        padding: '56px 24px 24px',
+        padding: '20px 20px 0',
         maxWidth: 600,
         margin: '0 auto',
       }}>
-        <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', color: 'var(--green)', textTransform: 'uppercase', marginBottom: 8 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--green)', textTransform: 'uppercase', marginBottom: 8 }}>
           {lang === 'es' ? 'LOS PLANES' : 'THE PLANS'}
         </div>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, letterSpacing: '-0.03em' }}>
           {lang === 'es' ? 'El Olimpo' : 'Olympus'}
         </h1>
-        <p style={{ fontSize: '0.875rem', color: 'var(--text-60)', marginTop: 8 }}>
+        <p style={{ fontSize: 14, color: 'var(--text-60)', marginTop: 8 }}>
           {lang === 'es' ? 'Todos los planes disponibles para ti.' : 'All plans available to you.'}
         </p>
       </div>
@@ -55,7 +55,7 @@ export default function OlympusScreen({ lang, plan, raceData, onToday, onWeek })
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <span style={{ fontSize: '2rem' }}>{icon}</span>
                 <div>
-                  <div style={{ fontWeight: 800, fontSize: '1.05rem', letterSpacing: '-0.01em' }}>
+                  <div style={{ fontWeight: 800, fontSize: 17, letterSpacing: '-0.01em' }}>
                     {t(lang, `landing.${nk}`)}
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-30)', marginTop: 2 }}>

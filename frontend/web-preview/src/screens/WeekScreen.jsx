@@ -139,7 +139,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
     <div style={{ maxWidth:600, margin:'0 auto', display:'flex', flexDirection:'column', paddingBottom:80 }}>
 
       {/* ── SECTION 1: HEADER ── */}
-      <div style={{ background:'#F0F4F8', padding:'20px 24px 0' }}>
+      <div style={{ background:'#F0F4F8', padding:'20px 20px 0' }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
           <div style={{ fontSize:20, fontWeight:600, color:'#121D29', letterSpacing:'-0.02em' }}>
             {planTitle}
@@ -148,7 +148,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
             {weekVol}
           </div>
         </div>
-        <div style={{ fontSize:11, letterSpacing:'0.1em', color:'rgba(18,29,41,0.35)', marginTop:4, textTransform:'uppercase' }}>
+        <div style={{ fontSize:11, letterSpacing:'0.1em', color:'rgba(18,29,41,0.45)', marginTop:4, textTransform:'uppercase' }}>
           {t(lang,'week')} {week.week} {t(lang,'of')} {plan.totalWeeks} · {t(lang, phaseKey[week.phase] || 'buildPhase').toUpperCase()}
         </div>
         <div style={{ height:2, background:'rgba(18,29,41,0.1)', borderRadius:100, margin:'12px 0 0' }}>
@@ -157,7 +157,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
       </div>
 
       {/* ── SECTION 2: WEEK SELECTOR ── */}
-      <div style={{ display:'flex', gap:8, padding:'16px 24px', overflowX:'auto' }}>
+      <div style={{ display:'flex', gap:8, padding:'16px 20px', overflowX:'auto' }}>
         {plan.weeks.map((w, i) => (
           <button
             key={i}
@@ -180,7 +180,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
 
       {/* ── SECTION 3: KEY WORKOUT CARD ── */}
       {week.keyWorkout && !isPreBase && (
-        <div style={{ margin:'0 16px 12px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:16, padding:'14px 16px', boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
+        <div style={{ margin:'0 20px 12px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:16, padding:'14px 20px', boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
             <div style={{ display:'flex', alignItems:'center', gap:10, flex:1 }}>
               <span style={{ fontSize:20 }}>⭐</span>
@@ -205,7 +205,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
       )}
 
       {/* ── SECTION 4: 7-DAY STRIP ── */}
-      <div style={{ display:'flex', padding:'0 16px 12px' }}>
+      <div style={{ display:'flex', padding:'0 20px 12px' }}>
         {week.workouts.map((workout, i) => {
           const isToday  = selectedWeek === 0 && i === todayDayIndex;
           const isSelect = selectedDay === i;
@@ -224,7 +224,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
                 border: isSelect ? '1px solid rgba(234,42,48,0.2)' : '1px solid transparent',
               }}
             >
-              <div style={{ fontSize:11, color: isSelect ? '#EA2A30' : isToday ? 'rgba(234,42,48,0.75)' : 'rgba(18,29,41,0.35)', fontWeight: isSelect || isToday ? 600 : 400, marginBottom:6 }}>
+              <div style={{ fontSize:11, color: isSelect ? '#EA2A30' : isToday ? 'rgba(234,42,48,0.75)' : 'rgba(18,29,41,0.45)', fontWeight: isSelect || isToday ? 600 : 400, marginBottom:6 }}>
                 {dayLetters[i]}
               </div>
               <div style={{ fontSize:15, fontWeight:500, color: isSelect ? '#121D29' : isToday ? '#121D29' : 'rgba(18,29,41,0.6)' }}>
@@ -243,7 +243,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
 
       {/* ── SECTION 5: SELECTED DAY DETAIL ── */}
       {selWorkout && (
-        <div style={{ margin:'0 16px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:16, padding:16, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
+        <div style={{ margin:'0 20px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:16, padding:'16px 20px', boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
             <div style={{ flex:1 }}>
               <div style={{ fontSize:12, color:'rgba(18,29,41,0.4)', marginBottom:8 }}>
@@ -258,7 +258,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
                     : (t(lang, `workouts.${selWorkout.type}`) || selWorkout.type)}
               </div>
               {selWorkout.type === 'rest' ? (
-                <div style={{ fontSize:13, color:'rgba(18,29,41,0.35)', marginTop:6 }}>
+                <div style={{ fontSize:13, color:'rgba(18,29,41,0.45)', marginTop:6 }}>
                   {lang === 'es' ? 'Descanso · Recuperación activa' : 'Rest · Active recovery'}
                 </div>
               ) : selMeta ? (
