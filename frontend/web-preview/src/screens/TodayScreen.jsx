@@ -12,43 +12,43 @@ const phaseKey = {
 };
 
 const s = {
-  wrap: { background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80, maxWidth:600, margin:'0 auto' },
+  wrap: { background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80, maxWidth:600, margin:'0 auto' },
   header: { padding:'20px 20px 14px', display:'flex', justifyContent:'space-between', alignItems:'flex-start' },
-  weekLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:1, textTransform:'uppercase' },
-  activityTitle: { fontSize:26, fontWeight:800, color:'#fff', marginTop:5, letterSpacing:'-0.02em', lineHeight:1.1 },
-  activitySub: { fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:4 },
+  weekLabel: { fontSize:10, color:'rgba(18,29,41,0.45)', letterSpacing:1, textTransform:'uppercase' },
+  activityTitle: { fontSize:26, fontWeight:800, color:'#121D29', marginTop:5, letterSpacing:'-0.02em', lineHeight:1.1 },
+  activitySub: { fontSize:11, color:'rgba(18,29,41,0.5)', marginTop:4 },
   weatherBox: { textAlign:'right', minWidth:80 },
   weatherIcon: { fontSize:20 },
-  weatherTemp: { fontSize:13, fontWeight:600, color:'#4ade80', marginTop:1 },
-  weatherDesc: { fontSize:10, color:'rgba(255,255,255,0.35)', marginTop:1 },
-  weatherWind: { fontSize:10, color:'rgba(255,255,255,0.3)', marginTop:1 },
-  aqiBadge: (good) => ({ display:'inline-block', padding:'2px 8px', borderRadius:20, fontSize:9, fontWeight:600, marginTop:3, background: good ? 'rgba(74,222,128,0.15)' : 'rgba(251,191,36,0.15)', color: good ? '#4ade80' : '#fbbf24' }),
-  alert: { margin:'0 20px 8px', background:'rgba(251,191,36,0.1)', border:'0.5px solid rgba(251,191,36,0.25)', borderRadius:10, padding:'8px 12px', fontSize:11, color:'#fbbf24' },
-  divider: { height:'0.5px', background:'rgba(255,255,255,0.07)', margin:'0 20px' },
-  locationBtn: { margin:'8px 20px 0', background:'rgba(255,255,255,0.05)', border:'0.5px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'10px 14px', fontSize:11, color:'rgba(255,255,255,0.5)', cursor:'pointer', textAlign:'center' },
-  routeCard: { margin:'12px 20px', background:'rgba(29,158,117,0.1)', border:'1px solid rgba(29,158,117,0.25)', borderRadius:14, padding:14 },
-  routeLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:0.5, marginBottom:6 },
-  routeName: { fontSize:14, fontWeight:600, color:'#fff' },
-  routeSub: { fontSize:10, color:'rgba(255,255,255,0.35)', marginTop:2 },
+  weatherTemp: { fontSize:13, fontWeight:600, color:'#EA2A30', marginTop:1 },
+  weatherDesc: { fontSize:10, color:'rgba(18,29,41,0.5)', marginTop:1 },
+  weatherWind: { fontSize:10, color:'rgba(18,29,41,0.4)', marginTop:1 },
+  aqiBadge: (good) => ({ display:'inline-block', padding:'2px 8px', borderRadius:20, fontSize:9, fontWeight:600, marginTop:3, background: good ? 'rgba(234,42,48,0.08)' : 'rgba(251,191,36,0.15)', color: good ? '#EA2A30' : '#fbbf24' }),
+  alert: { margin:'0 20px 8px', background:'rgba(251,191,36,0.1)', border:'0.5px solid rgba(251,191,36,0.25)', borderRadius:10, padding:'8px 12px', fontSize:11, color:'#b45309' },
+  divider: { height:'0.5px', background:'rgba(18,29,41,0.08)', margin:'0 20px' },
+  locationBtn: { margin:'8px 20px 0', background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.1)', borderRadius:10, padding:'10px 14px', fontSize:11, color:'rgba(18,29,41,0.5)', cursor:'pointer', textAlign:'center' },
+  routeCard: { margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' },
+  routeLabel: { fontSize:10, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:6 },
+  routeName: { fontSize:14, fontWeight:600, color:'#121D29' },
+  routeSub: { fontSize:10, color:'rgba(18,29,41,0.4)', marginTop:2 },
   statsRow: { display:'flex', gap:6, marginTop:10 },
-  statBox: { flex:1, background:'rgba(255,255,255,0.06)', borderRadius:8, padding:'8px 6px', textAlign:'center' },
-  statBoxTime: { flex:1.12, background:'rgba(96,165,250,0.14)', border:'1px solid rgba(96,165,250,0.45)', borderRadius:10, padding:'10px 6px', textAlign:'center', boxShadow:'0 0 14px rgba(96,165,250,0.15)' },
+  statBox: { flex:1, background:'rgba(18,29,41,0.04)', borderRadius:8, padding:'8px 6px', textAlign:'center' },
+  statBoxTime: { flex:1.12, background:'rgba(234,42,48,0.06)', border:'1px solid rgba(234,42,48,0.18)', borderRadius:10, padding:'10px 6px', textAlign:'center' },
   statVal: (color) => ({ fontSize:15, fontWeight:700, color }),
-  statValTime: { fontSize:18, fontWeight:800, color:'#93c5fd', letterSpacing:'-0.02em' },
-  statLbl: { fontSize:9, color:'rgba(255,255,255,0.3)', marginTop:1 },
-  statLblTime: { fontSize:10, color:'rgba(147,197,253,0.95)', marginTop:4, fontWeight:600, letterSpacing:0.2 },
+  statValTime: { fontSize:18, fontWeight:800, color:'#EA2A30', letterSpacing:'-0.02em' },
+  statLbl: { fontSize:9, color:'rgba(18,29,41,0.4)', marginTop:1 },
+  statLblTime: { fontSize:10, color:'#EA2A30', marginTop:4, fontWeight:600, letterSpacing:0.2 },
   dots: { display:'flex', gap:6, marginTop:8, justifyContent:'center' },
-  dot: (active) => ({ width:7, height:7, borderRadius:'50%', cursor:'pointer', background: active ? '#4ade80' : 'rgba(255,255,255,0.2)' }),
-  wikiloc: { marginTop:10, background:'rgba(29,158,117,0.25)', borderRadius:8, padding:'9px', textAlign:'center', fontSize:11, fontWeight:600, color:'#4ade80', cursor:'pointer' },
+  dot: (active) => ({ width:7, height:7, borderRadius:'50%', cursor:'pointer', background: active ? '#EA2A30' : 'rgba(18,29,41,0.18)' }),
+  wikiloc: { marginTop:10, background:'rgba(234,42,48,0.07)', borderRadius:8, padding:'9px', textAlign:'center', fontSize:11, fontWeight:600, color:'#EA2A30', cursor:'pointer' },
   section: { padding:'0 20px', marginTop:12 },
-  sectionLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:0.5, marginBottom:8 },
+  sectionLabel: { fontSize:10, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:8 },
   recoveryRow: { display:'flex', gap:8 },
-  recoveryCard: (bg, border) => ({ flex:1, background:bg, border:`0.5px solid ${border}`, borderRadius:11, padding:'10px 8px', textAlign:'center', cursor:'pointer' }),
+  recoveryCard: (_bg, border) => ({ flex:1, background:'#FFFFFF', border:`0.5px solid ${border}`, borderRadius:11, padding:'10px 8px', textAlign:'center', cursor:'pointer', boxShadow:'0 1px 3px rgba(18,29,41,0.05)' }),
   recoveryIcon: { fontSize:16, marginBottom:3 },
   recoveryTitle: (color) => ({ fontSize:10, color, fontWeight:500 }),
-  recoverySub: { fontSize:9, color:'rgba(255,255,255,0.25)', marginTop:2 },
-  baseMotivationCard: { margin:'12px 20px', background:'rgba(29,158,117,0.12)', border:'1px solid rgba(29,158,117,0.28)', borderRadius:14, padding:14 },
-  baseMotivationText: { fontSize:13, color:'rgba(255,255,255,0.88)', lineHeight:1.55 },
+  recoverySub: { fontSize:9, color:'rgba(18,29,41,0.35)', marginTop:2 },
+  baseMotivationCard: { margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' },
+  baseMotivationText: { fontSize:13, color:'#121D29', lineHeight:1.55 },
 };
 
 const getWhatsAppUrl = (raceName) => {
@@ -179,20 +179,20 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           <div style={s.activityTitle}>{workoutName}</div>
           <div style={s.activitySub}>{phaseLabel}</div>
           {isBasePlan && todayWorkout.duracion != null ? (
-            <div style={{ display:'inline-block', marginTop:7, background:'rgba(29,158,117,0.15)', border:'0.5px solid rgba(29,158,117,0.28)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#4ade80', fontWeight:600 }}>
+            <div style={{ display:'inline-block', marginTop:7, background:'rgba(234,42,48,0.08)', border:'0.5px solid rgba(234,42,48,0.2)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#EA2A30', fontWeight:600 }}>
               {fmtDur(todayWorkout.duracion)}
             </div>
           ) : isTreadmill && todayWorkout.duration != null ? (
-            <div style={{ display:'inline-block', marginTop:7, background:'rgba(251,191,36,0.12)', border:'0.5px solid rgba(251,191,36,0.28)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#fbbf24', fontWeight:600 }}>
+            <div style={{ display:'inline-block', marginTop:7, background:'rgba(251,191,36,0.12)', border:'0.5px solid rgba(251,191,36,0.28)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#b45309', fontWeight:600 }}>
               {todayWorkout.duration} min
             </div>
           ) : todayWorkout.km ? (
-            <div style={{ display:'inline-block', marginTop:7, background:'rgba(29,158,117,0.15)', border:'0.5px solid rgba(29,158,117,0.28)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#4ade80', fontWeight:600 }}>
+            <div style={{ display:'inline-block', marginTop:7, background:'rgba(234,42,48,0.08)', border:'0.5px solid rgba(234,42,48,0.2)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#EA2A30', fontWeight:600 }}>
               {todayWorkout.km} km
             </div>
           ) : null}
           {daysToRace !== null && daysToRace >= 0 && (
-            <div style={{ fontSize:11, marginTop:7, color: isRaceWeek ? '#4ade80' : 'rgba(255,255,255,0.38)', fontWeight: isRaceWeek ? 600 : 400 }}>
+            <div style={{ fontSize:11, marginTop:7, color: isRaceWeek ? '#EA2A30' : 'rgba(18,29,41,0.4)', fontWeight: isRaceWeek ? 600 : 400 }}>
               🏁 {isRaceWeek ? t(lang, 'countdown.raceWeek') : `${daysToRace} ${t(lang, 'countdown.days')}`}
             </div>
           )}
@@ -208,7 +208,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
               {conditions.aqi && <div style={s.aqiBadge(isGoodAqi)}>AQI: {conditions.aqi}</div>}
             </>
           ) : locationError ? (
-            <div style={{fontSize:10, color:'rgba(255,255,255,0.3)', textAlign:'right'}}>
+            <div style={{fontSize:10, color:'rgba(18,29,41,0.4)', textAlign:'right'}}>
               📍 {lang==='es' ? 'Sin ubicación' : 'No location'}
             </div>
           ) : (
@@ -228,26 +228,26 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
       <div style={s.divider} />
 
       {(todayWorkout.type === 'rest' || todayWorkout.type === 'recovery') ? (
-        <div style={{ margin:'12px 20px', background:'rgba(255,255,255,0.03)', border:'0.5px solid rgba(255,255,255,0.07)', borderRadius:14, padding:'20px 16px', textAlign:'center' }}>
+        <div style={{ margin:'12px 20px', background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.08)', borderRadius:14, padding:'20px 16px', textAlign:'center', boxShadow:'0 1px 4px rgba(18,29,41,0.05)' }}>
           <div style={{ fontSize:28, marginBottom:8 }}>{todayWorkout.type === 'recovery' ? '🧘' : '😴'}</div>
-          <div style={{ fontSize:13, fontWeight:600, color:'rgba(255,255,255,0.7)', marginBottom:4 }}>
+          <div style={{ fontSize:13, fontWeight:600, color:'rgba(18,29,41,0.75)', marginBottom:4 }}>
             {todayWorkout.type === 'recovery'
               ? (lang==='es' ? 'Día de recuperación activa' : 'Active recovery day')
               : (lang==='es' ? 'Día de descanso' : 'Rest day')}
           </div>
-          <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', lineHeight:1.6 }}>
+          <div style={{ fontSize:11, color:'rgba(18,29,41,0.4)', lineHeight:1.6 }}>
             {lang==='es' ? 'Tu cuerpo se adapta mientras descansas. Es parte del plan.' : 'Your body adapts while you rest. This is part of the plan.'}
           </div>
         </div>
       ) : isStrength ? (
-        <div style={{ margin:'12px 20px', background:'rgba(167,139,250,0.08)', border:'1px solid rgba(167,139,250,0.22)', borderRadius:14, padding:14 }}>
-          <div style={{ fontSize:10, color:'rgba(167,139,250,0.7)', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
+        <div style={{ margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(234,42,48,0.2)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
+          <div style={{ fontSize:10, color:'#EA2A30', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
             {lang==='es' ? 'SESIÓN DE FUERZA' : 'STRENGTH SESSION'}
           </div>
-          <div style={{ fontSize:15, fontWeight:700, color:'#fff', marginBottom:4 }}>
+          <div style={{ fontSize:15, fontWeight:700, color:'#121D29', marginBottom:4 }}>
             💪 {todayWorkout.type === 'strength_beginner' ? workoutName : t(lang,'strength.title')}
           </div>
-          <div style={{ fontSize:12, color:'rgba(255,255,255,0.55)', lineHeight:1.55, marginBottom:12 }}>
+          <div style={{ fontSize:12, color:'rgba(18,29,41,0.55)', lineHeight:1.55, marginBottom:12 }}>
             {todayWorkout.type === 'strength_beginner'
               ? t(lang, 'prebase.coachNote')
               : t(lang,'strength.whyStrength')}
@@ -255,49 +255,49 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           <button
             type="button"
             onClick={() => onStrength?.(todayWorkout.type === 'strength_beginner' ? 'beginner' : week.phase)}
-            style={{ background:'rgba(167,139,250,0.2)', border:'1px solid rgba(167,139,250,0.4)', borderRadius:10, padding:'10px 16px', fontSize:13, fontWeight:700, color:'#a78bfa', cursor:'pointer', fontFamily:'inherit', width:'100%' }}
+            style={{ background:'rgba(234,42,48,0.08)', border:'1px solid rgba(234,42,48,0.25)', borderRadius:10, padding:'10px 16px', fontSize:13, fontWeight:700, color:'#EA2A30', cursor:'pointer', fontFamily:'inherit', width:'100%' }}
           >
             {t(lang,'strength.seeFullSession')}
           </button>
         </div>
       ) : isTreadmill ? (
         <>
-          <div style={{ margin:'12px 20px', background:'rgba(251,191,36,0.12)', border:'1px solid rgba(251,191,36,0.35)', borderRadius:14, padding:14 }}>
-            <div style={{ fontSize:10, color:'rgba(251,191,36,0.85)', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
+          <div style={{ margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(251,191,36,0.3)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
+            <div style={{ fontSize:10, color:'#b45309', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
               {t(lang,'treadmillSession').toUpperCase()}
             </div>
-            <div style={{ fontSize:15, fontWeight:700, color:'#fff', marginBottom:4 }}>
+            <div style={{ fontSize:15, fontWeight:700, color:'#121D29', marginBottom:4 }}>
               {treadmillLabel}
             </div>
-            <div style={{ fontSize:11, color:'rgba(255,255,255,0.45)', lineHeight:1.45, marginBottom:8 }}>
+            <div style={{ fontSize:11, color:'rgba(18,29,41,0.5)', lineHeight:1.45, marginBottom:8 }}>
               {t(lang, 'workoutDescriptions.treadmillIntervals')}
             </div>
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.75)', lineHeight:1.55, marginBottom:10 }}>
+            <div style={{ fontSize:12, color:'rgba(18,29,41,0.7)', lineHeight:1.55, marginBottom:10 }}>
               {todayWorkout.treadmillNote?.[lang] || todayWorkout.treadmillNote?.en}
             </div>
-            <ul style={{ margin:0, paddingLeft:18, fontSize:12, color:'rgba(255,255,255,0.7)', lineHeight:1.65 }}>
+            <ul style={{ margin:0, paddingLeft:18, fontSize:12, color:'rgba(18,29,41,0.6)', lineHeight:1.65 }}>
               <li>{t(lang,'treadmillTipIncline')}</li>
               <li>{t(lang,'treadmillTipHR')}</li>
               <li>{t(lang,'treadmillTipPoles')}</li>
             </ul>
           </div>
-          <div style={{ margin:'0 20px 8px', background:'rgba(255,255,255,0.03)', border:'0.5px solid rgba(255,255,255,0.08)', borderRadius:12, padding:'10px 14px', opacity:0.65 }}>
-            <div style={{ fontSize:10, color:'rgba(255,255,255,0.35)', marginBottom:4 }}>{t(lang,'treadmillOptionalOutdoor')}</div>
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.45)' }}>{routeName} · ~{routeKm} km</div>
+          <div style={{ margin:'0 20px 8px', background:'rgba(18,29,41,0.03)', border:'0.5px solid rgba(18,29,41,0.07)', borderRadius:12, padding:'10px 14px', opacity:0.75 }}>
+            <div style={{ fontSize:10, color:'rgba(18,29,41,0.4)', marginBottom:4 }}>{t(lang,'treadmillOptionalOutdoor')}</div>
+            <div style={{ fontSize:12, color:'rgba(18,29,41,0.5)' }}>{routeName} · ~{routeKm} km</div>
           </div>
         </>
       ) : isPreBase ? (
-        <div style={{ margin:'12px 20px', background:'rgba(0,255,135,0.06)', border:'1px solid rgba(0,255,135,0.15)', borderRadius:14, padding:14 }}>
-          <div style={{ fontSize:12, color:'rgba(255,255,255,0.6)', lineHeight:1.55, marginBottom:8 }}>
+        <div style={{ margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(234,42,48,0.15)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
+          <div style={{ fontSize:12, color:'rgba(18,29,41,0.6)', lineHeight:1.55, marginBottom:8 }}>
             {t(lang, 'prebase.todayMotivation')}
           </div>
           {todayWorkout.duracion != null && (
-            <div style={{ display:'inline-flex', alignItems:'center', gap:6, background:'rgba(0,255,135,0.1)', border:'0.5px solid rgba(0,255,135,0.2)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#00FF87', fontWeight:600 }}>
+            <div style={{ display:'inline-flex', alignItems:'center', gap:6, background:'rgba(234,42,48,0.08)', border:'0.5px solid rgba(234,42,48,0.2)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#EA2A30', fontWeight:600 }}>
               ⏱ {fmtDur(todayWorkout.duracion)}
             </div>
           )}
           {todayWorkout.desc?.[lang] && (
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.45)', lineHeight:1.5, marginTop:8 }}>
+            <div style={{ fontSize:12, color:'rgba(18,29,41,0.5)', lineHeight:1.5, marginTop:8 }}>
               {todayWorkout.desc[lang]}
             </div>
           )}
@@ -343,25 +343,25 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
       )}
 
       {todayWorkout?.flatAlternative && todayWorkout.type !== 'treadmillIntervals' && todayWorkout.flatTips && (
-        <div style={{margin:'8px 20px', background:'rgba(251,191,36,0.1)', border:'0.5px solid rgba(251,191,36,0.25)', borderRadius:12, padding:'12px 14px'}}>
-          <div style={{fontSize:10, color:'#fbbf24', fontWeight:600, letterSpacing:0.5, marginBottom:6}}>
+        <div style={{margin:'8px 20px', background:'rgba(251,191,36,0.08)', border:'0.5px solid rgba(251,191,36,0.3)', borderRadius:12, padding:'12px 14px'}}>
+          <div style={{fontSize:10, color:'#b45309', fontWeight:600, letterSpacing:0.5, marginBottom:6}}>
             {lang==='es' ? '🏔️ SIMULACIÓN DE DESNIVEL' : '🏔️ ELEVATION SIMULATION'}
           </div>
-          <div style={{fontSize:12, color:'rgba(255,255,255,0.7)', lineHeight:1.6}}>
+          <div style={{fontSize:12, color:'rgba(18,29,41,0.65)', lineHeight:1.6}}>
             {todayWorkout.flatTips?.[lang] || todayWorkout.flatTips?.en}
           </div>
         </div>
       )}
 
       {!isBasePlan && !isPreBase && !isStrength && todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && todayWorkout.type !== 'treadmillIntervals' && (
-        <div style={{ margin: '12px 20px', background: '#111111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: 16 }}>
-          <div style={{ fontSize: 11, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 6 }}>
+        <div style={{ margin: '12px 20px', background: '#FFFFFF', border: '1px solid rgba(234,42,48,0.15)', borderRadius: 16, padding: 16, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
+          <div style={{ fontSize: 11, letterSpacing: '0.1em', color: 'rgba(18,29,41,0.35)', textTransform: 'uppercase', marginBottom: 6 }}>
             {lang === 'es' ? 'COMUNIDAD · TU CARRERA' : 'COMMUNITY · YOUR RACE'}
           </div>
-          <div style={{ fontSize: 16, fontWeight: 600, color: '#fff', margin: '6px 0' }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#121D29', margin: '6px 0' }}>
             {lang === 'es' ? 'Entrena con otros runners 💬' : 'Train with other runners 💬'}
           </div>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 14 }}>
+          <div style={{ fontSize: 13, color: 'rgba(18,29,41,0.55)', marginBottom: 14 }}>
             {lang === 'es'
               ? 'Únete al grupo de WhatsApp de runners preparando la misma carrera.'
               : 'Join the WhatsApp group of runners preparing for the same race.'}
@@ -369,7 +369,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           <button
             type="button"
             onClick={() => window.open(getWhatsAppUrl(raceData?.name || raceData?.nombre), '_blank')}
-            style={{ background: 'rgba(0,255,135,0.12)', border: '1px solid rgba(0,255,135,0.3)', color: '#00FF87', borderRadius: 100, padding: '10px 20px', fontSize: 14, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' }}
+            style={{ background: '#EA2A30', border: '1px solid #EA2A30', color: '#FFFFFF', borderRadius: 100, padding: '10px 20px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
           >
             {lang === 'es' ? 'Unirse al grupo →' : 'Join the group →'}
           </button>
@@ -377,8 +377,8 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
       )}
 
       {todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && (
-        <div style={{ margin: '12px 20px', background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 14px' }}>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', marginBottom: 10 }}>
+        <div style={{ margin: '12px 20px', background: '#FFFFFF', border: '0.5px solid rgba(18,29,41,0.08)', borderRadius: 12, padding: '12px 14px', boxShadow:'0 1px 4px rgba(18,29,41,0.05)' }}>
+          <div style={{ fontSize: 11, color: 'rgba(18,29,41,0.45)', marginBottom: 10 }}>
             {t(lang, 'workout.didYouComplete')}
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -388,9 +388,9 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
               style={{
                 flex: 1, padding: '10px 8px', borderRadius: 10, cursor: 'pointer',
                 fontFamily: 'inherit', fontSize: 12, fontWeight: 600,
-                background: workoutStatus === 'completed' ? '#4ade80' : 'transparent',
-                border: workoutStatus === 'completed' ? '1px solid #4ade80' : '1px solid rgba(74,222,128,0.35)',
-                color: workoutStatus === 'completed' ? '#0d0d1a' : '#4ade80',
+                background: workoutStatus === 'completed' ? '#EA2A30' : 'transparent',
+                border: workoutStatus === 'completed' ? '1px solid #EA2A30' : '1px solid rgba(234,42,48,0.3)',
+                color: workoutStatus === 'completed' ? '#FFFFFF' : '#EA2A30',
               }}
             >
               ✓ {t(lang, 'workout.yes')}
@@ -401,16 +401,16 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
               style={{
                 flex: 1, padding: '10px 8px', borderRadius: 10, cursor: 'pointer',
                 fontFamily: 'inherit', fontSize: 12, fontWeight: 600,
-                background: workoutStatus === 'missed' ? '#f87171' : 'transparent',
-                border: workoutStatus === 'missed' ? '1px solid #f87171' : '1px solid rgba(248,113,113,0.35)',
-                color: workoutStatus === 'missed' ? '#0d0d1a' : '#f87171',
+                background: workoutStatus === 'missed' ? '#121D29' : 'transparent',
+                border: workoutStatus === 'missed' ? '1px solid #121D29' : '1px solid rgba(18,29,41,0.2)',
+                color: workoutStatus === 'missed' ? '#FFFFFF' : 'rgba(18,29,41,0.5)',
               }}
             >
               ✗ {t(lang, 'workout.missed')}
             </button>
           </div>
           {workoutStatus && (
-            <div style={{ fontSize: 11, lineHeight: 1.55, marginTop: 10, color: workoutStatus === 'completed' ? '#4ade80' : '#f87171' }}>
+            <div style={{ fontSize: 11, lineHeight: 1.55, marginTop: 10, color: workoutStatus === 'completed' ? '#EA2A30' : 'rgba(18,29,41,0.55)' }}>
               {t(lang, workoutStatus === 'completed' ? 'workout.completedMsg' : 'workout.missedMsg')}
             </div>
           )}
@@ -470,7 +470,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           <button
             type="button"
             onClick={() => setShowConfirmModal(true)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: 'rgba(255,255,255,0.25)', fontFamily: 'inherit', padding: '4px 8px' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: 'rgba(18,29,41,0.3)', fontFamily: 'inherit', padding: '4px 8px' }}
           >
             {t(lang, 'actions.newPlan')}
           </button>
@@ -479,25 +479,25 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
       <BottomNav active="today" lang={lang || 'es'} onToday={null} onPlan={onWeek} onOlympus={onOlympus} onProfile={onProfile || onRaceProfile} />
 
       {showConfirmModal && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000, padding:'0 24px' }}>
-          <div style={{ background:'#111111', border:'1px solid rgba(255,255,255,0.1)', borderRadius:16, padding:'28px 24px', maxWidth:320, width:'100%' }}>
-            <div style={{ fontSize:18, fontWeight:600, color:'#fff', marginBottom:8 }}>
+        <div style={{ position:'fixed', inset:0, background:'rgba(18,29,41,0.5)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000, padding:'0 24px' }}>
+          <div style={{ background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.1)', borderRadius:16, padding:'28px 24px', maxWidth:320, width:'100%', boxShadow:'0 8px 32px rgba(18,29,41,0.15)' }}>
+            <div style={{ fontSize:18, fontWeight:600, color:'#121D29', marginBottom:8 }}>
               {t(lang, 'modal.newPlan.title')}
             </div>
-            <div style={{ fontSize:14, color:'rgba(255,255,255,0.5)', marginBottom:24, lineHeight:1.5 }}>
+            <div style={{ fontSize:14, color:'rgba(18,29,41,0.5)', marginBottom:24, lineHeight:1.5 }}>
               {t(lang, 'modal.newPlan.subtitle')}
             </div>
             <button
               type="button"
               onClick={() => { onNewPlan?.(); setShowConfirmModal(false); }}
-              style={{ display:'block', width:'100%', background:'#FF4444', color:'#fff', border:'none', borderRadius:100, padding:14, fontSize:15, fontWeight:600, cursor:'pointer', fontFamily:'inherit', marginBottom:10 }}
+              style={{ display:'block', width:'100%', background:'#EA2A30', color:'#fff', border:'none', borderRadius:100, padding:14, fontSize:15, fontWeight:600, cursor:'pointer', fontFamily:'inherit', marginBottom:10 }}
             >
               {t(lang, 'modal.newPlan.confirm')}
             </button>
             <button
               type="button"
               onClick={() => setShowConfirmModal(false)}
-              style={{ display:'block', width:'100%', background:'transparent', color:'rgba(255,255,255,0.5)', border:'1px solid rgba(255,255,255,0.15)', borderRadius:100, padding:14, fontSize:15, cursor:'pointer', fontFamily:'inherit' }}
+              style={{ display:'block', width:'100%', background:'transparent', color:'rgba(18,29,41,0.5)', border:'1px solid rgba(18,29,41,0.15)', borderRadius:100, padding:14, fontSize:15, cursor:'pointer', fontFamily:'inherit' }}
             >
               {t(lang, 'modal.newPlan.cancel')}
             </button>

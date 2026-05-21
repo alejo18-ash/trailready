@@ -4,55 +4,56 @@ import { t } from '../i18n';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:"'Inter', system-ui, sans-serif" },
+  wrap: { minHeight:'100vh', background:'#F0F4F8', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:"'Inter', system-ui, sans-serif" },
   card: { width:'100%', maxWidth:340 },
   header: { textAlign:'center', marginBottom:20 },
-  logo: { fontSize:11, color:'rgba(255,255,255,0.3)', letterSpacing:0.5, marginBottom:6 },
-  heading: { fontSize:20, fontWeight:700, color:'#fff' },
+  logo: { fontSize:11, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:6 },
+  heading: { fontSize:20, fontWeight:700, color:'#121D29' },
   option: (active) => ({
     display:'flex', alignItems:'center', gap:12, padding:'12px 14px',
-    background: active ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.04)',
-    border: active ? '1px solid rgba(74,222,128,0.3)' : '0.5px solid rgba(255,255,255,0.08)',
+    background: active ? 'rgba(234,42,48,0.08)' : '#FFFFFF',
+    border: active ? '1px solid rgba(234,42,48,0.25)' : '0.5px solid rgba(18,29,41,0.1)',
     borderRadius:12, marginBottom:6, cursor:'pointer',
+    boxShadow: active ? 'none' : '0 1px 3px rgba(18,29,41,0.04)',
   }),
   iconBox: (active) => ({
     width:36, height:36, borderRadius:9, display:'flex', alignItems:'center', justifyContent:'center', fontSize:16,
-    background: active ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.06)', flexShrink:0,
+    background: active ? 'rgba(234,42,48,0.1)' : 'rgba(18,29,41,0.05)', flexShrink:0,
   }),
-  optTitle: (active) => ({ fontSize:13, fontWeight:600, color: active ? '#fff' : 'rgba(255,255,255,0.6)' }),
-  optSub: { fontSize:10, color:'rgba(255,255,255,0.3)', marginTop:2 },
-  check: { marginLeft:'auto', width:16, height:16, borderRadius:'50%', background:'#4ade80', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, color:'#0d0d1a', fontWeight:700, flexShrink:0 },
-  divider: { height:'0.5px', background:'rgba(255,255,255,0.07)', margin:'12px 0' },
-  label: { fontSize:11, color:'rgba(255,255,255,0.4)', marginBottom:6, display:'block' },
-  input: { width:'100%', background:'rgba(255,255,255,0.06)', border:'0.5px solid rgba(255,255,255,0.12)', borderRadius:10, padding:'11px 13px', color:'#fff', fontSize:13, outline:'none', boxSizing:'border-box', marginBottom:8 },
+  optTitle: (active) => ({ fontSize:13, fontWeight:600, color: active ? '#121D29' : 'rgba(18,29,41,0.65)' }),
+  optSub: { fontSize:10, color:'rgba(18,29,41,0.4)', marginTop:2 },
+  check: { marginLeft:'auto', width:16, height:16, borderRadius:'50%', background:'#EA2A30', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, color:'#FFFFFF', fontWeight:700, flexShrink:0 },
+  divider: { height:'0.5px', background:'rgba(18,29,41,0.08)', margin:'12px 0' },
+  label: { fontSize:11, color:'rgba(18,29,41,0.4)', marginBottom:6, display:'block' },
+  input: { width:'100%', background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.12)', borderRadius:10, padding:'11px 13px', color:'#121D29', fontSize:13, outline:'none', boxSizing:'border-box', marginBottom:8 },
   upload: (hasFile) => ({
-    display:'block', border: hasFile ? '1.5px solid rgba(74,222,128,0.4)' : '1.5px dashed rgba(255,255,255,0.15)',
+    display:'block', border: hasFile ? '1.5px solid rgba(234,42,48,0.4)' : '1.5px dashed rgba(18,29,41,0.15)',
     borderRadius:12, padding:'18px', textAlign:'center', cursor:'pointer',
-    color: hasFile ? '#4ade80' : 'rgba(255,255,255,0.35)', fontSize:12, marginBottom:8,
-    background: hasFile ? 'rgba(74,222,128,0.06)' : 'transparent',
+    color: hasFile ? '#EA2A30' : 'rgba(18,29,41,0.4)', fontSize:12, marginBottom:8,
+    background: hasFile ? 'rgba(234,42,48,0.06)' : 'transparent',
   }),
-  gpxInfo: { background:'rgba(74,222,128,0.08)', border:'0.5px solid rgba(74,222,128,0.2)', borderRadius:10, padding:'10px 12px', marginBottom:8 },
+  gpxInfo: { background:'rgba(234,42,48,0.06)', border:'0.5px solid rgba(234,42,48,0.15)', borderRadius:10, padding:'10px 12px', marginBottom:8 },
   gpxRow: { display:'flex', justifyContent:'space-between', fontSize:11, marginBottom:3 },
-  gpxKey: { color:'rgba(255,255,255,0.4)' },
-  gpxVal: { color:'#4ade80', fontWeight:600 },
-  stravaBox: { background:'rgba(252,76,2,0.08)', border:'0.5px solid rgba(252,76,2,0.2)', borderRadius:12, padding:'14px', marginBottom:8 },
+  gpxKey: { color:'rgba(18,29,41,0.4)' },
+  gpxVal: { color:'#EA2A30', fontWeight:600 },
+  stravaBox: { background:'rgba(252,76,2,0.06)', border:'0.5px solid rgba(252,76,2,0.2)', borderRadius:12, padding:'14px', marginBottom:8 },
   stravaBtn: { display:'block', background:'#FC4C02', borderRadius:9, padding:'11px', textAlign:'center', fontSize:13, fontWeight:600, color:'#fff', cursor:'pointer', marginBottom:8, border:'none', width:'100%' },
-  stravaOr: { textAlign:'center', fontSize:11, color:'rgba(255,255,255,0.3)', margin:'8px 0' },
+  stravaOr: { textAlign:'center', fontSize:11, color:'rgba(18,29,41,0.4)', margin:'8px 0' },
   manualRow: { marginBottom:8 },
-  select: { width:'100%', background:'rgba(255,255,255,0.06)', border:'0.5px solid rgba(255,255,255,0.12)', borderRadius:10, padding:'11px 13px', color:'#fff', fontSize:13, outline:'none', boxSizing:'border-box' },
+  select: { width:'100%', background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.12)', borderRadius:10, padding:'11px 13px', color:'#121D29', fontSize:13, outline:'none', boxSizing:'border-box' },
   btn: (loading, disabled) => ({
-    marginTop:12, background: disabled ? 'rgba(29,158,117,0.3)' : loading ? 'rgba(29,158,117,0.6)' : '#1d9e75',
+    marginTop:12, background: disabled ? 'rgba(234,42,48,0.3)' : loading ? 'rgba(234,42,48,0.6)' : '#EA2A30',
     borderRadius:12, padding:13, textAlign:'center', fontSize:13, fontWeight:600, color:'#fff',
     cursor: disabled || loading ? 'default' : 'pointer', border:'none', width:'100%',
   }),
-  error: { color:'#f87171', fontSize:11, textAlign:'center', marginTop:8 },
+  error: { color:'#EA2A30', fontSize:11, textAlign:'center', marginTop:8 },
   distancePicker: { marginBottom:8 },
   distanceRow: { display:'flex', gap:6, flexWrap:'wrap', marginTop:6 },
   distBtn: (active) => ({
     padding:'7px 13px', borderRadius:20, fontSize:12, fontWeight:500, cursor:'pointer',
-    background: active ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.05)',
-    border: active ? '1px solid rgba(74,222,128,0.3)' : '0.5px solid rgba(255,255,255,0.08)',
-    color: active ? '#4ade80' : 'rgba(255,255,255,0.5)',
+    background: active ? 'rgba(234,42,48,0.1)' : 'rgba(18,29,41,0.04)',
+    border: active ? '1px solid rgba(234,42,48,0.25)' : '0.5px solid rgba(18,29,41,0.09)',
+    color: active ? '#EA2A30' : 'rgba(18,29,41,0.5)',
   }),
 };
 
@@ -209,7 +210,7 @@ export default function SourceScreen({ lang, onNext }) {
             <button
               type="button"
               onClick={() => { setGoal(null); setError(''); }}
-              style={{ background:'none', border:'none', color:'rgba(255,255,255,0.35)', fontSize:11, cursor:'pointer', marginBottom:6, fontFamily:'inherit', padding:0 }}
+              style={{ background:'none', border:'none', color:'rgba(18,29,41,0.4)', fontSize:11, cursor:'pointer', marginBottom:6, fontFamily:'inherit', padding:0 }}
             >
               ← {lang==='es' ? 'Volver' : 'Back'}
             </button>

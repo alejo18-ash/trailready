@@ -5,21 +5,21 @@ import BottomNav from '../components/BottomNav';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80, maxWidth:600, margin:'0 auto' },
+  wrap: { minHeight:'100vh', background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80, maxWidth:600, margin:'0 auto' },
   header: { padding:'14px 20px 12px', display:'flex', alignItems:'center', gap:12 },
-  back: { fontSize:12, color:'rgba(255,255,255,0.35)', cursor:'pointer' },
-  headerTitle: { fontSize:16, fontWeight:700, color:'#fff' },
+  back: { fontSize:12, color:'rgba(18,29,41,0.4)', cursor:'pointer' },
+  headerTitle: { fontSize:16, fontWeight:700, color:'#121D29' },
   section: { padding:'0 20px', marginBottom:24 },
-  sectionLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:0.5, marginBottom:10 },
-  card: { background:'rgba(255,255,255,0.04)', border:'0.5px solid rgba(255,255,255,0.08)', borderRadius:14, padding:16 },
-  cardTitle: { fontSize:13, fontWeight:600, color:'#fff', marginBottom:4 },
-  cardSub: { fontSize:10, color:'rgba(255,255,255,0.35)', marginBottom:12 },
+  sectionLabel: { fontSize:10, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:10 },
+  card: { background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.08)', borderRadius:14, padding:16, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' },
+  cardTitle: { fontSize:13, fontWeight:600, color:'#121D29', marginBottom:4 },
+  cardSub: { fontSize:10, color:'rgba(18,29,41,0.4)', marginBottom:12 },
   statsRow: { display:'flex', gap:8, marginBottom:12 },
-  statBox: { flex:1, background:'rgba(255,255,255,0.06)', borderRadius:8, padding:'8px 6px', textAlign:'center' },
+  statBox: { flex:1, background:'rgba(18,29,41,0.04)', borderRadius:8, padding:'8px 6px', textAlign:'center' },
   statVal: (color) => ({ fontSize:14, fontWeight:700, color }),
-  statLbl: { fontSize:9, color:'rgba(255,255,255,0.3)', marginTop:1 },
+  statLbl: { fontSize:9, color:'rgba(18,29,41,0.4)', marginTop:1 },
   chartWrap: { position:'relative', height:120, marginTop:8 },
-  noData: { textAlign:'center', padding:'20px 0', fontSize:12, color:'rgba(255,255,255,0.3)' },
+  noData: { textAlign:'center', padding:'20px 0', fontSize:12, color:'rgba(18,29,41,0.35)' },
   badge: (color, bg) => ({ display:'inline-block', padding:'3px 10px', borderRadius:20, fontSize:10, fontWeight:600, color, background:bg, marginRight:6, marginBottom:6 }),
 };
 
@@ -69,7 +69,7 @@ function ElevationChart({ profile, color, height = 120 }) {
     ctx.lineJoin = 'round';
     ctx.stroke();
 
-    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.fillStyle = 'rgba(18,29,41,0.45)';
     ctx.font = '10px system-ui';
     ctx.fillText(Math.round(max) + 'm', 4, pad + 10);
     ctx.fillText(Math.round(min) + 'm', 4, h - 4);
@@ -111,10 +111,10 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
 
   const raceProfile = raceData?.profile || null;
   const terrainMap = {
-    technical: { en:'Technical', es:'Técnico',  color:'#f87171', bg:'rgba(248,113,113,0.12)' },
-    mountain:  { en:'Mountain',  es:'Montaña',  color:'#fbbf24', bg:'rgba(251,191,36,0.12)'  },
-    mixed:     { en:'Mixed',     es:'Mixto',    color:'#60a5fa', bg:'rgba(96,165,250,0.12)'  },
-    road:      { en:'Road',      es:'Ruta',     color:'#9ca3af', bg:'rgba(156,163,175,0.12)' },
+    technical: { en:'Technical', es:'Técnico',  color:'#EA2A30', bg:'rgba(234,42,48,0.1)' },
+    mountain:  { en:'Mountain',  es:'Montaña',  color:'#b45309', bg:'rgba(251,191,36,0.12)' },
+    mixed:     { en:'Mixed',     es:'Mixto',    color:'#1d4ed8', bg:'rgba(96,165,250,0.12)' },
+    road:      { en:'Road',      es:'Ruta',     color:'#6b7280', bg:'rgba(156,163,175,0.12)' },
   };
   const terrain = terrainMap[raceData?.terreno] || terrainMap.mixed;
   const isPreBase  = Boolean(raceData?.isPreBase);
@@ -134,7 +134,7 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
           <div style={s.cardTitle}>{raceData?.name}</div>
           <div style={s.cardSub}>
             <span style={s.badge(terrain.color, terrain.bg)}>{terrain[lang] || terrain.en}</span>
-            {raceData?.source && <span style={s.badge('rgba(255,255,255,0.5)','rgba(255,255,255,0.06)')}>{raceData.source.toUpperCase()}</span>}
+            {raceData?.source && <span style={s.badge('rgba(18,29,41,0.5)','rgba(18,29,41,0.06)')}>{raceData.source.toUpperCase()}</span>}
           </div>
           {(!isPreBase && !isBasePlan) && (
             <div style={s.statsRow}>
@@ -152,10 +152,10 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
             </div>
           )}
           {raceProfile
-            ? <ElevationChart profile={raceProfile} color="#4ade80" height={120} />
-            : <div style={{background:'rgba(255,255,255,0.03)',borderRadius:8,padding:16,textAlign:'center'}}>
-                <div style={{fontSize:11,color:'rgba(255,255,255,0.25)',marginBottom:4}}>{lang==='es'?'Perfil no disponible':'Elevation profile not available'}</div>
-                <div style={{fontSize:10,color:'rgba(255,255,255,0.15)'}}>{lang==='es'?'Sube el GPX para ver el perfil':'Upload the race GPX to see the profile'}</div>
+            ? <ElevationChart profile={raceProfile} color="#EA2A30" height={120} />
+            : <div style={{background:'rgba(18,29,41,0.03)',borderRadius:8,padding:16,textAlign:'center'}}>
+                <div style={{fontSize:11,color:'rgba(18,29,41,0.3)',marginBottom:4}}>{lang==='es'?'Perfil no disponible':'Elevation profile not available'}</div>
+                <div style={{fontSize:10,color:'rgba(18,29,41,0.2)'}}>{lang==='es'?'Sube el GPX para ver el perfil':'Upload the race GPX to see the profile'}</div>
               </div>
           }
         </div>
@@ -173,7 +173,7 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
           </div>
           {loadingProfile
             ? <div style={s.noData}>⏳ {lang==='es'?'Cargando...':'Loading...'}</div>
-            : <ElevationChart profile={dailyProfile} color="#a78bfa" height={120} />
+            : <ElevationChart profile={dailyProfile} color="#7c3aed" height={120} />
           }
         </div>
       </div>

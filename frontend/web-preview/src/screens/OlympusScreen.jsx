@@ -41,14 +41,15 @@ export default function OlympusScreen({ lang, plan, raceData, onToday, onWeek })
       <div style={{ padding: '0 16px', maxWidth: 600, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {GODS.map(({ icon, nk, sk, bk, active }) => (
           <div key={nk} style={{
-            background: active ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.015)',
-            border: `1px solid ${active ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)'}`,
+            background: active ? '#FFFFFF' : 'rgba(18,29,41,0.02)',
+            border: `1px solid ${active ? 'rgba(18,29,41,0.08)' : 'rgba(18,29,41,0.04)'}`,
             borderRadius: 20,
             padding: '24px 20px',
             opacity: active ? 1 : 0.5,
             display: 'flex',
             flexDirection: 'column',
             gap: 8,
+            boxShadow: active ? '0 1px 4px rgba(18,29,41,0.06)' : 'none',
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -69,7 +70,7 @@ export default function OlympusScreen({ lang, plan, raceData, onToday, onWeek })
                 textTransform: 'uppercase',
                 padding: '4px 10px',
                 borderRadius: 100,
-                background: active ? 'rgba(var(--green-ch), 0.15)' : 'rgba(255,255,255,0.07)',
+                background: active ? 'rgba(var(--green-ch), 0.1)' : 'rgba(18,29,41,0.06)',
                 color: active ? 'var(--green)' : 'var(--text-30)',
                 whiteSpace: 'nowrap',
                 flexShrink: 0,

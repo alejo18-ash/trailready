@@ -1,14 +1,17 @@
+const ACTIVE = '#EA2A30';
+const INACTIVE = 'rgba(18,29,41,0.35)';
+
 const icons = {
   today: (active) => (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-      stroke={active ? '#00FF87' : 'rgba(255,255,255,0.4)'}
+      stroke={active ? ACTIVE : INACTIVE}
       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
     </svg>
   ),
   plan: (active) => (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-      stroke={active ? '#00FF87' : 'rgba(255,255,255,0.4)'}
+      stroke={active ? ACTIVE : INACTIVE}
       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
       <line x1="16" y1="2" x2="16" y2="6"/>
@@ -18,7 +21,7 @@ const icons = {
   ),
   olympus: (active) => (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-      stroke={active ? '#00FF87' : 'rgba(255,255,255,0.4)'}
+      stroke={active ? ACTIVE : INACTIVE}
       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="12" y1="2" x2="12" y2="6"/>
       <line x1="3" y1="22" x2="21" y2="22"/>
@@ -32,7 +35,7 @@ const icons = {
   ),
   profile: (active) => (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-      stroke={active ? '#00FF87' : 'rgba(255,255,255,0.4)'}
+      stroke={active ? ACTIVE : INACTIVE}
       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
       <circle cx="12" cy="7" r="4"/>
@@ -62,7 +65,7 @@ export default function BottomNav({ active, lang, onToday, onPlan, onWeek, onOly
       left: 0,
       right: 0,
       height: 64,
-      background: '#111111',
+      background: '#121D29',
       borderTop: '1px solid rgba(255,255,255,0.08)',
       display: 'flex',
       alignItems: 'stretch',
@@ -86,17 +89,28 @@ export default function BottomNav({ active, lang, onToday, onPlan, onWeek, onOly
             cursor: fn ? 'pointer' : 'default',
             padding: '8px 0',
             fontFamily: "'Inter', system-ui, sans-serif",
+            position: 'relative',
           }}
         >
           {icons[key](active === key)}
           <span style={{
             fontSize: 11,
             fontWeight: 500,
-            color: active === key ? '#00FF87' : 'rgba(255,255,255,0.6)',
+            color: active === key ? ACTIVE : 'rgba(255,255,255,0.45)',
             letterSpacing: '0.04em',
           }}>
             {labels[key][lang || 'es']}
           </span>
+          {active === key && (
+            <div style={{
+              position: 'absolute',
+              bottom: 6,
+              width: 4,
+              height: 4,
+              borderRadius: '50%',
+              background: ACTIVE,
+            }} />
+          )}
         </button>
       ))}
     </div>

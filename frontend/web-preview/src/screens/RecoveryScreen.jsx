@@ -49,35 +49,37 @@ const subs = {
 };
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", padding:'0 0 40px' },
+  wrap: { minHeight:'100vh', background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", padding:'0 0 40px' },
   header: { padding:'14px 20px 12px', display:'flex', alignItems:'center', gap:12 },
-  back: { fontSize:12, color:'rgba(255,255,255,0.35)', cursor:'pointer' },
-  headerTitle: { fontSize:16, fontWeight:700, color:'#fff' },
+  back: { fontSize:12, color:'rgba(18,29,41,0.4)', cursor:'pointer' },
+  headerTitle: { fontSize:16, fontWeight:700, color:'#121D29' },
   section: { padding:'0 20px' },
-  sectionLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:0.5, marginBottom:10 },
+  sectionLabel: { fontSize:10, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:10 },
   mainCard: (bg, border) => ({
-    background:bg, border:`1px solid ${border}`, borderRadius:14, padding:16, marginBottom:12,
+    background:'#FFFFFF', border:`1px solid ${border}`, borderRadius:14, padding:16, marginBottom:12,
+    boxShadow:'0 1px 4px rgba(18,29,41,0.06)',
   }),
   cardHeader: { display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:12 },
-  cardTitle: { fontSize:14, fontWeight:600, color:'#fff' },
-  cardSub: { fontSize:11, color:'rgba(255,255,255,0.35)', marginTop:3 },
+  cardTitle: { fontSize:14, fontWeight:600, color:'#121D29' },
+  cardSub: { fontSize:11, color:'rgba(18,29,41,0.4)', marginTop:3 },
   ytBadge: (color, bg) => ({
     background:bg, borderRadius:8, padding:'4px 10px', fontSize:10, color, fontWeight:500, cursor:'pointer', border:'none',
   }),
   thumbnail: {
-    background:'#1a1a2e', borderRadius:10, height:90, display:'flex', alignItems:'center',
-    justifyContent:'center', border:'0.5px solid rgba(255,255,255,0.08)', cursor:'pointer', marginBottom:10,
+    background:'rgba(18,29,41,0.04)', borderRadius:10, height:90, display:'flex', alignItems:'center',
+    justifyContent:'center', border:'0.5px solid rgba(18,29,41,0.08)', cursor:'pointer', marginBottom:10,
   },
-  playBtn: { width:32, height:32, background:'rgba(248,113,113,0.8)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13 },
-  tagsLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:0.5, marginBottom:6 },
+  playBtn: { width:32, height:32, background:'rgba(234,42,48,0.8)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13 },
+  tagsLabel: { fontSize:10, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:6 },
   tags: { display:'flex', gap:5, flexWrap:'wrap' },
   tag: (color, bg) => ({ background:bg, color, padding:'3px 9px', borderRadius:20, fontSize:10, fontWeight:500 }),
-  otherCard: (bg, border) => ({
-    background:bg, border:`0.5px solid ${border}`, borderRadius:14, padding:'12px 14px',
+  otherCard: (_bg, border) => ({
+    background:'#FFFFFF', border:`0.5px solid ${border}`, borderRadius:14, padding:'12px 14px',
     marginBottom:8, display:'flex', justifyContent:'space-between', alignItems:'center', cursor:'pointer',
+    boxShadow:'0 1px 3px rgba(18,29,41,0.05)',
   }),
-  otherTitle: { fontSize:13, fontWeight:600, color:'#fff' },
-  otherSub: { fontSize:10, color:'rgba(255,255,255,0.35)', marginTop:2 },
+  otherTitle: { fontSize:13, fontWeight:600, color:'#121D29' },
+  otherSub: { fontSize:10, color:'rgba(18,29,41,0.4)', marginTop:2 },
 };
 
 export default function RecoveryScreen({ lang, type, onBack, raceData, plan, currentWeek }) {

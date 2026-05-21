@@ -50,14 +50,14 @@ const CSS = `
   align-items: center;
   justify-content: center;
   background: var(--green);
-  color: #000;
+  color: #FFFFFF;
   font-weight: 700;
   font-size: 1rem;
   padding: 18px 40px;
   border-radius: 100px;
   border: none;
   cursor: pointer;
-  box-shadow: 0 0 40px rgba(var(--green-ch), 0.4), 0 0 80px rgba(var(--green-ch), 0.15);
+  box-shadow: 0 4px 20px rgba(var(--green-ch), 0.35);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   font-family: var(--font);
   letter-spacing: -0.01em;
@@ -66,32 +66,35 @@ const CSS = `
 
 .tr-cta-btn:hover {
   transform: scale(1.03);
-  box-shadow: 0 0 60px rgba(var(--green-ch), 0.65), 0 0 120px rgba(var(--green-ch), 0.3);
+  box-shadow: 0 6px 30px rgba(var(--green-ch), 0.5);
 }
 
 .tr-feature-card {
-  background: rgba(255,255,255,0.03);
+  background: #FFFFFF;
   border: 1px solid var(--border-card);
   border-radius: 16px;
   padding: 28px 24px;
-  transition: border-color 0.25s ease, background 0.25s ease;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
 }
 
 .tr-feature-card:hover {
   border-color: rgba(var(--green-ch), 0.3);
-  background: rgba(var(--green-ch), 0.025);
+  box-shadow: var(--shadow-elevated);
 }
 
 .tr-community-card {
-  background: rgba(255,255,255,0.03);
+  background: #FFFFFF;
   border: 1px solid var(--border-card);
   border-radius: 16px;
   padding: 28px 24px;
-  transition: border-color 0.25s ease;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .tr-community-card:hover {
   border-color: rgba(var(--green-ch), 0.3);
+  box-shadow: var(--shadow-elevated);
 }
 
 .tr-outline-btn {
@@ -118,25 +121,27 @@ const CSS = `
 }
 
 .tr-god-card {
-  background: rgba(255,255,255,0.03);
+  background: #FFFFFF;
   border: 1px solid var(--border-card);
   border-radius: 20px;
   padding: 32px 28px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
   cursor: default;
 }
 
 .tr-god-card.tr-god-active:hover {
   border-color: rgba(var(--green-ch), 0.35);
-  background: rgba(var(--green-ch), 0.04);
+  box-shadow: var(--shadow-elevated);
   transform: translateY(-2px);
 }
 
 .tr-god-card.tr-god-soon {
-  opacity: 0.45;
+  opacity: 0.4;
+  box-shadow: none;
 }
 
 @media (max-width: 900px) {
@@ -169,7 +174,7 @@ const s = {
     right: 0,
     zIndex: 100,
     borderTop: `1px solid rgba(var(--green-ch), 0.3)`,
-    background: scrolled ? 'rgba(13,13,26,0.99)' : 'rgba(13,13,26,0.95)',
+    background: scrolled ? 'rgba(18,29,41,0.99)' : 'rgba(18,29,41,0.95)',
     backdropFilter: 'blur(10px)',
     WebkitBackdropFilter: 'blur(10px)',
     borderBottom: '1px solid rgba(255,255,255,0.05)',
@@ -288,9 +293,9 @@ const s = {
   },
 
   marqueeBar: {
-    borderTop: '1px solid var(--border)',
-    borderBottom: '1px solid var(--border)',
-    background: 'rgba(0,0,0,0.5)',
+    borderTop: '1px solid rgba(18,29,41,0.12)',
+    borderBottom: '1px solid rgba(18,29,41,0.12)',
+    background: 'rgba(18,29,41,0.06)',
     padding: '14px 0',
     overflow: 'hidden',
   },
@@ -327,12 +332,13 @@ const s = {
     gap: 20,
   },
   howCard: {
-    background: 'rgba(255,255,255,0.025)',
+    background: '#FFFFFF',
     border: '1px solid var(--border)',
     borderRadius: 20,
     padding: '32px 28px',
     position: 'relative',
     overflow: 'hidden',
+    boxShadow: '0 1px 4px rgba(18,29,41,0.06)',
   },
   howNum: {
     position: 'absolute',
@@ -340,7 +346,7 @@ const s = {
     right: 14,
     fontSize: '8rem',
     fontWeight: 900,
-    color: 'rgba(255,255,255,0.035)',
+    color: 'rgba(18,29,41,0.04)',
     lineHeight: 1,
     pointerEvents: 'none',
     userSelect: 'none',
@@ -387,7 +393,7 @@ const s = {
     textTransform: 'uppercase',
     padding: '3px 10px',
     borderRadius: 100,
-    background: active ? 'rgba(var(--green-ch), 0.15)' : 'rgba(255,255,255,0.07)',
+    background: active ? 'rgba(var(--green-ch), 0.1)' : 'rgba(18,29,41,0.06)',
     color: active ? 'var(--green)' : 'var(--text-30)',
     marginBottom: 12,
   }),

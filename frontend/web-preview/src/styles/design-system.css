@@ -1,46 +1,53 @@
-/* TrailReady — Design System */
+/* TrailReady / Olympus — Design System */
 
 :root {
   --font: 'Inter', system-ui, -apple-system, sans-serif;
 
   /* Backgrounds */
-  --bg: #0d0d1a;
-  --bg-card: rgba(255, 255, 255, 0.04);
-  --bg-raised: rgba(255, 255, 255, 0.07);
+  --bg: #F0F4F8;
+  --bg-card: #FFFFFF;
+  --bg-raised: #E8EDF2;
 
-  /* Accent — electric green used for hero moments and CTAs */
-  --accent: #00FF87;
+  /* Navigation (always dark) */
+  --nav-bg: #121D29;
 
-  /* Brand green */
-  --green: #4ade80;
-  --green-deep: #1d9e75;
-  --green-glow: rgba(29, 158, 117, 0.2);
-  --green-border: rgba(29, 158, 117, 0.3);
-  --green-dim: rgba(74, 222, 128, 0.15);
+  /* Accent — VisoRando red */
+  --accent: #EA2A30;
+
+  /* Brand red (replaces green) */
+  --green: #EA2A30;
+  --green-deep: #C41A20;
+  --green-glow: rgba(234, 42, 48, 0.12);
+  --green-border: rgba(234, 42, 48, 0.25);
+  --green-dim: rgba(234, 42, 48, 0.1);
 
   /* Accent colors */
   --blue: #60a5fa;
   --blue-light: #93c5fd;
   --yellow: #fbbf24;
   --purple: #a78bfa;
-  --red: #f87171;
+  --red: #EA2A30;
   --teal: #2dd4bf;
 
   /* RGB channels — for rgba() usage in CSS and inline styles */
-  --green-ch: 74, 222, 128;
-  --bg-ch: 13, 13, 26;
-  --green-deep-ch: 29, 158, 117;
+  --green-ch: 234, 42, 48;
+  --bg-ch: 240, 244, 248;
+  --green-deep-ch: 196, 26, 32;
 
   /* Text hierarchy */
-  --text: #ffffff;
-  --text-60: rgba(255, 255, 255, 0.6);
-  --text-40: rgba(255, 255, 255, 0.4);
-  --text-30: rgba(255, 255, 255, 0.3);
-  --text-20: rgba(255, 255, 255, 0.2);
+  --text: #121D29;
+  --text-60: rgba(18, 29, 41, 0.6);
+  --text-40: rgba(18, 29, 41, 0.4);
+  --text-30: rgba(18, 29, 41, 0.3);
+  --text-20: rgba(18, 29, 41, 0.2);
 
   /* Borders */
-  --border: rgba(255, 255, 255, 0.07);
-  --border-card: rgba(255, 255, 255, 0.08);
+  --border: rgba(18, 29, 41, 0.08);
+  --border-card: rgba(18, 29, 41, 0.08);
+
+  /* Shadows */
+  --shadow-card: 0 1px 4px rgba(18,29,41,0.06), 0 4px 12px rgba(18,29,41,0.06);
+  --shadow-elevated: 0 4px 16px rgba(18,29,41,0.1), 0 1px 4px rgba(18,29,41,0.06);
 
   /* Motion */
   --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);

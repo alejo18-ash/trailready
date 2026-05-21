@@ -11,23 +11,23 @@ const phaseKey = {
 };
 
 const workoutColors = {
-  rest:              { dot:'rgba(255,255,255,0.15)' },
-  easy:              { dot:'#4ade80' },
-  tempo:             { dot:'#60a5fa' },
-  medium:            { dot:'#4ade80' },
-  intervals:         { dot:'#fbbf24' },
-  strength:          { dot:'#a78bfa' },
-  strength_beginner: { dot:'#a78bfa' },
-  longTrail:         { dot:'#4ade80' },
-  shortTrail:        { dot:'#4ade80' },
-  recovery:          { dot:'rgba(255,255,255,0.2)' },
-  backToBack:        { dot:'#f87171' },
-  strides:           { dot:'#2dd4bf' },
-  cross:             { dot:'#2dd4bf' },
-  treadmillIntervals:{ dot:'#f59e0b' },
-  walk:              { dot:'#4ade80' },
-  walk_run:          { dot:'#00FF87' },
-  mobility:          { dot:'#2dd4bf' },
+  rest:              { dot:'rgba(18,29,41,0.15)' },
+  easy:              { dot:'#16a34a' },
+  tempo:             { dot:'#2563eb' },
+  medium:            { dot:'#16a34a' },
+  intervals:         { dot:'#d97706' },
+  strength:          { dot:'#7c3aed' },
+  strength_beginner: { dot:'#7c3aed' },
+  longTrail:         { dot:'#16a34a' },
+  shortTrail:        { dot:'#16a34a' },
+  recovery:          { dot:'rgba(18,29,41,0.18)' },
+  backToBack:        { dot:'#EA2A30' },
+  strides:           { dot:'#0891b2' },
+  cross:             { dot:'#0891b2' },
+  treadmillIntervals:{ dot:'#d97706' },
+  walk:              { dot:'#16a34a' },
+  walk_run:          { dot:'#EA2A30' },
+  mobility:          { dot:'#0891b2' },
 };
 
 const dayKeys = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -135,24 +135,24 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
     : `${week.kmTotal} km`;
 
   return (
-    <div className="screen-enter" style={{ minHeight:'100vh', background:'#080808', fontFamily:"'Inter', system-ui, sans-serif" }}>
+    <div className="screen-enter" style={{ minHeight:'100vh', background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif" }}>
     <div style={{ maxWidth:600, margin:'0 auto', display:'flex', flexDirection:'column', paddingBottom:80 }}>
 
       {/* ── SECTION 1: HEADER ── */}
-      <div style={{ background:'#080808', padding:'20px 24px 0' }}>
+      <div style={{ background:'#F0F4F8', padding:'20px 24px 0' }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-          <div style={{ fontSize:20, fontWeight:600, color:'#fff', letterSpacing:'-0.02em' }}>
+          <div style={{ fontSize:20, fontWeight:600, color:'#121D29', letterSpacing:'-0.02em' }}>
             {planTitle}
           </div>
-          <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)' }}>
+          <div style={{ fontSize:14, color:'rgba(18,29,41,0.45)' }}>
             {weekVol}
           </div>
         </div>
-        <div style={{ fontSize:11, letterSpacing:'0.1em', color:'rgba(255,255,255,0.3)', marginTop:4, textTransform:'uppercase' }}>
+        <div style={{ fontSize:11, letterSpacing:'0.1em', color:'rgba(18,29,41,0.35)', marginTop:4, textTransform:'uppercase' }}>
           {t(lang,'week')} {week.week} {t(lang,'of')} {plan.totalWeeks} · {t(lang, phaseKey[week.phase] || 'buildPhase').toUpperCase()}
         </div>
-        <div style={{ height:2, background:'rgba(255,255,255,0.08)', borderRadius:100, margin:'12px 0 0' }}>
-          <div style={{ width:`${pct}%`, height:'100%', background:'#00FF87', borderRadius:100, minWidth: pct > 0 ? 4 : 0 }} />
+        <div style={{ height:2, background:'rgba(18,29,41,0.1)', borderRadius:100, margin:'12px 0 0' }}>
+          <div style={{ width:`${pct}%`, height:'100%', background:'#EA2A30', borderRadius:100, minWidth: pct > 0 ? 4 : 0 }} />
         </div>
       </div>
 
@@ -166,10 +166,11 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
             style={{
               padding:'6px 14px', borderRadius:100, fontSize:13, cursor:'pointer',
               fontFamily:'inherit', flexShrink:0, whiteSpace:'nowrap',
-              background: selectedWeek === i ? '#00FF87' : 'transparent',
-              border: selectedWeek === i ? '1px solid #00FF87' : '1px solid rgba(255,255,255,0.1)',
-              color: selectedWeek === i ? '#000000' : 'rgba(255,255,255,0.4)',
+              background: selectedWeek === i ? '#EA2A30' : '#FFFFFF',
+              border: selectedWeek === i ? '1px solid #EA2A30' : '1px solid rgba(18,29,41,0.1)',
+              color: selectedWeek === i ? '#FFFFFF' : 'rgba(18,29,41,0.5)',
               fontWeight: selectedWeek === i ? 600 : 400,
+              boxShadow: selectedWeek === i ? 'none' : '0 1px 2px rgba(18,29,41,0.04)',
             }}
           >
             {lang === 'es' ? `SEM ${w.week}` : `W${w.week}`}
@@ -179,11 +180,11 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
 
       {/* ── SECTION 3: KEY WORKOUT CARD ── */}
       {week.keyWorkout && !isPreBase && (
-        <div style={{ margin:'0 16px 12px', background:'rgba(255,184,0,0.08)', border:'1px solid rgba(255,184,0,0.2)', borderRadius:16, padding:'14px 16px' }}>
+        <div style={{ margin:'0 16px 12px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:16, padding:'14px 16px', boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
             <div style={{ display:'flex', alignItems:'center', gap:10, flex:1 }}>
               <span style={{ fontSize:20 }}>⭐</span>
-              <div style={{ fontSize:15, fontWeight:600, color:'#FFB800' }}>
+              <div style={{ fontSize:15, fontWeight:600, color:'#b45309' }}>
                 {flatRunnerKeyBanner
                   ? t(lang, 'keyWorkoutFlatRunner')
                   : week.keyWorkout.type === 'treadmillIntervals'
@@ -191,12 +192,12 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
                     : t(lang, `workouts.${week.keyWorkout.type}`)}
               </div>
             </div>
-            <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', marginLeft:8 }}>
+            <div style={{ fontSize:13, color:'rgba(18,29,41,0.4)', marginLeft:8 }}>
               {t(lang, `days.${week.keyWorkout.day}`)}
             </div>
           </div>
           {(kwDur || week.keyWorkout.desc) && (
-            <div style={{ fontSize:13, color:'rgba(255,255,255,0.5)', marginTop:8 }}>
+            <div style={{ fontSize:13, color:'rgba(18,29,41,0.5)', marginTop:8 }}>
               {[kwDur, week.keyWorkout.desc?.[lang] || week.keyWorkout.desc?.en].filter(Boolean).join(' · ')}
             </div>
           )}
@@ -219,19 +220,19 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
               onClick={() => setSelectedDay(i)}
               style={{
                 flex:1, textAlign:'center', padding:'10px 4px', borderRadius:12, cursor:'pointer',
-                background: isSelect ? 'rgba(0,255,135,0.12)' : 'transparent',
-                border: isSelect ? '1px solid rgba(0,255,135,0.25)' : '1px solid transparent',
+                background: isSelect ? 'rgba(234,42,48,0.08)' : 'transparent',
+                border: isSelect ? '1px solid rgba(234,42,48,0.2)' : '1px solid transparent',
               }}
             >
-              <div style={{ fontSize:11, color: isSelect ? '#00FF87' : isToday ? 'rgba(74,222,128,0.8)' : 'rgba(255,255,255,0.3)', fontWeight: isSelect || isToday ? 600 : 400, marginBottom:6 }}>
+              <div style={{ fontSize:11, color: isSelect ? '#EA2A30' : isToday ? 'rgba(234,42,48,0.75)' : 'rgba(18,29,41,0.35)', fontWeight: isSelect || isToday ? 600 : 400, marginBottom:6 }}>
                 {dayLetters[i]}
               </div>
-              <div style={{ fontSize:15, fontWeight:500, color: isSelect ? '#fff' : isToday ? '#fff' : 'rgba(255,255,255,0.6)' }}>
+              <div style={{ fontSize:15, fontWeight:500, color: isSelect ? '#121D29' : isToday ? '#121D29' : 'rgba(18,29,41,0.6)' }}>
                 {dayDate(i)}
               </div>
               <div style={{ height:14, display:'flex', alignItems:'center', justifyContent:'center', marginTop:4 }}>
-                {done   && <div style={{ width:6, height:6, borderRadius:'50%', background:'#00FF87' }} />}
-                {missed && <div style={{ width:6, height:6, borderRadius:'50%', background:'#FF4444' }} />}
+                {done   && <div style={{ width:6, height:6, borderRadius:'50%', background:'#EA2A30' }} />}
+                {missed && <div style={{ width:6, height:6, borderRadius:'50%', background:'#121D29' }} />}
                 {!done && !missed && isKey && <span style={{ fontSize:10 }}>⭐</span>}
                 {!done && !missed && !isKey && workout.type !== 'rest' && <div style={{ width:6, height:6, borderRadius:'50%', background: dotColor }} />}
               </div>
@@ -242,14 +243,14 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
 
       {/* ── SECTION 5: SELECTED DAY DETAIL ── */}
       {selWorkout && (
-        <div style={{ margin:'0 16px', background:'#111111', border:'1px solid rgba(255,255,255,0.08)', borderRadius:16, padding:16 }}>
+        <div style={{ margin:'0 16px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:16, padding:16, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
             <div style={{ flex:1 }}>
-              <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', marginBottom:8 }}>
+              <div style={{ fontSize:12, color:'rgba(18,29,41,0.4)', marginBottom:8 }}>
                 {t(lang, `days.${dayKeys[selectedDay]}`)}
                 {selIsToday ? ` · ${lang==='es' ? 'HOY' : 'TODAY'}` : ''}
               </div>
-              <div style={{ fontSize:20, fontWeight:600, color: selIsDone ? 'rgba(255,255,255,0.3)' : '#fff', letterSpacing:'-0.01em' }}>
+              <div style={{ fontSize:20, fontWeight:600, color: selIsDone ? 'rgba(18,29,41,0.3)' : '#121D29', letterSpacing:'-0.01em' }}>
                 {selWorkout.type === 'rest'
                   ? (lang === 'es' ? 'Descanso' : 'Rest')
                   : selWorkout.type === 'treadmillIntervals'
@@ -257,28 +258,28 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
                     : (t(lang, `workouts.${selWorkout.type}`) || selWorkout.type)}
               </div>
               {selWorkout.type === 'rest' ? (
-                <div style={{ fontSize:13, color:'rgba(255,255,255,0.3)', marginTop:6 }}>
+                <div style={{ fontSize:13, color:'rgba(18,29,41,0.35)', marginTop:6 }}>
                   {lang === 'es' ? 'Descanso · Recuperación activa' : 'Rest · Active recovery'}
                 </div>
               ) : selMeta ? (
-                <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', marginTop:6 }}>
+                <div style={{ fontSize:13, color:'rgba(18,29,41,0.45)', marginTop:6 }}>
                   {selMeta}
                 </div>
               ) : null}
             </div>
             <div style={{ marginLeft:12, paddingTop:2 }}>
               {completions[selectedDay] === 'completed'
-                ? <div style={{ width:24, height:24, borderRadius:'50%', background:'rgba(0,255,135,0.2)', border:'1px solid #00FF87', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, color:'#00FF87', fontWeight:700 }}>✓</div>
+                ? <div style={{ width:24, height:24, borderRadius:'50%', background:'rgba(234,42,48,0.1)', border:'1px solid #EA2A30', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, color:'#EA2A30', fontWeight:700 }}>✓</div>
                 : completions[selectedDay] === 'missed'
-                  ? <div style={{ width:24, height:24, borderRadius:'50%', background:'rgba(255,68,68,0.2)', border:'1px solid #FF4444', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, color:'#FF4444', fontWeight:700 }}>✗</div>
-                  : <div style={{ width:24, height:24, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.15)' }} />}
+                  ? <div style={{ width:24, height:24, borderRadius:'50%', background:'rgba(18,29,41,0.06)', border:'1px solid rgba(18,29,41,0.3)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, color:'rgba(18,29,41,0.5)', fontWeight:700 }}>✗</div>
+                  : <div style={{ width:24, height:24, borderRadius:'50%', border:'1px solid rgba(18,29,41,0.15)' }} />}
             </div>
           </div>
 
           {(selIsRecovery || selIsStrength) && (
             <button
               type="button"
-              style={{ marginTop:14, width:'100%', background:'rgba(255,255,255,0.05)', border:'0.5px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'10px', textAlign:'center', fontSize:13, color:'rgba(255,255,255,0.6)', cursor:'pointer', fontFamily:'inherit' }}
+              style={{ marginTop:14, width:'100%', background:'rgba(18,29,41,0.04)', border:'0.5px solid rgba(18,29,41,0.1)', borderRadius:10, padding:'10px', textAlign:'center', fontSize:13, color:'rgba(18,29,41,0.55)', cursor:'pointer', fontFamily:'inherit' }}
               onClick={() => {
                 if (selIsRecovery) onRecovery?.(selWorkout.type);
                 else if (selIsStrength) onStrength?.(selWorkout.type === 'strength_beginner' ? 'beginner' : week.phase);

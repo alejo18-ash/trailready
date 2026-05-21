@@ -13,7 +13,7 @@ export default function SplashScreen({ onDone }) {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#0d0d1a',
+      background: '#F0F4F8',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -25,7 +25,7 @@ export default function SplashScreen({ onDone }) {
       <div style={{
         width: 80,
         height: 80,
-        background: '#0f6e56',
+        background: '#EA2A30',
         borderRadius: 22,
         display: 'flex',
         alignItems: 'center',
@@ -41,7 +41,7 @@ export default function SplashScreen({ onDone }) {
       <div style={{
         fontSize: 32,
         fontWeight: 700,
-        color: '#fff',
+        color: '#121D29',
         letterSpacing: -0.5,
         opacity: phase === 'logo' ? 0 : 1,
         transform: phase === 'logo' ? 'translateY(8px)' : 'translateY(0)',
@@ -52,7 +52,7 @@ export default function SplashScreen({ onDone }) {
 
       <div style={{
         fontSize: 14,
-        color: 'rgba(255,255,255,0.4)',
+        color: 'rgba(18,29,41,0.45)',
         marginTop: 8,
         opacity: phase === 'tagline' || phase === 'fade' ? 1 : 0,
         transition: 'opacity 0.5s ease 0.2s',
@@ -71,7 +71,7 @@ export default function SplashScreen({ onDone }) {
             width: 6,
             height: 6,
             borderRadius: '50%',
-            background: i === 0 ? '#1d9e75' : 'rgba(255,255,255,0.2)',
+            background: i === 0 ? '#EA2A30' : 'rgba(18,29,41,0.15)',
           }} />
         ))}
       </div>

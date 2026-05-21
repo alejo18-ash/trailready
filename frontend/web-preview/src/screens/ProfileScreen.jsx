@@ -2,25 +2,25 @@ import { useState } from 'react';
 import { t } from '../i18n';
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:"'Inter', system-ui, sans-serif" },
+  wrap: { minHeight:'100vh', background:'#F0F4F8', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:"'Inter', system-ui, sans-serif" },
   card: { width:'100%', maxWidth:340 },
-  back: { fontSize:12, color:'rgba(255,255,255,0.35)', cursor:'pointer', marginBottom:16, display:'block' },
-  racePill: { display:'inline-flex', alignItems:'center', gap:6, background:'rgba(29,158,117,0.15)', border:'0.5px solid rgba(29,158,117,0.3)', borderRadius:20, padding:'5px 12px', marginBottom:16 },
-  racePillText: { fontSize:12, color:'#4ade80', fontWeight:500 },
+  back: { fontSize:12, color:'rgba(18,29,41,0.4)', cursor:'pointer', marginBottom:16, display:'block' },
+  racePill: { display:'inline-flex', alignItems:'center', gap:6, background:'rgba(234,42,48,0.08)', border:'0.5px solid rgba(234,42,48,0.2)', borderRadius:20, padding:'5px 12px', marginBottom:16 },
+  racePillText: { fontSize:12, color:'#EA2A30', fontWeight:500 },
   raceTags: { display:'flex', gap:6, flexWrap:'wrap', marginBottom:20 },
-  tag: (color) => ({ padding:'3px 10px', borderRadius:20, fontSize:11, fontWeight:500, background:`rgba(${color},0.12)`, color:`rgb(${color})` }),
-  sectionLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:0.5, marginBottom:8, marginTop:16 },
-  heading: { fontSize:20, fontWeight:700, color:'#fff', marginBottom:4 },
+  tag: (color) => ({ padding:'3px 10px', borderRadius:20, fontSize:11, fontWeight:500, background:`rgba(${color},0.1)`, color:`rgb(${color})` }),
+  sectionLabel: { fontSize:10, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:8, marginTop:16 },
+  heading: { fontSize:20, fontWeight:700, color:'#121D29', marginBottom:4 },
   optRow: { display:'flex', gap:7, flexWrap:'wrap', marginBottom:4 },
   opt: (active) => ({
     padding:'8px 14px', borderRadius:20, fontSize:12, fontWeight:500, cursor:'pointer',
-    background: active ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.05)',
-    border: active ? '1px solid rgba(74,222,128,0.3)' : '0.5px solid rgba(255,255,255,0.08)',
-    color: active ? '#4ade80' : 'rgba(255,255,255,0.5)',
+    background: active ? 'rgba(234,42,48,0.1)' : 'rgba(18,29,41,0.04)',
+    border: active ? '1px solid rgba(234,42,48,0.25)' : '0.5px solid rgba(18,29,41,0.09)',
+    color: active ? '#EA2A30' : 'rgba(18,29,41,0.5)',
   }),
-  weekInput: { background:'rgba(255,255,255,0.06)', border:'0.5px solid rgba(255,255,255,0.12)', borderRadius:10, padding:'11px 14px', color:'#fff', fontSize:13, outline:'none', width:'100%', boxSizing:'border-box', marginTop:6 },
-  warning: { background:'rgba(251,191,36,0.1)', border:'0.5px solid rgba(251,191,36,0.2)', borderRadius:10, padding:'10px 12px', marginTop:12, fontSize:12, color:'#fbbf24' },
-  btn: { marginTop:20, background:'#1d9e75', borderRadius:13, padding:14, textAlign:'center', fontSize:14, fontWeight:600, color:'#fff', cursor:'pointer', border:'none', width:'100%' },
+  weekInput: { background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.12)', borderRadius:10, padding:'11px 14px', color:'#121D29', fontSize:13, outline:'none', width:'100%', boxSizing:'border-box', marginTop:6 },
+  warning: { background:'rgba(251,191,36,0.1)', border:'0.5px solid rgba(251,191,36,0.2)', borderRadius:10, padding:'10px 12px', marginTop:12, fontSize:12, color:'#b45309' },
+  btn: { marginTop:20, background:'#EA2A30', borderRadius:13, padding:14, textAlign:'center', fontSize:14, fontWeight:600, color:'#fff', cursor:'pointer', border:'none', width:'100%' },
 };
 
 export default function ProfileScreen({ lang, raceData, onNext, onBack }) {
