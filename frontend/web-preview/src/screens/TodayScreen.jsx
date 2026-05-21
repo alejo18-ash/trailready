@@ -353,7 +353,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         </div>
       )}
 
-      {!isBasePlan && !isPreBase && todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && (
+      {!isBasePlan && !isPreBase && !isStrength && todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && todayWorkout.type !== 'treadmillIntervals' && (
         <div style={{ margin: '12px 20px', background: '#111111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: 16 }}>
           <div style={{ fontSize: 11, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 6 }}>
             {lang === 'es' ? 'COMUNIDAD · TU CARRERA' : 'COMMUNITY · YOUR RACE'}
