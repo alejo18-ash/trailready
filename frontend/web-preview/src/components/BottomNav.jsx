@@ -90,9 +90,9 @@ export default function BottomNav({ active, lang, onToday, onPlan, onWeek, onOly
         >
           {icons[key](active === key)}
           <span style={{
-            fontSize: 10,
+            fontSize: 11,
             fontWeight: 500,
-            color: active === key ? '#00FF87' : 'rgba(255,255,255,0.4)',
+            color: active === key ? '#00FF87' : 'rgba(255,255,255,0.6)',
             letterSpacing: '0.04em',
           }}>
             {labels[key][lang || 'es']}

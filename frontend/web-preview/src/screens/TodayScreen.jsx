@@ -426,19 +426,19 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             <div style={s.recoveryTitle('#a78bfa')}>{t(lang,'stretching')}</div>
             <div style={s.recoverySub}>15 {t(lang,'min')} ↗</div>
           </div>
+          {!isBasePlan && !isPreBase && cw >= 1 && (
+            <div style={s.recoveryCard('rgba(96,165,250,0.1)','rgba(96,165,250,0.2)')} onClick={() => onRecovery('iceBath')}>
+              <div style={s.recoveryIcon}>🧊</div>
+              <div style={s.recoveryTitle('#60a5fa')}>{t(lang,'iceBath')}</div>
+              <div style={s.recoverySub}>10 {t(lang,'min')} ↗</div>
+            </div>
+          )}
           {!isBasePlan && !isPreBase && (
-            <>
-              <div style={s.recoveryCard('rgba(96,165,250,0.1)','rgba(96,165,250,0.2)')} onClick={() => onRecovery('iceBath')}>
-                <div style={s.recoveryIcon}>🧊</div>
-                <div style={s.recoveryTitle('#60a5fa')}>{t(lang,'iceBath')}</div>
-                <div style={s.recoverySub}>10 {t(lang,'min')} ↗</div>
-              </div>
-              <div style={s.recoveryCard('rgba(251,191,36,0.1)','rgba(251,191,36,0.2)')} onClick={() => onRecovery('nutrition')}>
-                <div style={s.recoveryIcon}>🍌</div>
-                <div style={s.recoveryTitle('#fbbf24')}>{t(lang,'nutrition')}</div>
-                <div style={s.recoverySub}>{t(lang,'guide')} ↗</div>
-              </div>
-            </>
+            <div style={s.recoveryCard('rgba(251,191,36,0.1)','rgba(251,191,36,0.2)')} onClick={() => onRecovery('nutrition')}>
+              <div style={s.recoveryIcon}>🍌</div>
+              <div style={s.recoveryTitle('#fbbf24')}>{t(lang,'nutrition')}</div>
+              <div style={s.recoverySub}>{t(lang,'guide')} ↗</div>
+            </div>
           )}
           {(isBasePlan || isPreBase) && baseWeekNum >= 2 && (
             <div style={s.recoveryCard('rgba(251,191,36,0.1)','rgba(251,191,36,0.2)')} onClick={() => onRecovery('nutrition')}>
