@@ -5,7 +5,7 @@ import BottomNav from '../components/BottomNav';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:64 },
+  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80 },
   header: { padding:'14px 20px 12px', display:'flex', alignItems:'center', gap:12 },
   back: { fontSize:12, color:'rgba(255,255,255,0.35)', cursor:'pointer' },
   headerTitle: { fontSize:16, fontWeight:700, color:'#fff' },
@@ -190,7 +190,7 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
         </div>
       </div>
 
-      <BottomNav lang={lang} active="profile" onToday={onToday} onWeek={onWeek} onOlympus={onOlympus} />
+      <BottomNav active="profile" lang={lang} onToday={onToday} onPlan={onWeek} onOlympus={onOlympus} />
     </div>
   );
 }

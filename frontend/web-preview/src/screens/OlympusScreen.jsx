@@ -110,7 +110,7 @@ export default function OlympusScreen({ lang, plan, raceData, onToday, onWeek })
         ))}
       </div>
 
-      <BottomNav lang={lang} active="olympus" onToday={onToday} onWeek={onWeek} onProfile={onToday} />
+      <BottomNav active="olympus" lang={lang} onToday={onToday} onPlan={onWeek} onProfile={onToday} />
     </div>
   );
 }
