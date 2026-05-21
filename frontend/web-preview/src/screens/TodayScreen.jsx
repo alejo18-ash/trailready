@@ -12,7 +12,7 @@ const phaseKey = {
 };
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:64 },
+  wrap: { minHeight:'100vh', background:'#0d0d1a', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80 },
   header: { padding:'20px 20px 14px', display:'flex', justifyContent:'space-between', alignItems:'flex-start' },
   weekLabel: { fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:1, textTransform:'uppercase' },
   activityTitle: { fontSize:26, fontWeight:800, color:'#fff', marginTop:5, letterSpacing:'-0.02em', lineHeight:1.1 },
@@ -476,7 +476,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           </button>
         </div>
       )}
-      <BottomNav lang={lang} active="today" onWeek={onWeek} onOlympus={onOlympus} onProfile={onProfile || onRaceProfile} />
+      <BottomNav active="today" lang={lang} onToday={null} onPlan={onWeek} onOlympus={onOlympus} onProfile={onProfile || onRaceProfile} />
 
       {showConfirmModal && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000, padding:'0 24px' }}>
