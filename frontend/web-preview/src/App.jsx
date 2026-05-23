@@ -12,6 +12,9 @@ import RaceProfileScreen from './screens/RaceProfileScreen';
 import LandingPage from './screens/LandingPage';
 import StrengthScreen from './screens/StrengthScreen';
 import OlympusScreen from './screens/OlympusScreen';
+import LoginScreen from './screens/LoginScreen';
+import { useAuth } from './hooks/useAuth';
+import { loadPlan, savePlan, clearPlan } from './services/planService';
 
 /** Monday (index 0) is always an easy run — never rest/recovery/strength on day 1. */
 function ensureMondayIsEasy(template) {
@@ -411,24 +414,30 @@ function AppFlow({ lang, setLang }) {
   const [recovery, setRecovery]   = useState(null);
   const [currentWeek, setCurrentWeek] = useState(0);
   const [currentPhase, setCurrentPhase] = useState(null);
+  const [showLogin, setShowLogin] = useState(false);
+
+  const { user, authLoading, loginWithGoogle, logout } = useAuth();
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return;
-    try {
-      const state = JSON.parse(saved);
-      if (Date.now() - state.savedAt < NINETY_DAYS) {
-        setPlan(state.plan);
-        setRaceData(state.raceData);
-        setProfile(state.profile);
-        setCurrentWeek(state.currentWeek || 0);
-        setLang(state.language || 'es');
-        setScreen('today');
+    if (authLoading) return;
+    async function restore() {
+      try {
+        const state = await loadPlan(user?.uid);
+        if (!state) return;
+        if (Date.now() - state.savedAt < NINETY_DAYS) {
+          setPlan(state.plan);
+          setRaceData(state.raceData);
+          setProfile(state.profile);
+          setCurrentWeek(state.currentWeek || 0);
+          setLang(state.language || 'es');
+          setScreen('today');
+        }
+      } catch {
+        await clearPlan(user?.uid);
       }
-    } catch {
-      localStorage.removeItem(STORAGE_KEY);
     }
-  }, []);
+    restore();
+  }, [authLoading, user?.uid]);
 
   const handleLanguage = (l) => { setLang(l); setScreen('source'); };
 
@@ -438,14 +447,8 @@ function AppFlow({ lang, setLang }) {
       const newPlan = generatePreBasePlan();
       setPlan(newPlan);
       setScreen('today');
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        plan: newPlan,
-        raceData: data,
-        profile: null,
-        currentWeek: 0,
-        language: lang,
-        savedAt: Date.now(),
-      }));
+      const payload = { plan: newPlan, raceData: data, profile: null, currentWeek: 0, language: lang, savedAt: Date.now() };
+      savePlan(user?.uid, payload);
     } else {
       setScreen('profile');
     }
@@ -456,14 +459,8 @@ function AppFlow({ lang, setLang }) {
     setProfile(p);
     setPlan(newPlan);
     setScreen('today');
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      plan: newPlan,
-      raceData,
-      profile: p,
-      currentWeek: 0,
-      language: lang,
-      savedAt: Date.now(),
-    }));
+    const payload = { plan: newPlan, raceData, profile: p, currentWeek: 0, language: lang, savedAt: Date.now() };
+    savePlan(user?.uid, payload);
   };
 
   const handleRecovery = (type) => { setRecovery(type); setScreen('recovery'); };
@@ -471,7 +468,7 @@ function AppFlow({ lang, setLang }) {
   const handleStrength = (phase) => { setCurrentPhase(phase); setScreen('strength'); };
 
   const handleNewPlan = () => {
-    localStorage.removeItem(STORAGE_KEY);
+    clearPlan(user?.uid);
     setPlan(null);
     setRaceData(null);
     setProfile(null);
@@ -481,11 +478,14 @@ function AppFlow({ lang, setLang }) {
 
   const props = { lang, raceData, profile, plan, currentWeek, setCurrentWeek };
 
+  if (authLoading) return <SplashScreen onDone={() => {}} />;
+  if (showLogin) return <LoginScreen lang={lang} onLogin={async () => { await loginWithGoogle(); setShowLogin(false); }} onSkip={() => setShowLogin(false)} />;
+
   if (screen === 'splash')     return <SplashScreen onDone={() => setScreen('language')} />;
   if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} />;
   if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
   if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
-  if (screen === 'today')     return <TodayScreen {...props} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onOlympus={() => setScreen('olympus')} onProfile={() => setScreen('raceProfile')} />;
+  if (screen === 'today')     return <TodayScreen {...props} user={user} onLogout={logout} onShowLogin={() => setShowLogin(true)} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onOlympus={() => setScreen('olympus')} onProfile={() => setScreen('raceProfile')} />;
   if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} onStrength={handleStrength} onOlympus={() => setScreen('olympus')} onProfile={() => setScreen('raceProfile')} />;
   if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
   if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen('today')} />;

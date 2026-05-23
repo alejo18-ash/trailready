@@ -63,7 +63,7 @@ const getWhatsAppUrl = (raceName) => {
   return 'https://chat.whatsapp.com/trailready-general';
 };
 
-export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength, onOlympus, onProfile }) {
+export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength, onOlympus, onProfile, user, onLogout, onShowLogin }) {
   const [conditions, setConditions]           = useState(null);
   const [locationError, setLocationError]     = useState(false);
   const [trails, setTrails]                   = useState([]);
@@ -198,6 +198,24 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           )}
         </div>
 
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {user ? (
+              <>
+                {user.photoURL
+                  ? <img src={user.photoURL} alt="" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }} />
+                  : <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#EA2A30', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#fff', fontWeight: 700 }}>{user.displayName?.[0] || '?'}</div>
+                }
+                <button onClick={onLogout} style={{ background: 'none', border: 'none', fontSize: 10, color: 'rgba(18,29,41,0.4)', cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>
+                  {lang === 'es' ? 'Salir' : 'Sign out'}
+                </button>
+              </>
+            ) : (
+              <button onClick={onShowLogin} style={{ background: 'none', border: 'none', fontSize: 10, color: '#EA2A30', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, padding: 0 }}>
+                {lang === 'es' ? 'Iniciar sesión' : 'Sign in'}
+              </button>
+            )}
+          </div>
         <div style={s.weatherBox}>
           {conditions ? (
             <>
@@ -214,6 +232,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           ) : (
             <div style={{fontSize:18}}>⏳</div>
           )}
+        </div>
         </div>
       </div>
 
