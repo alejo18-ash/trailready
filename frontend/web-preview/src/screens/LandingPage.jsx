@@ -663,7 +663,7 @@ export default function LandingPage({ lang, setLang }) {
             <h1 style={s.h1}>{t(lang, 'landing.heroHeadline')}</h1>
             <p style={s.heroSub}>{t(lang, 'landing.heroSubheadline')}</p>
             <div style={s.heroCtaWrap}>
-              <button type="button" className="tr-cta-btn" onClick={() => navigate('/app')}>
+              <button type="button" className="tr-cta-btn" onClick={() => navigate('/app?start=true')}>
                 {t(lang, 'landing.heroCta')}
               </button>
               <div style={s.heroTrust}>{t(lang, 'landing.heroTrust')}</div>
@@ -743,7 +743,7 @@ export default function LandingPage({ lang, setLang }) {
         {/* ── FINAL CTA ── */}
         <section style={s.finalWrap}>
           <h2 style={s.finalH2}>{t(lang, 'landing.finalHeadline')}</h2>
-          <button type="button" className="tr-cta-btn" onClick={() => navigate('/app')}>
+          <button type="button" className="tr-cta-btn" onClick={() => navigate('/app?start=true')}>
             {t(lang, 'landing.finalCta')}
           </button>
           <div style={s.finalNote}>{t(lang, 'landing.finalNote')}</div>
