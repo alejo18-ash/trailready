@@ -13,7 +13,6 @@ import LandingPage from './screens/LandingPage';
 import StrengthScreen from './screens/StrengthScreen';
 import OlympusScreen from './screens/OlympusScreen';
 import LoginScreen from './screens/LoginScreen';
-import OnboardingSplash from './screens/OnboardingSplash';
 import { useAuth } from './hooks/useAuth';
 import { loadPlan, savePlan, clearPlan } from './services/planService';
 
@@ -416,17 +415,8 @@ function AppFlow({ lang, setLang }) {
   const [currentWeek, setCurrentWeek] = useState(0);
   const [currentPhase, setCurrentPhase] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
-  const [showSplash, setShowSplash] = useState(false);
 
   const { user, authLoading, loginWithGoogle, logout } = useAuth();
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('start') === 'true') {
-      setShowSplash(true);
-      window.history.replaceState({}, '', '/app');
-    }
-  }, []);
 
   useEffect(() => {
     if (authLoading) return;
@@ -489,7 +479,6 @@ function AppFlow({ lang, setLang }) {
   const props = { lang, raceData, profile, plan, currentWeek, setCurrentWeek };
 
   if (authLoading) return <SplashScreen onDone={() => {}} />;
-  if (showSplash) return <OnboardingSplash lang={lang} onComplete={() => { setShowSplash(false); setScreen('login'); }} />;
   if (screen === 'login') return <LoginScreen lang={lang} onLogin={async () => { await loginWithGoogle(); setScreen('language'); }} onSkip={() => setScreen('language')} />;
   if (showLogin) return <LoginScreen lang={lang} onLogin={async () => { await loginWithGoogle(); setShowLogin(false); }} onSkip={() => setShowLogin(false)} />;
 
