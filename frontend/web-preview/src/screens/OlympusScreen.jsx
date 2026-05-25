@@ -19,6 +19,8 @@ export default function OlympusScreen({ lang, plan, raceData, onToday, onWeek })
       color: 'var(--text)',
       fontFamily: 'var(--font)',
       paddingBottom: 80,
+      maxWidth: 600,
+      margin: '0 auto',
     }}>
       {/* Header */}
       <div style={{
@@ -38,7 +40,7 @@ export default function OlympusScreen({ lang, plan, raceData, onToday, onWeek })
       </div>
 
       {/* God cards */}
-      <div style={{ padding: '0 16px', maxWidth: 600, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ padding: '0 20px', maxWidth: 600, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {GODS.map(({ icon, nk, sk, bk, active }) => (
           <div key={nk} style={{
             background: active ? '#FFFFFF' : 'rgba(18,29,41,0.02)',
