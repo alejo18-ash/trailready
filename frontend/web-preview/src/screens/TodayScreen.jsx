@@ -12,7 +12,7 @@ const phaseKey = {
 };
 
 const s = {
-  wrap: { background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80, maxWidth:600, margin:'0 auto' },
+  wrap: { background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80, paddingLeft:16, paddingRight:16, maxWidth:600, margin:'0 auto', width:'100%', boxSizing:'border-box' },
   header: { padding:'20px 20px 14px', display:'flex', justifyContent:'space-between', alignItems:'flex-start' },
   weekLabel: { fontSize:10, color:'rgba(18,29,41,0.45)', letterSpacing:1, textTransform:'uppercase' },
   activityTitle: { fontSize:26, fontWeight:800, color:'#121D29', marginTop:5, letterSpacing:'-0.02em', lineHeight:1.1 },

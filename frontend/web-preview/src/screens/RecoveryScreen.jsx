@@ -49,7 +49,7 @@ const subs = {
 };
 
 const s = {
-  wrap: { minHeight:'100vh', background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", padding:'0 0 80px', maxWidth:600, margin:'0 auto' },
+  wrap: { minHeight:'100vh', background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", padding:'0 16px 80px', maxWidth:600, margin:'0 auto', width:'100%', boxSizing:'border-box' },
   header: { padding:'14px 20px 12px', display:'flex', alignItems:'center', gap:12 },
   back: { fontSize:12, color:'rgba(18,29,41,0.4)', cursor:'pointer' },
   headerTitle: { fontSize:16, fontWeight:700, color:'#121D29' },

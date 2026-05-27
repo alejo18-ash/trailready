@@ -214,7 +214,7 @@ function normalizePhase(phase) {
 }
 
 const s = {
-  wrap:      { minHeight: '100vh', background: '#F0F4F8', fontFamily: "'Inter', system-ui, sans-serif", paddingBottom: 80, maxWidth: 600, margin: '0 auto' },
+  wrap:      { minHeight: '100vh', background: '#F0F4F8', fontFamily: "'Inter', system-ui, sans-serif", paddingBottom: 80, paddingLeft: 16, paddingRight: 16, maxWidth: 600, margin: '0 auto', width: '100%', boxSizing: 'border-box' },
   header:    { padding: '14px 20px 16px', borderBottom: '0.5px solid rgba(18,29,41,0.08)' },
   backBtn:   { background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(18,29,41,0.4)', fontSize: 13, padding: '0 0 10px', fontFamily: 'inherit', display: 'block' },
   title:     { fontSize: 20, fontWeight: 700, color: '#121D29', marginBottom: 4 },

@@ -135,7 +135,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
     : `${week.kmTotal} km`;
 
   return (
-    <div className="screen-enter" style={{ minHeight:'100vh', background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", maxWidth:600, margin:'0 auto' }}>
+    <div className="screen-enter" style={{ minHeight:'100vh', background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", maxWidth:600, margin:'0 auto', width:'100%', boxSizing:'border-box', padding:'0 16px' }}>
     <div style={{ display:'flex', flexDirection:'column', paddingBottom:80 }}>
 
       {/* ── SECTION 1: HEADER ── */}
