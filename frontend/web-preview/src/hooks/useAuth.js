@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, signOut } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
 
 export function useAuth() {
@@ -14,13 +14,30 @@ export function useAuth() {
     return unsub;
   }, []);
 
-  async function loginWithGoogle() {
+  useEffect(() => {
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result?.user) {
+          setUser(result.user);
+        }
+      })
+      .catch((error) => {
+        console.error('Redirect result error:', error);
+      });
+  }, []);
+
+  const loginWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (e) {
-      console.error('Google login failed', e);
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        await signInWithRedirect(auth, googleProvider);
+      } else {
+        await signInWithPopup(auth, googleProvider);
+      }
+    } catch (error) {
+      console.error('Google login failed:', error);
     }
-  }
+  };
 
   async function logout() {
     try {
