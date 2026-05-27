@@ -439,6 +439,15 @@ function AppFlow({ lang, setLang }) {
     restore();
   }, [authLoading, user?.uid]);
 
+  useEffect(() => {
+    if (user && screen === 'login') {
+      setScreen('language');
+    }
+    if (user && showLogin) {
+      setShowLogin(false);
+    }
+  }, [user]);
+
   const handleLanguage = (l) => { setLang(l); setScreen('source'); };
 
   const handleRaceData = (data) => {
