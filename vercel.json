@@ -2,14 +2,7 @@
   "buildCommand": "cd frontend/web-preview && npm install && npm run build",
   "outputDirectory": "frontend/web-preview/dist",
   "installCommand": "cd frontend/web-preview && npm install",
-  "routes": [
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
