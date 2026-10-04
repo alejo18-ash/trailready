@@ -487,11 +487,11 @@ function AppFlow({ lang, setLang }) {
 
   const props = { lang, raceData, profile, plan, currentWeek, setCurrentWeek };
 
-  if (authLoading) return <SplashScreen onDone={() => {}} />;
+  if (authLoading) return <SplashScreen key="auth-wait" onDone={() => {}} />;
   if (screen === 'login') return <LoginScreen lang={lang} onLogin={async () => { await loginWithGoogle(); setScreen('language'); }} onSkip={() => setScreen('language')} />;
   if (showLogin) return <LoginScreen lang={lang} onLogin={async () => { await loginWithGoogle(); setShowLogin(false); }} onSkip={() => setShowLogin(false)} />;
 
-  if (screen === 'splash')     return <SplashScreen onDone={() => setScreen('language')} />;
+  if (screen === 'splash')     return <SplashScreen key="intro" onDone={() => setScreen('language')} />;
   if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} />;
   if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
   if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
