@@ -21,12 +21,12 @@ const FEATURES = [
   { icon: '🇪🇸', tk: 'f6Title', bk: 'f6Body' },
 ];
 
-const GODS = [
-  { icon: '🏹', nk: 'god1Name', sk: 'god1Sub', bk: 'god1Body', active: true },
-  { icon: '⚔️', nk: 'god2Name', sk: 'god2Sub', bk: 'god2Body', active: true },
-  { icon: '⏳', nk: 'god3Name', sk: 'god3Sub', bk: 'god3Body', active: true },
-  { icon: '🪽', nk: 'god4Name', sk: 'god4Sub', bk: 'god4Body', active: false },
-  { icon: '🐍', nk: 'god5Name', sk: 'god5Sub', bk: 'god5Body', active: false },
+const PLANS = [
+  { icon: '🏁', nk: 'god1Name', sk: 'god1Sub', bk: 'god1Body', active: true },
+  { icon: '💪', nk: 'god2Name', sk: 'god2Sub', bk: 'god2Body', active: true },
+  { icon: '🏃', nk: 'god3Name', sk: 'god3Sub', bk: 'god3Body', active: true },
+  { icon: '⚡', nk: 'god4Name', sk: 'god4Sub', bk: 'god4Body', active: false },
+  { icon: '🩹', nk: 'god5Name', sk: 'god5Sub', bk: 'god5Body', active: false },
 ];
 
 /* Injected styles — uses CSS variables from design-system.css */
@@ -646,7 +646,7 @@ export default function LandingPage({ lang, setLang }) {
           <div style={s.navInner}>
             <div style={s.brand}>
               <span style={s.brandEmoji}>🏔️</span>
-              Olympus
+              TrailReady
             </div>
             <div style={s.langToggle}>
               <button type="button" style={s.langBtn(lang === 'en')} onClick={() => setLang('en')}>EN</button>
@@ -684,7 +684,7 @@ export default function LandingPage({ lang, setLang }) {
           <div style={s.sectionContent}>
             <span style={s.sectionLabel}>{t(lang, 'landing.howTitle')}</span>
             <div style={s.godGrid} className="tr-god-grid">
-              {GODS.map(({ icon, nk, sk, bk, active }) => (
+              {PLANS.map(({ icon, nk, sk, bk, active }) => (
                 <div key={nk} className={`tr-god-card ${active ? 'tr-god-active' : 'tr-god-soon'}`}>
                   <span style={s.godIcon}>{icon}</span>
                   <span style={s.godBadge(active)}>{active ? (lang === 'es' ? 'ACTIVO' : 'ACTIVE') : (lang === 'es' ? 'PRÓXIMAMENTE' : 'COMING SOON')}</span>
@@ -754,7 +754,7 @@ export default function LandingPage({ lang, setLang }) {
           <div style={s.footerInner}>
             <div style={s.footerBrand}>
               <span style={s.footerBrandEmoji}>🏔️</span>
-              Olympus · 2026
+              TrailReady · 2026
             </div>
             <div style={s.footerLangRow}>
               <button type="button" style={s.footerLangBtn(lang === 'en')} onClick={() => setLang('en')}>EN</button>

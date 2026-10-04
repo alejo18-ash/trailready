@@ -47,7 +47,7 @@ export default function SplashScreen({ onDone }) {
         transform: phase === 'logo' ? 'translateY(8px)' : 'translateY(0)',
         transition: 'all 0.4s ease',
       }}>
-        Olympus
+        TrailReady
       </div>
 
       <div style={{
@@ -57,7 +57,7 @@ export default function SplashScreen({ onDone }) {
         opacity: phase === 'tagline' || phase === 'fade' ? 1 : 0,
         transition: 'opacity 0.5s ease 0.2s',
       }}>
-        Your Olympus coach
+        Your personalized training plan
       </div>
 
       <div style={{

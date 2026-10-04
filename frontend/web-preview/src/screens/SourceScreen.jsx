@@ -189,10 +189,10 @@ export default function SourceScreen({ lang, onNext }) {
   };
 
   const GOAL_CARDS = [
-    { id:'race',    icon:'🏹', label: lang==='es' ? 'Artemisa — Tengo una carrera' : 'Artemisa — I have a race', sub: lang==='es' ? 'Trail o asfalto, 21K–100K' : 'Trail or road, 21K–100K', disabled: false },
-    { id:'base',    icon:'⏳', label: lang==='es' ? 'Cronos — Construir mi base' : 'Cronos — Build my base', sub: lang==='es' ? 'Aeróbico sólido antes de un plan' : 'Solid aerobic engine before a plan', disabled: false },
+    { id:'race',    icon:'🏁', label: lang==='es' ? 'Plan de Carrera — Tengo una carrera' : 'Race Plan — I have a race', sub: lang==='es' ? 'Trail o asfalto, 21K–100K' : 'Trail or road, 21K–100K', disabled: false },
+    { id:'base',    icon:'🏃', label: lang==='es' ? 'Plan Base — Construir mi base' : 'Base Plan — Build my base', sub: lang==='es' ? 'Aeróbico sólido antes de un plan' : 'Solid aerobic engine before a plan', disabled: false },
     { id:'prebase', icon:'🚶', label: lang==='es' ? 'Soy principiante' : "I'm a beginner", sub: lang==='es' ? 'Empezar desde cero, 4 semanas' : 'Start from scratch, 4 weeks', disabled: false },
-    { id:'rehab',   icon:'🐍', label: lang==='es' ? 'Asclepio — Rehab' : 'Asclepio — Rehab', sub: lang==='es' ? 'Próximamente' : 'Coming soon', disabled: true },
+    { id:'rehab',   icon:'🩹', label: lang==='es' ? 'Plan de Recuperación — Rehab' : 'Recovery Plan — Rehab', sub: lang==='es' ? 'Próximamente' : 'Coming soon', disabled: true },
   ];
 
   const RACE_TABS = [
@@ -205,7 +205,7 @@ export default function SourceScreen({ lang, onNext }) {
     <div className="screen-enter" style={s.wrap}>
       <div style={s.card}>
         <div style={s.header}>
-          <div style={s.logo}>🏔️ OLYMPUS</div>
+          <div style={s.logo}>🏔️ TRAILREADY</div>
           {goal && (
             <button
               type="button"

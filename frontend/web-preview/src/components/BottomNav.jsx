@@ -19,7 +19,7 @@ const icons = {
       <line x1="3" y1="10" x2="21" y2="10"/>
     </svg>
   ),
-  olympus: (active) => (
+  plans: (active) => (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
       stroke={active ? ACTIVE : INACTIVE}
       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -46,15 +46,15 @@ const icons = {
 const labels = {
   today:   { es: 'Hoy',    en: 'Today'   },
   plan:    { es: 'Plan',   en: 'Plan'    },
-  olympus: { es: 'Olimpo', en: 'Olympus' },
+  plans:   { es: 'Planes', en: 'Plans'   },
   profile: { es: 'Perfil', en: 'Profile' },
 };
 
-export default function BottomNav({ active, lang, onToday, onPlan, onWeek, onOlympus, onProfile }) {
+export default function BottomNav({ active, lang, onToday, onPlan, onWeek, onPlans, onProfile }) {
   const tabs = [
     { key: 'today',   fn: onToday              },
     { key: 'plan',    fn: onPlan || onWeek      },
-    { key: 'olympus', fn: onOlympus             },
+    { key: 'plans',   fn: onPlans               },
     { key: 'profile', fn: onProfile             },
   ];
 

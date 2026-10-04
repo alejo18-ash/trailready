@@ -63,7 +63,7 @@ const getWhatsAppUrl = (raceName) => {
   return 'https://chat.whatsapp.com/trailready-general';
 };
 
-export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength, onOlympus, onProfile, user, onLogout, onShowLogin }) {
+export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength, onPlans, onProfile, user, onLogout, onShowLogin }) {
   const [conditions, setConditions]           = useState(null);
   const [locationError, setLocationError]     = useState(false);
   const [trails, setTrails]                   = useState([]);
@@ -495,7 +495,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           </button>
         </div>
       )}
-      <BottomNav active="today" lang={lang || 'es'} onToday={null} onPlan={onWeek} onOlympus={onOlympus} onProfile={onProfile || onRaceProfile} />
+      <BottomNav active="today" lang={lang || 'es'} onToday={null} onPlan={onWeek} onPlans={onPlans} onProfile={onProfile || onRaceProfile} />
 
       {showConfirmModal && (
         <div style={{ position:'fixed', inset:0, background:'rgba(18,29,41,0.5)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000, padding:'0 24px' }}>

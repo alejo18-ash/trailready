@@ -1,6 +1,6 @@
 {
-  "name": "Olympus",
-  "short_name": "Olympus",
+  "name": "TrailReady",
+  "short_name": "TrailReady",
   "description": "Your race. Your trails. Your plan.",
   "start_url": "/",
   "display": "standalone",

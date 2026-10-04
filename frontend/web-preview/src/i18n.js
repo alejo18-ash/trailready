@@ -1,6 +1,6 @@
 export const translations = {
     en: {
-      appTagline: "Your Olympus coach",
+      appTagline: "Your personalized training plan",
       selectLanguage: "Select your language",
       continue: "Continue",
   
@@ -125,14 +125,14 @@ export const translations = {
       },
 
       landing: {
-        heroEyebrow: "TRAINING · WORTHY OF THE GODS",
-        heroHeadline: "Train like a god.\nRun like Hermes.",
+        heroEyebrow: "TRAINING · BUILT FOR RUNNERS",
+        heroHeadline: "Your race. Your trails. Your plan.",
         heroSubheadline: "The only running plan that knows your local trails, integrates strength, and adapts to you — trail or road, 21K to 100K.",
-        heroCta: "Start your odyssey — Free",
+        heroCta: "Create my free plan",
         heroCtaNote: "No account · Ready in 60 seconds",
         heroTrust: "✓ No account · ✓ Ready in 60 seconds · ✓ Trail & Road",
 
-        howTitle: "THE OLYMPUS PLANS",
+        howTitle: "THE PLANS",
         how1Title: "Your race, analyzed",
         how1Body: "Paste the race link or upload the GPX file. We extract distance, elevation, terrain profile — everything the plan needs.",
         how2Title: "A plan built around you",
@@ -140,19 +140,19 @@ export const translations = {
         how3Title: "Real trails. Every week.",
         how3Body: "Every training day gets a real nearby trail matched to the day's workout intensity. Weather and air quality checked automatically.",
 
-        god1Name: "Artemisa",
+        god1Name: "Race Plan",
         god1Sub: "Trail + Road · 21K–100K",
         god1Body: "Full race plan with real nearby trails, strength, and weather. The complete weapon for your A-race.",
-        god2Name: "Ares",
+        god2Name: "Strength Plan",
         god2Sub: "Strength & Power",
         god2Body: "Phase-specific gym sessions built to prevent injury and build climbing power — not an add-on, the core.",
-        god3Name: "Cronos",
+        god3Name: "Base Plan",
         god3Sub: "Base Builder · 8–12 wks",
         god3Body: "Build your aerobic engine from scratch. Progressive volume, no junk miles, ready for any race plan.",
-        god4Name: "Hermes",
+        god4Name: "Speed Plan",
         god4Sub: "Speed — Coming Soon",
         god4Body: "VO₂max blocks, strides, and race-specific intervals. Unlock your top-end.",
-        god5Name: "Asclepio",
+        god5Name: "Recovery Plan",
         god5Sub: "Rehab — Coming Soon",
         god5Body: "Return-to-run protocols designed around your injury. Smart, safe, science-backed.",
 
@@ -174,12 +174,12 @@ export const translations = {
         communityDesc: "Training alone is hard. Join WhatsApp groups of runners preparing for the same race as you. Ask questions, share routes, suffer together.",
         communityJoin: "Join WhatsApp →",
 
-        proofTitle: "WHY OLYMPUS",
+        proofTitle: "WHY TRAILREADY",
         proofBody: "Built for runners training for races like UTMB, Western States, Javelina, and local ultras worldwide.",
 
         finalTitle: "READY TO START?",
-        finalHeadline: "Your odyssey starts today.",
-        finalCta: "Start your odyssey — Free",
+        finalHeadline: "Start training today.",
+        finalCta: "Create my free plan",
         finalNote: "Free to start. No account. No credit card.",
 
         footerTop: "Back to top",
@@ -223,7 +223,7 @@ export const translations = {
     },
   
     es: {
-      appTagline: "Tu coach del Olimpo",
+      appTagline: "Tu plan de entrenamiento personalizado",
       selectLanguage: "Elige tu idioma",
       continue: "Continuar",
   
@@ -348,14 +348,14 @@ export const translations = {
       },
 
       landing: {
-        heroEyebrow: "ENTRENAMIENTO · DIGNO DE LOS DIOSES",
-        heroHeadline: "Entrena como un dios.\nCorre como Hermes.",
+        heroEyebrow: "ENTRENAMIENTO · HECHO PARA CORREDORES",
+        heroHeadline: "Tu carrera. Tus trails. Tu plan.",
         heroSubheadline: "El único plan de running que conoce tus trails locales, integra fuerza y se adapta a ti — trail o asfalto, 21K a 100K.",
-        heroCta: "Empieza tu odisea — Gratis",
+        heroCta: "Crear mi plan gratis",
         heroCtaNote: "Sin registro · Listo en 60 segundos",
         heroTrust: "✓ Sin registro · ✓ Listo en 60 segundos · ✓ Trail & Asfalto",
 
-        howTitle: "LOS PLANES DEL OLIMPO",
+        howTitle: "LOS PLANES",
         how1Title: "Tu carrera, analizada",
         how1Body: "Pega el link de la carrera o sube el GPX. Extraemos distancia, desnivel, perfil de terreno — todo lo que el plan necesita.",
         how2Title: "Un plan hecho para ti",
@@ -363,19 +363,19 @@ export const translations = {
         how3Title: "Trails reales. Cada semana.",
         how3Body: "Cada día de entrenamiento recibe un trail real cercano ajustado a la intensidad del día. Clima y calidad del aire verificados automáticamente.",
 
-        god1Name: "Artemisa",
+        god1Name: "Plan de Carrera",
         god1Sub: "Trail + Asfalto · 21K–100K",
         god1Body: "Plan completo con trails reales, fuerza y clima. El arma definitiva para tu carrera objetivo.",
-        god2Name: "Ares",
+        god2Name: "Plan de Fuerza",
         god2Sub: "Fuerza y Potencia",
         god2Body: "Sesiones de gym por fase para prevenir lesiones y construir potencia en subida — no un complemento, el núcleo.",
-        god3Name: "Cronos",
+        god3Name: "Plan Base",
         god3Sub: "Base · 8–12 semanas",
         god3Body: "Construye tu motor aeróbico desde cero. Volumen progresivo, sin kilómetros basura, listo para cualquier plan.",
-        god4Name: "Hermes",
+        god4Name: "Plan de Velocidad",
         god4Sub: "Velocidad — Próximamente",
         god4Body: "Bloques de VO₂máx, strides e intervalos específicos de carrera. Desbloquea tu techo.",
-        god5Name: "Asclepio",
+        god5Name: "Plan de Recuperación",
         god5Sub: "Rehab — Próximamente",
         god5Body: "Protocolos de vuelta al running diseñados para tu lesión. Inteligente, seguro, respaldado por ciencia.",
 
@@ -397,12 +397,12 @@ export const translations = {
         communityDesc: "Entrenar solo es difícil. Únete a grupos de WhatsApp de corredores preparando la misma carrera. Pregunta, comparte rutas, sufre junto.",
         communityJoin: "Unirse a WhatsApp →",
 
-        proofTitle: "POR QUÉ OLYMPUS",
+        proofTitle: "POR QUÉ TRAILREADY",
         proofBody: "Diseñado para corredores entrenando para UTMB, Western States, Javelina y ultras locales en todo el mundo.",
 
         finalTitle: "¿LISTO PARA PARTIR?",
-        finalHeadline: "Tu odisea empieza hoy.",
-        finalCta: "Empieza tu odisea — Gratis",
+        finalHeadline: "Empieza a entrenar hoy.",
+        finalCta: "Crear mi plan gratis",
         finalNote: "Gratis para empezar. Sin registro. Sin tarjeta.",
 
         footerTop: "Volver arriba",

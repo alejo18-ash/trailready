@@ -1,15 +1,15 @@
 import { t } from '../i18n';
 import BottomNav from '../components/BottomNav';
 
-const GODS = [
-  { icon: '🏹', nk: 'god1Name', sk: 'god1Sub', bk: 'god1Body', active: true },
-  { icon: '⚔️', nk: 'god2Name', sk: 'god2Sub', bk: 'god2Body', active: true },
-  { icon: '⏳', nk: 'god3Name', sk: 'god3Sub', bk: 'god3Body', active: true },
-  { icon: '🪽', nk: 'god4Name', sk: 'god4Sub', bk: 'god4Body', active: false },
-  { icon: '🐍', nk: 'god5Name', sk: 'god5Sub', bk: 'god5Body', active: false },
+const PLANS = [
+  { icon: '🏁', nk: 'god1Name', sk: 'god1Sub', bk: 'god1Body', active: true },
+  { icon: '💪', nk: 'god2Name', sk: 'god2Sub', bk: 'god2Body', active: true },
+  { icon: '🏃', nk: 'god3Name', sk: 'god3Sub', bk: 'god3Body', active: true },
+  { icon: '⚡', nk: 'god4Name', sk: 'god4Sub', bk: 'god4Body', active: false },
+  { icon: '🩹', nk: 'god5Name', sk: 'god5Sub', bk: 'god5Body', active: false },
 ];
 
-export default function OlympusScreen({ lang, plan, raceData, onToday, onWeek }) {
+export default function PlansScreen({ lang, plan, raceData, onToday, onWeek }) {
   const hasPlan = !!(plan?.weeks?.length);
 
   return (
@@ -36,16 +36,16 @@ export default function OlympusScreen({ lang, plan, raceData, onToday, onWeek })
           {lang === 'es' ? 'LOS PLANES' : 'THE PLANS'}
         </div>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, letterSpacing: '-0.03em' }}>
-          {lang === 'es' ? 'El Olimpo' : 'Olympus'}
+          {lang === 'es' ? 'Planes' : 'Plans'}
         </h1>
         <p style={{ fontSize: 14, color: 'var(--text-60)', marginTop: 8 }}>
           {lang === 'es' ? 'Todos los planes disponibles para ti.' : 'All plans available to you.'}
         </p>
       </div>
 
-      {/* God cards */}
+      {/* Plan cards */}
       <div style={{ padding: '0 20px', maxWidth: 600, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {GODS.map(({ icon, nk, sk, bk, active }) => (
+        {PLANS.map(({ icon, nk, sk, bk, active }) => (
           <div key={nk} style={{
             background: active ? '#FFFFFF' : 'rgba(18,29,41,0.02)',
             border: `1px solid ${active ? 'rgba(18,29,41,0.08)' : 'rgba(18,29,41,0.04)'}`,
@@ -117,7 +117,7 @@ export default function OlympusScreen({ lang, plan, raceData, onToday, onWeek })
         ))}
       </div>
 
-      <BottomNav active="olympus" lang={lang} onToday={onToday} onPlan={onWeek} onProfile={onToday} />
+      <BottomNav active="plans" lang={lang} onToday={onToday} onPlan={onWeek} onProfile={onToday} />
     </div>
   );
 }

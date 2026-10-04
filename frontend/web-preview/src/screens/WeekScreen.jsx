@@ -38,7 +38,7 @@ const zoneMap = {
   cross:'Zone 2', treadmillIntervals:'Zone 3–4',
 };
 
-export default function WeekScreen({ lang, plan, profile, raceData, currentWeek, setCurrentWeek, onToday, onRecovery, onStrength, onOlympus, onProfile }) {
+export default function WeekScreen({ lang, plan, profile, raceData, currentWeek, setCurrentWeek, onToday, onRecovery, onStrength, onPlans, onProfile }) {
   const todayIndex    = new Date().getDay();
   const todayDayIndex = todayIndex === 0 ? 6 : todayIndex - 1;
 
@@ -293,7 +293,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
         </div>
       )}
 
-      <BottomNav active="plan" lang={lang} onToday={() => { setCurrentWeek?.(selectedWeek); onToday(); }} onOlympus={onOlympus} onProfile={onProfile} />
+      <BottomNav active="plan" lang={lang} onToday={() => { setCurrentWeek?.(selectedWeek); onToday(); }} onPlans={onPlans} onProfile={onProfile} />
     </div>
     </div>
   );
