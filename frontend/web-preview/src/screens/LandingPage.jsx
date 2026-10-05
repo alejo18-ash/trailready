@@ -196,7 +196,7 @@ const s = {
     fontWeight: 800,
     fontSize: 16,
     letterSpacing: -0.4,
-    color: 'var(--text)',
+    color: '#FFFFFF',
   },
   brandEmoji: {
     fontSize: 20,
@@ -612,7 +612,7 @@ export default function LandingPage({ lang, setLang }) {
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
             boxShadow: '0 8px 40px rgba(0,0,0,0.6)',
           }}>
-            <div style={{ fontSize: '0.88rem', color: 'var(--text-60)', lineHeight: 1.4, flex: 1 }}>
+            <div style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.4, flex: 1 }}>
               {t(lang, 'landing.bannerText')}
             </div>
             <button
