@@ -381,10 +381,7 @@ app.get('/api/trails', async (req, res) => {
     out body; >; out skel qt;
   `;
 
-  const mockTrails = [
-    { id: 1, name: 'Local Trail Loop', distancia: targetKm, source: 'OSM', type: 'trail', difficulty: 'mountain_hiking', url: `https://www.openstreetmap.org/#map=13/${lat}/${lon}`, wikiloc: `https://www.wikiloc.com/trails/hiking?q=trail+loop`, score: 50 },
-    { id: 2, name: 'Ridge Trail', distancia: Math.round(targetKm * 0.7), source: 'OSM', type: 'trail', difficulty: 'demanding', url: `https://www.openstreetmap.org/#map=13/${lat}/${lon}`, wikiloc: `https://www.wikiloc.com/trails/hiking?q=ridge+trail`, score: 40 },
-  ];
+  // No fake fallbacks: if we can't find real trails, return none and the app hides the card.
 
   let elements = [];
   try {
@@ -396,7 +393,7 @@ app.get('/api/trails', async (req, res) => {
     elements = overpassRes.data?.elements || [];
   } catch (overpassErr) {
     console.error('⚠️ Overpass failed:', overpassErr.message);
-    return res.json({ success: true, trails: mockTrails, total: mockTrails.length });
+    return res.json({ success: false, trails: [], total: 0 });
   }
 
   try {
@@ -468,7 +465,7 @@ app.get('/api/trails', async (req, res) => {
 
   } catch (error) {
     console.error('OSM processing error:', error.message);
-    return res.json({ success: true, trails: mockTrails, total: mockTrails.length });
+    return res.json({ success: false, trails: [], total: 0 });
   }
 });
 
