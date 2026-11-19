@@ -642,9 +642,15 @@ export default function LandingPage({ lang, setLang }) {
               <span style={s.brandEmoji}>🏔️</span>
               TrailReady
             </div>
+            <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <button type="button" onClick={() => navigate('/app?login=1')}
+              style={{ background:'none', border:'none', color:'#FFFFFF', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'var(--font)', padding:'6px 4px' }}>
+              {lang === 'es' ? 'Iniciar sesión' : 'Log in'}
+            </button>
             <div style={s.langToggle}>
               <button type="button" style={s.langBtn(lang === 'en')} onClick={() => setLang('en')}>EN</button>
               <button type="button" style={s.langBtn(lang === 'es')} onClick={() => setLang('es')}>ES</button>
+            </div>
             </div>
           </div>
         </nav>

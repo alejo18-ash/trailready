@@ -408,7 +408,14 @@ function AppFlow({ lang, setLang }) {
   const [recovery, setRecovery]   = useState(null);
   const [currentWeek, setCurrentWeek] = useState(0);
   const [currentPhase, setCurrentPhase] = useState(null);
-  const [showLogin, setShowLogin] = useState(false);
+  // /app?login=1 (from the landing "Log in" link) opens the sign-in screen directly.
+  const [showLogin, setShowLogin] = useState(() => {
+    try { return new URLSearchParams(window.location.search).has('login'); } catch { return false; }
+  });
+  const [returningLogin, setReturningLogin] = useState(showLogin);
+  useEffect(() => {
+    if (window.location.search.includes('login')) window.history.replaceState(null, '', '/app');
+  }, []);
   const [completions, setCompletions] = useState({});
   const [strengthFrom, setStrengthFrom] = useState('today');
 
@@ -496,10 +503,10 @@ function AppFlow({ lang, setLang }) {
 
   if (authLoading) return <SplashScreen key="auth-wait" onDone={() => {}} />;
   if (screen === 'login') return <LoginScreen lang={lang} onLogin={async () => { await loginWithGoogle(); setScreen('language'); }} onSkip={() => setScreen('language')} />;
-  if (showLogin) return <LoginScreen lang={lang} onLogin={async () => { await loginWithGoogle(); setShowLogin(false); }} onSkip={() => setShowLogin(false)} />;
+  if (showLogin) return <LoginScreen lang={lang} returning={returningLogin} onLogin={async () => { await loginWithGoogle(); setShowLogin(false); }} onSkip={() => { setShowLogin(false); setReturningLogin(false); }} />;
 
   if (screen === 'splash')     return <SplashScreen key="intro" onDone={() => setScreen('language')} />;
-  if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} />;
+  if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} onLogin={() => { setReturningLogin(true); setShowLogin(true); }} />;
   if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
   if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
   if (screen === 'today')     return <TodayScreen {...props} user={user} onLogout={logout} onShowLogin={() => setShowLogin(true)} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('raceProfile')} completions={completions} onWorkoutStatus={handleWorkoutStatus} />;

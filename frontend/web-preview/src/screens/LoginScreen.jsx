@@ -1,4 +1,4 @@
-export default function LoginScreen({ lang, onLogin, onSkip }) {
+export default function LoginScreen({ lang, onLogin, onSkip, returning }) {
   return (
     <div style={{
       minHeight: '100vh',
@@ -25,12 +25,14 @@ export default function LoginScreen({ lang, onLogin, onSkip }) {
       </div>
 
       <h1 style={{ fontSize: 24, fontWeight: 800, color: '#121D29', margin: 0, letterSpacing: '-0.02em', textAlign: 'center' }}>
-        {lang === 'es' ? 'Guarda tu plan' : 'Save your plan'}
+        {returning ? (lang === 'es' ? 'Bienvenido de vuelta' : 'Welcome back') : (lang === 'es' ? 'Guarda tu plan' : 'Save your plan')}
       </h1>
       <p style={{ fontSize: 14, color: 'rgba(18,29,41,0.5)', marginTop: 8, marginBottom: 32, textAlign: 'center', lineHeight: 1.5 }}>
-        {lang === 'es'
-          ? 'Inicia sesión para sincronizar tu plan entre dispositivos.'
-          : 'Sign in to sync your plan across devices.'}
+        {returning
+          ? (lang === 'es' ? 'Inicia sesión para recuperar tu plan.' : 'Sign in to get your plan back.')
+          : (lang === 'es'
+            ? 'Inicia sesión para sincronizar tu plan entre dispositivos.'
+            : 'Sign in to sync your plan across devices.')}
       </p>
 
       <button

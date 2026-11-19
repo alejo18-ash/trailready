@@ -21,7 +21,7 @@ const s = {
     btn: { marginTop:8, background:'#EA2A30', borderRadius:13, padding:14, textAlign:'center', fontSize:14, fontWeight:600, color:'#fff', cursor:'pointer', border:'none', width:'100%' },
   };
   
-  export default function LanguageScreen({ onSelect }) {
+  export default function LanguageScreen({ onSelect, onLogin }) {
     const options = [
       { code:'en', flag:'🇺🇸', label:'English',  sub:'United States / Canada' },
       { code:'es', flag:'🇲🇽', label:'Español',  sub:'México / España / LATAM' },
@@ -47,6 +47,13 @@ const s = {
               </div>
             </div>
           ))}
+
+          {onLogin && (
+            <button type="button" onClick={onLogin}
+              style={{ display:'block', margin:'18px auto 0', background:'none', border:'none', color:'#EA2A30', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
+              Ya tengo cuenta · I have an account
+            </button>
+          )}
         </div>
       </div>
     );
