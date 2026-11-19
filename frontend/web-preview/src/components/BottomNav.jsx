@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+import { NavContext } from '../utils/navContext';
 const ACTIVE = '#EA2A30';
 const INACTIVE = 'rgba(255,255,255,0.45)';
 
@@ -33,6 +35,13 @@ const icons = {
       <line x1="9" y1="6" x2="15" y2="6"/>
     </svg>
   ),
+  coach: (active) => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      stroke={active ? ACTIVE : INACTIVE}
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  ),
   profile: (active) => (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
       stroke={active ? ACTIVE : INACTIVE}
@@ -46,14 +55,17 @@ const icons = {
 const labels = {
   today:   { es: 'Hoy',    en: 'Today'   },
   plan:    { es: 'Plan',   en: 'Plan'    },
+  coach:   { es: 'Coach',  en: 'Coach'   },
   plans:   { es: 'Planes', en: 'Plans'   },
   profile: { es: 'Perfil', en: 'Profile' },
 };
 
-export default function BottomNav({ active, lang, onToday, onPlan, onWeek, onPlans, onProfile }) {
+export default function BottomNav({ active, lang, onToday, onPlan, onWeek, onPlans, onProfile, onCoach }) {
+  const { go } = useContext(NavContext);
   const tabs = [
     { key: 'today',   fn: onToday              },
     { key: 'plan',    fn: onPlan || onWeek      },
+    { key: 'coach',   fn: active === 'coach' ? null : (onCoach || (() => go('coach'))) },
     { key: 'plans',   fn: onPlans               },
     { key: 'profile', fn: onProfile             },
   ];

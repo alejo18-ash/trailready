@@ -16,6 +16,9 @@ import { planLengthWeeks, mondayOf, currentWeekIndex } from './utils/planWeeks';
 import LoginScreen from './screens/LoginScreen';
 import AccountScreen from './screens/AccountScreen';
 import LegalScreen from './screens/LegalScreen';
+import CoachScreen from './screens/CoachScreen';
+import { NavContext } from './utils/navContext';
+import { applyProposal } from './utils/applyProposal';
 import { useAuth } from './hooks/useAuth';
 import { loadPlan, savePlan, clearPlan } from './services/planService';
 
@@ -541,26 +544,43 @@ function AppFlow({ lang, setLang }) {
     if (plan) savePlan(user?.uid, { plan, raceData, profile, currentWeek, language: l, savedAt: Date.now(), completions });
   };
 
+  // Coach proposals only change the plan after the runner taps "Apply".
+  const handleApplyProposal = (proposal) => {
+    const { plan: next, applied } = applyProposal(plan, proposal, currentWeek);
+    if (applied > 0) {
+      setPlan(next);
+      savePlan(user?.uid, { plan: next, raceData, profile, currentWeek, language: lang, savedAt: Date.now(), completions });
+    }
+    return applied;
+  };
+
   const openLegal = (d) => { setLegalFrom(screen); setLegalDoc(d); setScreen('legal'); };
 
   const props = { lang, raceData, profile, plan, currentWeek, setCurrentWeek };
 
-  if (authLoading) return <SplashScreen key="auth-wait" onDone={() => {}} />;
-  if (screen === 'login') return <LoginScreen lang={lang} onLegal={openLegal} onLogin={async () => { await loginWithGoogle(); setScreen('language'); }} onSkip={() => setScreen('language')} />;
-  if (showLogin) return <LoginScreen lang={lang} onLegal={(d) => { setShowLogin(false); openLegal(d); }} returning={returningLogin} onLogin={async () => { await loginWithGoogle(); setShowLogin(false); }} onSkip={() => { setShowLogin(false); setReturningLogin(false); }} />;
+  const renderScreen = () => {
+    if (authLoading) return <SplashScreen key="auth-wait" onDone={() => {}} />;
+    if (screen === 'login') return <LoginScreen lang={lang} onLegal={openLegal} onLogin={async () => { await loginWithGoogle(); setScreen('language'); }} onSkip={() => setScreen('language')} />;
+    if (showLogin) return <LoginScreen lang={lang} onLegal={(d) => { setShowLogin(false); openLegal(d); }} returning={returningLogin} onLogin={async () => { await loginWithGoogle(); setShowLogin(false); }} onSkip={() => { setShowLogin(false); setReturningLogin(false); }} />;
 
-  if (screen === 'splash')     return <SplashScreen key="intro" onDone={() => setScreen('language')} />;
-  if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} userEmail={user?.email} onLogin={() => { setReturningLogin(true); setShowLogin(true); }} />;
-  if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
-  if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
-  if (screen === 'today')     return <TodayScreen {...props} user={user} onLogout={handleLogout} onShowLogin={() => setShowLogin(true)} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} completions={completions} onWorkoutStatus={handleWorkoutStatus} />;
-  if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} />;
-  if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
-  if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen(strengthFrom === 'week' ? 'week' : 'today')} />;
-  if (screen === 'raceProfile') return <RaceProfileScreen {...props} onProfile={() => setScreen('account')} onBack={() => setScreen('account')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
-  if (screen === 'plans')     return <PlansScreen lang={lang} plan={plan} raceData={raceData} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onProfile={() => setScreen('account')} />;
-  if (screen === 'account')   return <AccountScreen lang={lang} user={user} plan={plan} raceData={raceData} currentWeek={currentWeek} onLogin={() => setShowLogin(true)} onLogout={handleLogout} onDeleteAccount={handleDeleteAccount} onNewPlan={handleNewPlan} onRaceProfile={() => setScreen('raceProfile')} onLegal={openLegal} onSetLang={handleSetLang} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
-  if (screen === 'legal')     return <LegalScreen lang={lang} doc={legalDoc} onBack={() => setScreen(legalFrom || 'account')} />;
+    if (screen === 'splash')     return <SplashScreen key="intro" onDone={() => setScreen('language')} />;
+    if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} userEmail={user?.email} onLogin={() => { setReturningLogin(true); setShowLogin(true); }} />;
+    if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
+    if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
+    if (screen === 'today')     return <TodayScreen {...props} user={user} onLogout={handleLogout} onShowLogin={() => setShowLogin(true)} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} completions={completions} onWorkoutStatus={handleWorkoutStatus} />;
+    if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} />;
+    if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
+    if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen(strengthFrom === 'week' ? 'week' : 'today')} />;
+    if (screen === 'raceProfile') return <RaceProfileScreen {...props} onProfile={() => setScreen('account')} onBack={() => setScreen('account')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
+    if (screen === 'plans')     return <PlansScreen lang={lang} plan={plan} raceData={raceData} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onProfile={() => setScreen('account')} />;
+    if (screen === 'account')   return <AccountScreen lang={lang} user={user} plan={plan} raceData={raceData} currentWeek={currentWeek} onLogin={() => setShowLogin(true)} onLogout={handleLogout} onDeleteAccount={handleDeleteAccount} onNewPlan={handleNewPlan} onRaceProfile={() => setScreen('raceProfile')} onLegal={openLegal} onSetLang={handleSetLang} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
+    if (screen === 'coach')     return <CoachScreen lang={lang} user={user} plan={plan} raceData={raceData} profile={profile} currentWeek={currentWeek} completions={completions} onApply={handleApplyProposal} onLogin={() => setShowLogin(true)} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} />;
+    if (screen === 'legal')     return <LegalScreen lang={lang} doc={legalDoc} onBack={() => setScreen(legalFrom || 'account')} />;
+
+    return null;
+  };
+
+  return <NavContext.Provider value={{ go: setScreen }}>{renderScreen()}</NavContext.Provider>;
 }
 
 function LegalPage({ lang, doc }) {
