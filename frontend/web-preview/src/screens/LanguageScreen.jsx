@@ -21,7 +21,7 @@ const s = {
     btn: { marginTop:8, background:'#EA2A30', borderRadius:13, padding:14, textAlign:'center', fontSize:14, fontWeight:600, color:'#fff', cursor:'pointer', border:'none', width:'100%' },
   };
   
-  export default function LanguageScreen({ onSelect, onLogin }) {
+  export default function LanguageScreen({ onSelect, onLogin, userEmail }) {
     const options = [
       { code:'en', flag:'🇺🇸', label:'English',  sub:'United States / Canada' },
       { code:'es', flag:'🇲🇽', label:'Español',  sub:'México / España / LATAM' },
@@ -36,6 +36,14 @@ const s = {
             <div style={s.subtitle}>Select your language / Elige tu idioma</div>
           </div>
   
+          {userEmail && (
+            <div style={{ background:'#FFFFFF', border:'1px solid rgba(234,42,48,0.2)', borderRadius:12, padding:'12px 14px', marginBottom:18, fontSize:12, color:'rgba(18,29,41,0.7)', lineHeight:1.5 }}>
+              ✓ {userEmail}<br />
+              No hay un plan guardado en esta cuenta todavía. Crea uno y quedará guardado.<br />
+              <span style={{ color:'rgba(18,29,41,0.45)' }}>No saved plan in this account yet. Create one and it will be saved.</span>
+            </div>
+          )}
+
           <div style={s.label}>SELECT / ELIGE</div>
   
           {options.map(opt => (
@@ -48,7 +56,7 @@ const s = {
             </div>
           ))}
 
-          {onLogin && (
+          {onLogin && !userEmail && (
             <button type="button" onClick={onLogin}
               style={{ display:'block', margin:'18px auto 0', background:'none', border:'none', color:'#EA2A30', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>
               Ya tengo cuenta · I have an account

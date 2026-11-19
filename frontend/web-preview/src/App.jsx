@@ -506,7 +506,7 @@ function AppFlow({ lang, setLang }) {
   if (showLogin) return <LoginScreen lang={lang} returning={returningLogin} onLogin={async () => { await loginWithGoogle(); setShowLogin(false); }} onSkip={() => { setShowLogin(false); setReturningLogin(false); }} />;
 
   if (screen === 'splash')     return <SplashScreen key="intro" onDone={() => setScreen('language')} />;
-  if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} onLogin={() => { setReturningLogin(true); setShowLogin(true); }} />;
+  if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} userEmail={user?.email} onLogin={() => { setReturningLogin(true); setShowLogin(true); }} />;
   if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
   if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
   if (screen === 'today')     return <TodayScreen {...props} user={user} onLogout={logout} onShowLogin={() => setShowLogin(true)} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('raceProfile')} completions={completions} onWorkoutStatus={handleWorkoutStatus} />;

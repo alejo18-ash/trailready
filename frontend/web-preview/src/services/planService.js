@@ -2,6 +2,8 @@ import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const STORAGE_KEY = 'trailready_plan';
+// Firestore rejects undefined values anywhere in a document.
+const clean = (data) => JSON.parse(JSON.stringify(data));
 
 export async function loadPlan(uid) {
   if (uid) {
@@ -12,7 +14,7 @@ export async function loadPlan(uid) {
       const local = localStorage.getItem(STORAGE_KEY);
       if (local) {
         const data = JSON.parse(local);
-        await setDoc(doc(db, 'users', uid, 'plans', 'current'), data);
+        await setDoc(doc(db, 'users', uid, 'plans', 'current'), clean(data));
         return data;
       }
     } catch (e) {
@@ -31,7 +33,7 @@ export async function savePlan(uid, data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   if (uid) {
     try {
-      await setDoc(doc(db, 'users', uid, 'plans', 'current'), data);
+      await setDoc(doc(db, 'users', uid, 'plans', 'current'), clean(data));
     } catch (e) {
       console.error('Firestore save failed', e);
     }

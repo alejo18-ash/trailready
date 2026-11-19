@@ -60,21 +60,6 @@ export default function SplashScreen({ onDone }) {
         Your personalized training plan
       </div>
 
-      <div style={{
-        position: 'absolute',
-        bottom: 48,
-        display: 'flex',
-        gap: 6,
-      }}>
-        {[0,1,2].map(i => (
-          <div key={i} style={{
-            width: 6,
-            height: 6,
-            borderRadius: '50%',
-            background: i === 0 ? '#EA2A30' : 'rgba(18,29,41,0.15)',
-          }} />
-        ))}
-      </div>
     </div>
   );
 }
