@@ -161,6 +161,7 @@ export default function SourceScreen({ lang, onNext }) {
   const handleManual = () => {
     const { name, distancia, desnivel, fecha } = manual;
     if (!name || !distancia || !desnivel || !fecha) return setError(lang==='es' ? 'Completa todos los campos' : 'Fill in all fields');
+    if (new Date(fecha + 'T23:59:59') < new Date()) return setError(lang==='es' ? 'La fecha de la carrera ya pasó' : 'Race date is in the past');
     onNext({ name, distancia: Number(distancia), desnivel: Number(desnivel), fecha, weeksAvailable: calcWeeks(fecha), terreno: manual.terreno, source:'manual' });
   };
 
@@ -326,7 +327,7 @@ export default function SourceScreen({ lang, onNext }) {
                 {[
                   { key:'name',      label: lang==='es' ? 'Nombre de la carrera' : 'Race name',       placeholder:'Thunderbunny Trail Race', type:'text' },
                   { key:'distancia', label: lang==='es' ? 'Distancia (km)'       : 'Distance (km)',    placeholder:'21',  type:'number' },
-                  { key:'desnivel',  label: lang==='es' ? 'Desnivel positivo (m)': 'Elevation gain (m)', placeholder:'2500', type:'number' },
+                  { key:'desnivel',  label: lang==='es' ? 'Desnivel positivo (m)': 'Elevation gain (m)', placeholder:'1200', type:'number' },
                   { key:'fecha',     label: lang==='es' ? 'Fecha de la carrera'  : 'Race date',        placeholder:'', type:'date' },
                 ].map(f => (
                   <div key={f.key} style={s.manualRow}>

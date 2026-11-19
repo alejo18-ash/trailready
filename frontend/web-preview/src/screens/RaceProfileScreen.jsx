@@ -23,7 +23,7 @@ const s = {
   badge: (color, bg) => ({ display:'inline-block', padding:'3px 10px', borderRadius:20, fontSize:10, fontWeight:600, color, background:bg, marginRight:6, marginBottom:6 }),
 };
 
-function ElevationChart({ profile, color, height = 120 }) {
+function ElevationChart({ profile, color, height = 120, lang }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -75,7 +75,7 @@ function ElevationChart({ profile, color, height = 120 }) {
     ctx.fillText(Math.round(min) + 'm', 4, h - 4);
   }, [profile, color, height]);
 
-  if (!profile?.length) return <div style={s.noData}>No elevation data</div>;
+  if (!profile?.length) return <div style={s.noData}>{lang === 'es' ? 'Sin datos de elevación' : 'No elevation data'}</div>;
   return <div style={s.chartWrap}><canvas ref={canvasRef} style={{ width:'100%', height }} /></div>;
 }
 
@@ -152,7 +152,7 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
             </div>
           )}
           {raceProfile
-            ? <ElevationChart profile={raceProfile} color="#EA2A30" height={120} />
+            ? <ElevationChart profile={raceProfile} color="#EA2A30" height={120} lang={lang} />
             : <div style={{background:'rgba(18,29,41,0.03)',borderRadius:8,padding:16,textAlign:'center'}}>
                 <div style={{fontSize:11,color:'rgba(18,29,41,0.5)',marginBottom:4}}>{lang==='es'?'Perfil no disponible':'Elevation profile not available'}</div>
                 <div style={{fontSize:10,color:'rgba(18,29,41,0.2)'}}>{lang==='es'?'Sube el GPX para ver el perfil':'Upload the race GPX to see the profile'}</div>
@@ -173,7 +173,7 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
           </div>
           {loadingProfile
             ? <div style={s.noData}>⏳ {lang==='es'?'Cargando...':'Loading...'}</div>
-            : <ElevationChart profile={dailyProfile} color="#7c3aed" height={120} />
+            : <ElevationChart profile={dailyProfile} color="#7c3aed" height={120} lang={lang} />
           }
         </div>
       </div>

@@ -9,7 +9,7 @@ const PLANS = [
   { icon: '🩹', nk: 'god5Name', sk: 'god5Sub', bk: 'god5Body', active: false },
 ];
 
-export default function PlansScreen({ lang, plan, raceData, onToday, onWeek }) {
+export default function PlansScreen({ lang, plan, raceData, onToday, onWeek, onProfile }) {
   const hasPlan = !!(plan?.weeks?.length);
 
   return (
@@ -117,7 +117,7 @@ export default function PlansScreen({ lang, plan, raceData, onToday, onWeek }) {
         ))}
       </div>
 
-      <BottomNav active="plans" lang={lang} onToday={onToday} onPlan={onWeek} onProfile={onToday} />
+      <BottomNav active="plans" lang={lang} onToday={onToday} onPlan={onWeek} onProfile={onProfile} />
     </div>
   );
 }

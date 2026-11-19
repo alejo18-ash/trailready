@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { planLengthWeeks } from '../utils/planWeeks';
 import { t } from '../i18n';
 
 const s = {
@@ -31,15 +32,7 @@ export default function ProfileScreen({ lang, raceData, onNext, onBack }) {
   const [startWeek, setStartWeek]   = useState('1');
   const [terrain, setTerrain]       = useState('mountain');
 
-  const idealWeeks = raceData.distancia <= 25 ? 10
-  : raceData.distancia <= 35 ? 12
-  : raceData.distancia <= 55 ? 16
-  : raceData.distancia <= 80 ? 20
-  : raceData.distancia <= 110 ? 24
-  : 28;
-
-  const available = raceData.weeksAvailable || idealWeeks;
-  const insufficient = available < idealWeeks * 0.6;
+  const { total: planWeeks, ideal: idealWeeks, available, insufficient } = planLengthWeeks(raceData);
 
   const handleNext = () => {
     onNext({ nivel, kmSemanales, diasDisponibles: dias, startWeek: alreadyTraining ? startWeek : '1', terrain });
@@ -60,7 +53,7 @@ export default function ProfileScreen({ lang, raceData, onNext, onBack }) {
           <span style={s.tag('251,191,36')}>{raceData.desnivel?.toLocaleString()}m D+</span>
           {raceData.fecha && <span style={s.tag('96,165,250')}>{raceData.fecha}</span>}
           <span style={s.tag('167,139,250')}>
-            {Math.min(idealWeeks, available)} {t(lang,'weeksAvailable')}
+            {planWeeks} {t(lang,'weeksAvailable')}
           </span>
         </div>
 
@@ -117,7 +110,7 @@ export default function ProfileScreen({ lang, raceData, onNext, onBack }) {
               style={s.weekInput}
               type="number"
               min="1"
-              max={Math.min(idealWeeks, available) - 1}
+              max={planWeeks - 1}
               value={startWeek}
               onChange={e => setStartWeek(e.target.value)}
               placeholder={lang==='es' ? 'Ej: 6' : 'e.g. 6'}

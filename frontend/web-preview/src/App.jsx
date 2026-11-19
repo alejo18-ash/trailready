@@ -12,6 +12,7 @@ import RaceProfileScreen from './screens/RaceProfileScreen';
 import LandingPage from './screens/LandingPage';
 import StrengthScreen from './screens/StrengthScreen';
 import PlansScreen from './screens/PlansScreen';
+import { planLengthWeeks, mondayOf, currentWeekIndex } from './utils/planWeeks';
 import LoginScreen from './screens/LoginScreen';
 import { useAuth } from './hooks/useAuth';
 import { loadPlan, savePlan, clearPlan } from './services/planService';
@@ -41,35 +42,22 @@ export function generatePlan(raceData, profile) {
   const kmBase = Number(profile.kmSemanales);
   const multiplier = { principiante: 0.8, intermedio: 1.0, avanzado: 1.2 }[profile.nivel] || 1.0;
 
-  const idealWeeks = raceData.distancia <= 55 ? 16
-    : raceData.distancia <= 80 ? 20
-    : raceData.distancia <= 110 ? 24 : 32;
-
-  const availableWeeks = raceData.weeksAvailable || idealWeeks;
-  const totalWeeks = Math.min(idealWeeks, availableWeeks);
+  const { total: totalWeeks, ideal: idealWeeks, available: availableWeeks, insufficient } = planLengthWeeks(raceData);
   const startWeek = Number(profile.startWeek) || 1;
-  const insufficient = availableWeeks < idealWeeks * 0.6;
 
-  const phases = totalWeeks <= 16
-    ? [
-        { name:'base',  weeks:5, kmStart:kmBase,       kmEnd:kmBase*1.3,  desnivel:Math.round((raceData.desnivel||2000)*0.3) },
-        { name:'build', weeks:5, kmStart:kmBase*1.3,   kmEnd:kmBase*1.7,  desnivel:Math.round((raceData.desnivel||2000)*0.5) },
-        { name:'peak',  weeks:4, kmStart:kmBase*1.7,   kmEnd:kmBase*1.9,  desnivel:Math.round((raceData.desnivel||2000)*0.8) },
-        { name:'taper', weeks:2, kmStart:kmBase*1.1,   kmEnd:kmBase*0.4,  desnivel:Math.round((raceData.desnivel||2000)*0.2) },
-      ]
-    : totalWeeks <= 24
-    ? [
-        { name:'base',  weeks:7, kmStart:kmBase,       kmEnd:kmBase*1.3,  desnivel:Math.round((raceData.desnivel||2000)*0.25) },
-        { name:'build', weeks:8, kmStart:kmBase*1.3,   kmEnd:kmBase*1.8,  desnivel:Math.round((raceData.desnivel||2000)*0.5)  },
-        { name:'peak',  weeks:6, kmStart:kmBase*1.8,   kmEnd:kmBase*2.0,  desnivel:Math.round((raceData.desnivel||2000)*0.85) },
-        { name:'taper', weeks:3, kmStart:kmBase*1.2,   kmEnd:kmBase*0.4,  desnivel:Math.round((raceData.desnivel||2000)*0.2)  },
-      ]
-    : [
-        { name:'base',  weeks:10, kmStart:kmBase,      kmEnd:kmBase*1.4,  desnivel:Math.round((raceData.desnivel||2000)*0.2)  },
-        { name:'build', weeks:11, kmStart:kmBase*1.4,  kmEnd:kmBase*1.9,  desnivel:Math.round((raceData.desnivel||2000)*0.5)  },
-        { name:'peak',  weeks:8,  kmStart:kmBase*1.9,  kmEnd:kmBase*2.1,  desnivel:Math.round((raceData.desnivel||2000)*0.9)  },
-        { name:'taper', weeks:3,  kmStart:kmBase*1.2,  kmEnd:kmBase*0.4,  desnivel:Math.round((raceData.desnivel||2000)*0.2)  },
-      ];
+  // Phase lengths scale with the real time to race day; the plan always ends on race week.
+  const desnivelBase = raceData.desnivel || 2000;
+  const taperW = totalWeeks < 6 ? 1 : raceData.distancia <= 25 ? 1 : raceData.distancia <= 55 ? 2 : 3;
+  const peakW  = Math.max(1, Math.round(totalWeeks * 0.22));
+  const buildW = Math.max(1, Math.round(totalWeeks * 0.30));
+  const baseW  = Math.max(1, totalWeeks - taperW - peakW - buildW);
+  const long = totalWeeks > 24;
+  const phases = [
+    { name:'base',  weeks:baseW,  kmStart:kmBase,                    kmEnd:kmBase*(long?1.4:1.3), desnivel:Math.round(desnivelBase*(long?0.2:0.3)) },
+    { name:'build', weeks:buildW, kmStart:kmBase*(long?1.4:1.3),     kmEnd:kmBase*(long?1.9:1.7), desnivel:Math.round(desnivelBase*0.5) },
+    { name:'peak',  weeks:peakW,  kmStart:kmBase*(long?1.9:1.7),     kmEnd:kmBase*(long?2.1:1.9), desnivel:Math.round(desnivelBase*(long?0.9:0.8)) },
+    { name:'taper', weeks:taperW, kmStart:kmBase*1.1,                kmEnd:kmBase*0.4,            desnivel:Math.round(desnivelBase*0.2) },
+  ];
 
   const templates = {
     base:  ['rest','easy','strength','tempo','rest','longTrail','recovery'],
@@ -201,7 +189,7 @@ export function generatePlan(raceData, profile) {
     }
   }
 
-  return { weeks, totalWeeks, idealWeeks, insufficient, startWeek };
+  return { weeks, totalWeeks, idealWeeks, availableWeeks, insufficient, startWeek, startDate: mondayOf().toISOString() };
 }
 
 /** 8-week base-building plan (no race). Time-based volume; parallel to {@link generatePlan}. */
@@ -404,7 +392,13 @@ export function generatePreBasePlan() {
 }
 
 const STORAGE_KEY = 'trailready_plan';
-const NINETY_DAYS = 90 * 24 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+// A plan stays until 14 days after race day (or 1 year if there is no race date).
+function planExpired(state) {
+  const race = state?.raceData?.fecha ? new Date(state.raceData.fecha + 'T12:00:00').getTime() : NaN;
+  if (!isNaN(race)) return Date.now() > race + 14 * DAY_MS;
+  return Date.now() - (state?.savedAt || 0) > 365 * DAY_MS;
+}
 
 function AppFlow({ lang, setLang }) {
   const [screen, setScreen]       = useState('splash');
@@ -424,11 +418,11 @@ function AppFlow({ lang, setLang }) {
       try {
         const state = await loadPlan(user?.uid);
         if (!state) return;
-        if (Date.now() - state.savedAt < NINETY_DAYS) {
+        if (!planExpired(state)) {
           setPlan(state.plan);
           setRaceData(state.raceData);
           setProfile(state.profile);
-          setCurrentWeek(state.currentWeek || 0);
+          setCurrentWeek(currentWeekIndex(state.plan, state.savedAt));
           setLang(state.language || 'es');
           setScreen('today');
         }
@@ -500,7 +494,7 @@ function AppFlow({ lang, setLang }) {
   if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
   if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen('today')} />;
   if (screen === 'raceProfile') return <RaceProfileScreen {...props} onBack={() => setScreen('today')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
-  if (screen === 'plans')     return <PlansScreen lang={lang} plan={plan} raceData={raceData} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} />;
+  if (screen === 'plans')     return <PlansScreen lang={lang} plan={plan} raceData={raceData} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onProfile={() => setScreen('raceProfile')} />;
 }
 
 export default function App() {

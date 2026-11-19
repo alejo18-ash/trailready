@@ -1,5 +1,5 @@
 const ACTIVE = '#EA2A30';
-const INACTIVE = 'rgba(18,29,41,0.35)';
+const INACTIVE = 'rgba(255,255,255,0.45)';
 
 const icons = {
   today: (active) => (
