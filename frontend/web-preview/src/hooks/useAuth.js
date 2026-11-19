@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, deleteUser, reauthenticateWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase';
 
 export function useAuth() {
@@ -47,5 +47,18 @@ export function useAuth() {
     }
   }
 
-  return { user, authLoading, loginWithGoogle, logout };
+  // Deletes the Firebase Auth user. Google requires a recent sign-in for this.
+  async function deleteAccount() {
+    const u = auth.currentUser;
+    if (!u) return;
+    try {
+      await deleteUser(u);
+    } catch (e) {
+      if (e?.code !== 'auth/requires-recent-login') throw e;
+      await reauthenticateWithPopup(u, googleProvider);
+      await deleteUser(u);
+    }
+  }
+
+  return { user, authLoading, loginWithGoogle, logout, deleteAccount };
 }

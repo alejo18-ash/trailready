@@ -1,4 +1,4 @@
-export default function LoginScreen({ lang, onLogin, onSkip, returning }) {
+export default function LoginScreen({ lang, onLogin, onSkip, returning, onLegal }) {
   return (
     <div style={{
       minHeight: '100vh',
@@ -80,6 +80,12 @@ export default function LoginScreen({ lang, onLogin, onSkip, returning }) {
       >
         {lang === 'es' ? 'Continuar sin cuenta →' : 'Continue without account →'}
       </button>
+      <p style={{ fontSize:11, color:'rgba(18,29,41,0.4)', textAlign:'center', maxWidth:300, lineHeight:1.5, marginTop:20 }}>
+        {lang === 'es' ? 'Al continuar aceptas los ' : 'By continuing you accept the '}
+        <button type="button" onClick={() => onLegal?.('terms')} style={{ background:'none', border:'none', padding:0, color:'rgba(18,29,41,0.6)', textDecoration:'underline', cursor:'pointer', fontSize:11, fontFamily:'inherit' }}>{lang === 'es' ? 'Términos de uso' : 'Terms of use'}</button>
+        {lang === 'es' ? ' y la ' : ' and the '}
+        <button type="button" onClick={() => onLegal?.('privacy')} style={{ background:'none', border:'none', padding:0, color:'rgba(18,29,41,0.6)', textDecoration:'underline', cursor:'pointer', fontSize:11, fontFamily:'inherit' }}>{lang === 'es' ? 'Política de privacidad' : 'Privacy policy'}</button>.
+      </p>
     </div>
   );
 }

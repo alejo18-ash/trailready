@@ -79,7 +79,7 @@ function ElevationChart({ profile, color, height = 120, lang }) {
   return <div style={s.chartWrap}><canvas ref={canvasRef} style={{ width:'100%', height }} /></div>;
 }
 
-export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToday, onWeek, onPlans }) {
+export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToday, onWeek, onPlans, onProfile }) {
   const [dailyProfile, setDailyProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
 
@@ -190,7 +190,7 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
         </div>
       </div>
 
-      <BottomNav active="profile" lang={lang} onToday={onToday} onPlan={onWeek} onPlans={onPlans} />
+      <BottomNav active="profile" lang={lang} onToday={onToday} onPlan={onWeek} onPlans={onPlans} onProfile={onProfile} />
     </div>
   );
 }

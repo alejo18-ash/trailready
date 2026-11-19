@@ -740,6 +740,10 @@ export default function LandingPage({ lang, setLang }) {
               <button type="button" style={s.footerLangBtn(lang === 'es')} onClick={() => setLang('es')}>ES</button>
             </div>
             <div style={s.footerTagline}>{t(lang, 'landing.footerTagline')}</div>
+            <div style={{ display:'flex', gap:16, justifyContent:'center', marginTop:10, fontSize:12 }}>
+              <a href="/terms" style={{ color:'inherit', opacity:0.6 }}>{lang === 'es' ? 'Términos' : 'Terms'}</a>
+              <a href="/privacy" style={{ color:'inherit', opacity:0.6 }}>{lang === 'es' ? 'Privacidad' : 'Privacy'}</a>
+            </div>
           </div>
         </footer>
 

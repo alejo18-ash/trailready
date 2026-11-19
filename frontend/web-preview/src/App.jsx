@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { translations } from './i18n';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import SplashScreen from './screens/SplashScreen';
 import LanguageScreen from './screens/LanguageScreen';
 import SourceScreen from './screens/SourceScreen';
@@ -14,6 +14,8 @@ import StrengthScreen from './screens/StrengthScreen';
 import PlansScreen from './screens/PlansScreen';
 import { planLengthWeeks, mondayOf, currentWeekIndex } from './utils/planWeeks';
 import LoginScreen from './screens/LoginScreen';
+import AccountScreen from './screens/AccountScreen';
+import LegalScreen from './screens/LegalScreen';
 import { useAuth } from './hooks/useAuth';
 import { loadPlan, savePlan, clearPlan } from './services/planService';
 
@@ -419,7 +421,10 @@ function AppFlow({ lang, setLang }) {
   const [completions, setCompletions] = useState({});
   const [strengthFrom, setStrengthFrom] = useState('today');
 
-  const { user, authLoading, loginWithGoogle, logout } = useAuth();
+  const { user, authLoading, loginWithGoogle, logout, deleteAccount } = useAuth();
+  const navigate = useNavigate();
+  const [legalDoc, setLegalDoc] = useState(null);
+  const [legalFrom, setLegalFrom] = useState('account');
 
   useEffect(() => {
     if (authLoading) return;
@@ -499,22 +504,68 @@ function AppFlow({ lang, setLang }) {
     setScreen('source');
   };
 
+  const clearDeviceData = () => {
+    try {
+      Object.keys(localStorage)
+        .filter(k => k.startsWith('trailready_') || k === 'usedTrails')
+        .forEach(k => localStorage.removeItem(k));
+    } catch { /* storage unavailable */ }
+    setPlan(null); setRaceData(null); setProfile(null); setCurrentWeek(0); setCompletions({});
+  };
+
+  // Signing out also clears this device, so a shared phone doesn't keep your plan.
+  const handleLogout = async () => {
+    await logout();
+    clearDeviceData();
+    navigate('/');
+  };
+
+  const handleDeleteAccount = async () => {
+    const es = lang === 'es';
+    try {
+      await clearPlan(user?.uid);
+      await deleteAccount();
+      clearDeviceData();
+      navigate('/');
+      return {};
+    } catch (e) {
+      console.error('Delete account failed', e);
+      return { error: es
+        ? 'Tu plan ya se borró, pero falta confirmar tu identidad para eliminar la cuenta. Cierra sesión, vuelve a entrar con Google y repite.'
+        : 'Your plan was deleted, but we need to confirm your identity to delete the account. Sign out, sign in again with Google and retry.' };
+    }
+  };
+
+  const handleSetLang = (l) => {
+    setLang(l);
+    if (plan) savePlan(user?.uid, { plan, raceData, profile, currentWeek, language: l, savedAt: Date.now(), completions });
+  };
+
+  const openLegal = (d) => { setLegalFrom(screen); setLegalDoc(d); setScreen('legal'); };
+
   const props = { lang, raceData, profile, plan, currentWeek, setCurrentWeek };
 
   if (authLoading) return <SplashScreen key="auth-wait" onDone={() => {}} />;
-  if (screen === 'login') return <LoginScreen lang={lang} onLogin={async () => { await loginWithGoogle(); setScreen('language'); }} onSkip={() => setScreen('language')} />;
-  if (showLogin) return <LoginScreen lang={lang} returning={returningLogin} onLogin={async () => { await loginWithGoogle(); setShowLogin(false); }} onSkip={() => { setShowLogin(false); setReturningLogin(false); }} />;
+  if (screen === 'login') return <LoginScreen lang={lang} onLegal={openLegal} onLogin={async () => { await loginWithGoogle(); setScreen('language'); }} onSkip={() => setScreen('language')} />;
+  if (showLogin) return <LoginScreen lang={lang} onLegal={(d) => { setShowLogin(false); openLegal(d); }} returning={returningLogin} onLogin={async () => { await loginWithGoogle(); setShowLogin(false); }} onSkip={() => { setShowLogin(false); setReturningLogin(false); }} />;
 
   if (screen === 'splash')     return <SplashScreen key="intro" onDone={() => setScreen('language')} />;
   if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} userEmail={user?.email} onLogin={() => { setReturningLogin(true); setShowLogin(true); }} />;
   if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
   if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
-  if (screen === 'today')     return <TodayScreen {...props} user={user} onLogout={logout} onShowLogin={() => setShowLogin(true)} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('raceProfile')} completions={completions} onWorkoutStatus={handleWorkoutStatus} />;
-  if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('raceProfile')} />;
+  if (screen === 'today')     return <TodayScreen {...props} user={user} onLogout={handleLogout} onShowLogin={() => setShowLogin(true)} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} completions={completions} onWorkoutStatus={handleWorkoutStatus} />;
+  if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} />;
   if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
   if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen(strengthFrom === 'week' ? 'week' : 'today')} />;
-  if (screen === 'raceProfile') return <RaceProfileScreen {...props} onBack={() => setScreen('today')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
-  if (screen === 'plans')     return <PlansScreen lang={lang} plan={plan} raceData={raceData} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onProfile={() => setScreen('raceProfile')} />;
+  if (screen === 'raceProfile') return <RaceProfileScreen {...props} onProfile={() => setScreen('account')} onBack={() => setScreen('account')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
+  if (screen === 'plans')     return <PlansScreen lang={lang} plan={plan} raceData={raceData} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onProfile={() => setScreen('account')} />;
+  if (screen === 'account')   return <AccountScreen lang={lang} user={user} plan={plan} raceData={raceData} currentWeek={currentWeek} onLogin={() => setShowLogin(true)} onLogout={handleLogout} onDeleteAccount={handleDeleteAccount} onNewPlan={handleNewPlan} onRaceProfile={() => setScreen('raceProfile')} onLegal={openLegal} onSetLang={handleSetLang} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
+  if (screen === 'legal')     return <LegalScreen lang={lang} doc={legalDoc} onBack={() => setScreen(legalFrom || 'account')} />;
+}
+
+function LegalPage({ lang, doc }) {
+  const navigate = useNavigate();
+  return <LegalScreen lang={lang} doc={doc} onBack={() => navigate('/')} />;
 }
 
 export default function App() {
@@ -525,6 +576,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage lang={lang} setLang={setLang} />} />
         <Route path="/app" element={<AppFlow lang={lang} setLang={setLang} />} />
+        <Route path="/privacy" element={<LegalPage lang={lang} doc="privacy" />} />
+        <Route path="/terms" element={<LegalPage lang={lang} doc="terms" />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
