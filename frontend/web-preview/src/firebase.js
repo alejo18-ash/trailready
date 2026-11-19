@@ -4,7 +4,11 @@ import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCaVTW1xwQ1uPeevJyXQjbIgN_wLrojoEg",
-  authDomain: "olympus-app-9de55.firebaseapp.com",
+  // On production, auth runs on our own domain (proxied to Firebase by vercel.json).
+  // Safari blocks the cross-site storage that signInWithRedirect needs otherwise.
+  authDomain: typeof window !== 'undefined' && window.location.hostname === 'trailready.vercel.app'
+    ? 'trailready.vercel.app'
+    : 'olympus-app-9de55.firebaseapp.com',
   projectId: "olympus-app-9de55",
   storageBucket: "olympus-app-9de55.firebasestorage.app",
   messagingSenderId: "733043158051",

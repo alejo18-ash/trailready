@@ -3,6 +3,8 @@
   "outputDirectory": "frontend/web-preview/dist",
   "installCommand": "cd frontend/web-preview && npm install",
   "rewrites": [
+    { "source": "/__/auth/:path*", "destination": "https://olympus-app-9de55.firebaseapp.com/__/auth/:path*" },
+    { "source": "/__/firebase/:path*", "destination": "https://olympus-app-9de55.firebaseapp.com/__/firebase/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

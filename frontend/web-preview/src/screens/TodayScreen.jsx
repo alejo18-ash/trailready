@@ -51,19 +51,8 @@ const s = {
   baseMotivationText: { fontSize:13, color:'#121D29', lineHeight:1.55 },
 };
 
-const getWhatsAppUrl = (raceName) => {
-  if (!raceName) return 'https://chat.whatsapp.com/trailready-general';
-  const name = raceName.toLowerCase();
-  if (name.includes('utmb'))                         return 'https://chat.whatsapp.com/utmb-trailready';
-  if (name.includes('western') || name.includes('states')) return 'https://chat.whatsapp.com/westernstates-trailready';
-  if (name.includes('javelina'))                     return 'https://chat.whatsapp.com/javelina-trailready';
-  if (name.includes('leadville'))                    return 'https://chat.whatsapp.com/leadville-trailready';
-  if (name.includes('transgran') || name.includes('tgc')) return 'https://chat.whatsapp.com/tgc-trailready';
-  if (name.includes('hardrock'))                     return 'https://chat.whatsapp.com/hardrock-trailready';
-  return 'https://chat.whatsapp.com/trailready-general';
-};
 
-export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength, onPlans, onProfile, user, onLogout, onShowLogin }) {
+export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength, onPlans, onProfile, user, onLogout, onShowLogin, completions, onWorkoutStatus }) {
   const [conditions, setConditions]           = useState(null);
   const [locationError, setLocationError]     = useState(false);
   const [trails, setTrails]                   = useState([]);
@@ -77,10 +66,12 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
     const cw = currentWeek ?? 0;
     const ti = new Date().getDay();
     const di = ti === 0 ? 6 : ti - 1;
+    const fromAccount = completions?.[`${cw}_${di}`]?.status;
+    if (fromAccount) { setWorkoutStatus(fromAccount); return; }
     const saved = localStorage.getItem(`trailready_workout_${cw}_${di}`);
     if (!saved) { setWorkoutStatus(null); return; }
     try { setWorkoutStatus(JSON.parse(saved).status ?? null); } catch { setWorkoutStatus(null); }
-  }, [currentWeek]);
+  }, [currentWeek, completions]);
 
   const fetchTrails = (lat, lon, km, desnivel) => {
     // Get previously shown trail IDs from localStorage
@@ -135,6 +126,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const handleStatus = (status) => {
     setWorkoutStatus(status);
     localStorage.setItem(storageKey, JSON.stringify({ status, date: Date.now() }));
+    onWorkoutStatus?.(`${cw}_${dayIndex}`, status);
   };
   const todayWorkout = week.workouts[dayIndex];
   const phaseLabel   = t(lang, phaseKey[week.phase] || 'buildPhase');
@@ -155,7 +147,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const isRaceWeek = daysToRace !== null && daysToRace >= 0 && daysToRace < 7;
   const safeTrailIndex = trails.length ? Math.min(trailIndex, trails.length - 1) : 0;
   const activeTrail = trails[safeTrailIndex] ?? null;
-  const routeName   = activeTrail?.name || 'Cerro La Campana — Norte';
+  const routeName   = activeTrail?.name || null;
   const routeKm =
     activeTrail != null && activeTrail.distancia != null && activeTrail.distancia !== ''
       ? Math.round(Number(activeTrail.distancia))
@@ -165,8 +157,8 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
     activeTrail != null && activeTrail.desnivel != null && activeTrail.desnivel !== ''
       ? Number(activeTrail.desnivel)
       : week.desnivel;
-  const routeSource = activeTrail ? 'OSM · OpenStreetMap' : 'Wikiloc (mock)';
-  const routeUrl    = activeTrail?.wikiloc || 'https://wikiloc.com';
+  const routeSource = 'OSM · OpenStreetMap';
+  const routeUrl    = activeTrail?.wikiloc || null;
   const routeTime   = `${Math.floor(routeKm/7)}:${String(Math.round((routeKm/7%1)*60)).padStart(2,'0')}h`;
 
   return (
@@ -300,10 +292,10 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
               <li>{t(lang,'treadmillTipPoles')}</li>
             </ul>
           </div>
-          <div style={{ margin:'0 20px 8px', background:'rgba(18,29,41,0.03)', border:'0.5px solid rgba(18,29,41,0.07)', borderRadius:12, padding:'10px 14px', opacity:0.75 }}>
+          {routeName && <div style={{ margin:'0 20px 8px', background:'rgba(18,29,41,0.03)', border:'0.5px solid rgba(18,29,41,0.07)', borderRadius:12, padding:'10px 14px', opacity:0.75 }}>
             <div style={{ fontSize:10, color:'rgba(18,29,41,0.4)', marginBottom:4 }}>{t(lang,'treadmillOptionalOutdoor')}</div>
             <div style={{ fontSize:12, color:'rgba(18,29,41,0.5)' }}>{routeName} · ~{routeKm} km</div>
-          </div>
+          </div>}
         </>
       ) : isPreBase ? (
         <div style={{ margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(234,42,48,0.15)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
@@ -325,7 +317,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         <div style={s.baseMotivationCard}>
           <div style={s.baseMotivationText}>{t(lang, 'basePlan.todayMotivation')}</div>
         </div>
-      ) : (
+      ) : !activeTrail ? null : (
         <div style={s.routeCard}>
           <div style={s.routeLabel}>{t(lang,'todaysRoute')}</div>
           <div style={s.routeName}>{routeName}</div>
@@ -353,11 +345,11 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             </div>
           )}
 
-          <div style={s.wikiloc} onClick={() => window.open(routeUrl, '_blank')}>
-            {activeTrail
-              ? (lang==='es' ? 'Buscar en Wikiloc ↗' : 'Search on Wikiloc ↗')
-              : t(lang,'openWikiloc')}
-          </div>
+          {routeUrl && (
+            <div style={s.wikiloc} onClick={() => window.open(routeUrl, '_blank')}>
+              {lang==='es' ? 'Buscar en Wikiloc ↗' : 'Search on Wikiloc ↗'}
+            </div>
+          )}
         </div>
       )}
 
@@ -372,28 +364,6 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         </div>
       )}
 
-      {!isBasePlan && !isPreBase && !isStrength && todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && todayWorkout.type !== 'treadmillIntervals' && (
-        <div style={{ margin: '12px 20px', background: '#FFFFFF', border: '1px solid rgba(234,42,48,0.15)', borderRadius: 16, padding: 16, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
-          <div style={{ fontSize: 11, letterSpacing: '0.1em', color: 'rgba(18,29,41,0.5)', textTransform: 'uppercase', marginBottom: 6 }}>
-            {lang === 'es' ? 'COMUNIDAD · TU CARRERA' : 'COMMUNITY · YOUR RACE'}
-          </div>
-          <div style={{ fontSize: 16, fontWeight: 600, color: '#121D29', margin: '6px 0' }}>
-            {lang === 'es' ? 'Entrena con otros runners 💬' : 'Train with other runners 💬'}
-          </div>
-          <div style={{ fontSize: 13, color: 'rgba(18,29,41,0.55)', marginBottom: 14 }}>
-            {lang === 'es'
-              ? 'Únete al grupo de WhatsApp de runners preparando la misma carrera.'
-              : 'Join the WhatsApp group of runners preparing for the same race.'}
-          </div>
-          <button
-            type="button"
-            onClick={() => window.open(getWhatsAppUrl(raceData?.name || raceData?.nombre), '_blank')}
-            style={{ background: '#EA2A30', border: '1px solid #EA2A30', color: '#FFFFFF', borderRadius: 100, padding: '10px 20px', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
-          >
-            {lang === 'es' ? 'Unirse al grupo →' : 'Join the group →'}
-          </button>
-        </div>
-      )}
 
       {todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && (
         <div style={{ margin: '12px 20px', background: '#FFFFFF', border: '0.5px solid rgba(18,29,41,0.08)', borderRadius: 12, padding: '12px 14px', boxShadow:'0 1px 4px rgba(18,29,41,0.05)' }}>

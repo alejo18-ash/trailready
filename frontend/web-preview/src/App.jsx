@@ -409,6 +409,8 @@ function AppFlow({ lang, setLang }) {
   const [currentWeek, setCurrentWeek] = useState(0);
   const [currentPhase, setCurrentPhase] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
+  const [completions, setCompletions] = useState({});
+  const [strengthFrom, setStrengthFrom] = useState('today');
 
   const { user, authLoading, loginWithGoogle, logout } = useAuth();
 
@@ -419,10 +421,13 @@ function AppFlow({ lang, setLang }) {
         const state = await loadPlan(user?.uid);
         if (!state) return;
         if (!planExpired(state)) {
-          setPlan(state.plan);
+          // Older plans have no start date: anchor them to the week they were saved.
+          const restored = state.plan?.startDate ? state.plan : { ...state.plan, startDate: mondayOf(new Date(state.savedAt || Date.now())).toISOString() };
+          setPlan(restored);
           setRaceData(state.raceData);
           setProfile(state.profile);
-          setCurrentWeek(currentWeekIndex(state.plan, state.savedAt));
+          setCurrentWeek(currentWeekIndex(restored));
+          setCompletions(state.completions || {});
           setLang(state.language || 'es');
           setScreen('today');
         }
@@ -468,7 +473,14 @@ function AppFlow({ lang, setLang }) {
 
   const handleRecovery = (type) => { setRecovery(type); setScreen('recovery'); };
 
-  const handleStrength = (phase) => { setCurrentPhase(phase); setScreen('strength'); };
+  const handleStrength = (phase) => { setStrengthFrom(screen); setCurrentPhase(phase); setScreen('strength'); };
+
+  // Workout check-offs live inside the saved plan, so they sync to the account.
+  const handleWorkoutStatus = (key, status) => {
+    const next = { ...completions, [key]: { status, date: Date.now() } };
+    setCompletions(next);
+    savePlan(user?.uid, { plan, raceData, profile, currentWeek, language: lang, savedAt: Date.now(), completions: next });
+  };
 
   const handleNewPlan = () => {
     clearPlan(user?.uid);
@@ -476,6 +488,7 @@ function AppFlow({ lang, setLang }) {
     setRaceData(null);
     setProfile(null);
     setCurrentWeek(0);
+    setCompletions({});
     setScreen('source');
   };
 
@@ -489,10 +502,10 @@ function AppFlow({ lang, setLang }) {
   if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} />;
   if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
   if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
-  if (screen === 'today')     return <TodayScreen {...props} user={user} onLogout={logout} onShowLogin={() => setShowLogin(true)} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('raceProfile')} />;
+  if (screen === 'today')     return <TodayScreen {...props} user={user} onLogout={logout} onShowLogin={() => setShowLogin(true)} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('raceProfile')} completions={completions} onWorkoutStatus={handleWorkoutStatus} />;
   if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('raceProfile')} />;
   if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
-  if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen('today')} />;
+  if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen(strengthFrom === 'week' ? 'week' : 'today')} />;
   if (screen === 'raceProfile') return <RaceProfileScreen {...props} onBack={() => setScreen('today')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
   if (screen === 'plans')     return <PlansScreen lang={lang} plan={plan} raceData={raceData} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onProfile={() => setScreen('raceProfile')} />;
 }

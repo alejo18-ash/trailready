@@ -8,6 +8,13 @@ export async function loadPlan(uid) {
     try {
       const snap = await getDoc(doc(db, 'users', uid, 'plans', 'current'));
       if (snap.exists()) return snap.data();
+      // First login on this device: upload the plan made without an account.
+      const local = localStorage.getItem(STORAGE_KEY);
+      if (local) {
+        const data = JSON.parse(local);
+        await setDoc(doc(db, 'users', uid, 'plans', 'current'), data);
+        return data;
+      }
     } catch (e) {
       console.error('Firestore load failed, falling back to localStorage', e);
     }
