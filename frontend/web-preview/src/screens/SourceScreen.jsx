@@ -65,8 +65,6 @@ export default function SourceScreen({ lang, onNext }) {
   const [gpxFile, setGpxFile]     = useState(null);
   const [gpxData, setGpxData]     = useState(null);
   const [url, setUrl]             = useState('');
-  const [urlData, setUrlData]     = useState(null);
-  const [selectedDist, setDist]   = useState(null);
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState('');
   const [manual, setManual]       = useState({ name:'', distancia:'', desnivel:'', fecha:'', terreno:'mountain' });
@@ -137,26 +135,52 @@ export default function SourceScreen({ lang, onNext }) {
   };
 
   // ── Web Link ────────────────────────────────────────────────
+  const FORMAT = {
+    fixed_distance:   { es:'Distancia fija', en:'Fixed distance' },
+    timed:            { es:'Por tiempo', en:'Timed' },
+    backyard:         { es:'Backyard (vueltas cada hora)', en:'Backyard (hourly loops)' },
+    elimination_loop: { es:'Vueltas con eliminación', en:'Elimination loops' },
+    stage_race:       { es:'Por etapas', en:'Stage race' },
+    other:            { es:'Otro formato', en:'Other format' },
+  };
+  const [race, setRace] = useState(null);          // what the coach read
+  const [conf, setConf] = useState(null);          // what the runner confirms
+
   const handleWeb = async () => {
-    if (!url) return setError('Paste a link first');
-    setLoading(true); setError(''); setUrlData(null); setDist(null);
+    if (!url.trim()) return setError(lang==='es' ? 'Pega el link de la carrera' : 'Paste the race link');
+    setLoading(true); setError(''); setRace(null); setConf(null);
     try {
-      const res = await fetch(`${API_URL}/api/generate-plan`, {
+      const res = await fetch(`${API_URL}/api/race/analyze`, {
         method:'POST', headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify({ raceUrl: url }),
+        body: JSON.stringify({ url: url.trim(), lang }),
       });
-      const data = await res.json();
-      if (data.success) {
-        setUrlData(data.raceData);
-        setDist(data.raceData.availableDistances?.[0] || data.raceData.distancia);
-      } else setError(data.message);
-    } catch { setError('Cannot connect to server'); }
-    finally { setLoading(false); }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) throw new Error(data.message || (lang==='es' ? 'No pudimos analizar la carrera.' : "Couldn't analyze the race."));
+      const r = data.race;
+      setRace(r);
+      setConf({
+        name: r.name || '',
+        fecha: r.date || '',
+        distancia: r.training_km_equivalent || r.distances_km?.[0] || '',
+        desnivel: r.elevation_gain_m ?? '',
+        terreno: r.terrain === 'road' ? 'flat' : r.terrain === 'technical' ? 'technical' : r.terrain === 'mountain' ? 'mountain' : 'mixed',
+      });
+    } catch (e) {
+      setError(e.message);
+    } finally { setLoading(false); }
   };
 
   const handleWebNext = () => {
-    if (!urlData) return;
-    onNext({ ...urlData, distancia: selectedDist, weeksAvailable: 24 });
+    if (!race || !conf) return;
+    const es = lang === 'es';
+    if (!conf.fecha) return setError(es ? 'Confirma la fecha de la carrera.' : 'Confirm the race date.');
+    if (new Date(conf.fecha + 'T23:59:59') < new Date()) return setError(es ? 'La fecha de la carrera ya pasó.' : 'Race date is in the past.');
+    if (!Number(conf.distancia)) return setError(es ? 'Pon la distancia para tu plan.' : 'Set the distance for your plan.');
+    onNext({
+      name: conf.name || race.name, distancia: Number(conf.distancia), desnivel: Number(conf.desnivel) || 0,
+      fecha: conf.fecha, weeksAvailable: calcWeeks(conf.fecha), terreno: conf.terreno, source:'web', url: url.trim(),
+      analysis: { format: race.format, distances_km: race.distances_km, loop_km: race.loop_km, time_limit_hours: race.time_limit_hours, location: race.location, facts: race.facts, insight: race.insight, readAt: Date.now() },
+    });
   };
 
   // ── Manual ──────────────────────────────────────────────────
@@ -299,28 +323,72 @@ export default function SourceScreen({ lang, onNext }) {
 
             {tab==='web' && (
               <>
-                <input style={s.input} placeholder="https://ultrasignup.com/..." value={url} onChange={e => setUrl(e.target.value)} />
-                {urlData?.availableDistances?.length > 1 && (
-                  <div style={s.distancePicker}>
-                    <label style={s.label}>{lang==='es' ? '¿Qué distancia vas a correr?' : 'Which distance are you running?'}</label>
-                    <div style={s.distanceRow}>
-                      {urlData.availableDistances.map(d => (
-                        <div key={d} style={s.distBtn(selectedDist===d)} onClick={() => setDist(d)}>{d}K</div>
-                      ))}
+                {!race && (
+                  <>
+                    <input style={{ ...s.input, fontSize:16 }} type="url" inputMode="url" placeholder="https://ultrasignup.com/..." value={url} onChange={e => setUrl(e.target.value)} aria-label={lang==='es' ? 'Link de la carrera' : 'Race link'} />
+                    <button style={s.btn(loading, false)} onClick={handleWeb} disabled={loading}>
+                      {loading ? (lang==='es' ? 'El coach está leyendo la carrera…' : 'Your coach is reading the race…') : (lang==='es' ? 'Analizar con el coach' : 'Analyze with the coach')}
+                    </button>
+                    {error && (
+                      <button type="button" onClick={() => { setError(''); setTab('manual'); }} style={{ display:'block', margin:'8px auto 0', background:'none', border:'none', color:'#EA2A30', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit', minHeight:44 }}>
+                        {lang==='es' ? 'Ingresarla a mano' : 'Enter it manually'}
+                      </button>
+                    )}
+                  </>
+                )}
+                {race && conf && (
+                  <div>
+                    <div style={{ background:'#121D29', color:'#fff', borderRadius:16, padding:16, marginBottom:12 }}>
+                      <div style={{ fontSize:12, fontWeight:700, letterSpacing:'0.08em', color:'#FF8A8E', textTransform:'uppercase', marginBottom:6 }}>
+                        {lang==='es' ? 'Lectura del coach' : "Coach's read"} · {FORMAT[race.format]?.[lang==='es' ? 'es' : 'en']}
+                      </div>
+                      <div style={{ fontSize:14, lineHeight:1.55, color:'rgba(255,255,255,0.92)' }}>{race.insight?.[lang==='es' ? 'es' : 'en']}</div>
                     </div>
+                    {race.facts?.length > 0 && (
+                      <div style={{ background:'#fff', borderRadius:16, border:'1px solid rgba(18,29,41,0.08)', padding:'8px 14px', marginBottom:12 }}>
+                        <div style={{ fontSize:12, fontWeight:600, color:'rgba(18,29,41,0.66)', margin:'6px 0' }}>{lang==='es' ? 'Lo que encontré en la página' : 'What I found on the page'}</div>
+                        {race.facts.map((f, i) => (
+                          <div key={i} style={{ display:'flex', justifyContent:'space-between', gap:10, padding:'8px 0', borderTop: i ? '1px solid rgba(18,29,41,0.06)' : 'none', fontSize:13 }}>
+                            <span style={{ color:'rgba(18,29,41,0.66)' }}>{lang==='es' ? f.label_es : f.label_en}</span>
+                            <span style={{ textAlign:'right', color:'#121D29', fontWeight:600 }}>
+                              {lang==='es' ? f.value_es : f.value_en}
+                              <span style={{ display:'block', fontSize:12, fontWeight:600, color: f.confirmed ? '#15803d' : '#b45309' }}>
+                                {f.confirmed ? (lang==='es' ? '✓ confirmado' : '✓ confirmed') : (lang==='es' ? '~ estimado' : '~ estimated')}
+                              </span>
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div style={{ fontSize:13, fontWeight:600, color:'#121D29', margin:'4px 0 8px' }}>{lang==='es' ? 'Confirma o corrige antes de crear el plan:' : 'Confirm or fix before creating the plan:'}</div>
+                    <label style={s.label}>{lang==='es' ? 'Nombre' : 'Name'}</label>
+                    <input style={{ ...s.input, fontSize:16 }} value={conf.name} onChange={e => setConf({ ...conf, name:e.target.value })} />
+                    <label style={s.label}>{lang==='es' ? 'Fecha de la carrera' : 'Race date'}{!race.date && <b style={{ color:'#b45309' }}> · {lang==='es' ? 'no estaba en la página' : 'not on the page'}</b>}</label>
+                    <input style={{ ...s.input, fontSize:16 }} type="date" value={conf.fecha} onChange={e => setConf({ ...conf, fecha:e.target.value })} />
+                    {race.distances_km?.length > 1 && (
+                      <div style={s.distanceRow}>
+                        {race.distances_km.map(d => (
+                          <button type="button" key={d} style={{ ...s.distBtn(Number(conf.distancia)===d), fontFamily:'inherit', minHeight:36 }} onClick={() => setConf({ ...conf, distancia:d })}>{d} km</button>
+                        ))}
+                      </div>
+                    )}
+                    <label style={{ ...s.label, marginTop:8 }}>{lang==='es' ? 'Distancia para tu plan (km)' : 'Distance for your plan (km)'}{['timed','backyard','elimination_loop'].includes(race.format) && <b style={{ color:'#b45309' }}> · {lang==='es' ? 'tu objetivo' : 'your target'}</b>}</label>
+                    <input style={{ ...s.input, fontSize:16 }} type="number" inputMode="decimal" value={conf.distancia} onChange={e => setConf({ ...conf, distancia:e.target.value })} />
+                    <label style={s.label}>{lang==='es' ? 'Desnivel positivo (m)' : 'Elevation gain (m)'}{race.elevation_gain_m == null && <b style={{ color:'#b45309' }}> · {lang==='es' ? 'no estaba en la página' : 'not on the page'}</b>}</label>
+                    <input style={{ ...s.input, fontSize:16 }} type="number" inputMode="numeric" value={conf.desnivel} onChange={e => setConf({ ...conf, desnivel:e.target.value })} placeholder="0" />
+                    <label style={s.label}>{lang==='es' ? 'Terreno' : 'Terrain'}</label>
+                    <select style={{ ...s.select, fontSize:16 }} value={conf.terreno} onChange={e => setConf({ ...conf, terreno:e.target.value })}>
+                      <option value="mountain">{lang==='es' ? 'Montaña' : 'Mountain'}</option>
+                      <option value="technical">{lang==='es' ? 'Técnico' : 'Technical'}</option>
+                      <option value="mixed">{lang==='es' ? 'Mixto' : 'Mixed'}</option>
+                      <option value="flat">{lang==='es' ? 'Plano / asfalto' : 'Flat / road'}</option>
+                    </select>
+                    <button style={s.btn(false, false)} onClick={handleWebNext}>{lang==='es' ? 'Crear mi plan con esto →' : 'Create my plan with this →'}</button>
+                    <button type="button" onClick={() => { setRace(null); setConf(null); }} style={{ display:'block', margin:'8px auto 0', background:'none', border:'none', color:'rgba(18,29,41,0.66)', fontSize:13, cursor:'pointer', fontFamily:'inherit', minHeight:44 }}>
+                      {lang==='es' ? 'Probar otro link' : 'Try another link'}
+                    </button>
                   </div>
                 )}
-                {urlData && (
-                  <div style={s.gpxInfo}>
-                    <div style={s.gpxRow}><span style={s.gpxKey}>{lang==='es' ? 'Carrera' : 'Race'}</span><span style={s.gpxVal}>{urlData.name}</span></div>
-                    <div style={s.gpxRow}><span style={s.gpxKey}>{lang==='es' ? 'Distancia seleccionada' : 'Selected distance'}</span><span style={s.gpxVal}>{selectedDist}km</span></div>
-                  </div>
-                )}
-                <button style={s.btn(loading, false)} onClick={urlData ? handleWebNext : handleWeb} disabled={loading}>
-                  {loading ? (lang==='es' ? 'Analizando...' : 'Analyzing...') :
-                   urlData ? (lang==='es' ? 'Continuar →' : 'Continue →') :
-                   (lang==='es' ? 'Analizar carrera' : 'Analyze race')}
-                </button>
               </>
             )}
 

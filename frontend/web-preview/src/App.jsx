@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { translations } from './i18n';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import SplashScreen from './screens/SplashScreen';
@@ -21,9 +21,9 @@ import { NavContext } from './utils/navContext';
 import { applyProposal } from './utils/applyProposal';
 import GearScreen from './screens/GearScreen';
 import PublicProfile from './screens/PublicProfile';
-import { loadGear, saveGear, deleteAllGear } from './services/gearService';
+import { loadGear, saveGear, deleteAllGear, loadInterests, saveInterests } from './services/gearService';
 import { useAuth } from './hooks/useAuth';
-import { loadPlan, savePlan, clearPlan } from './services/planService';
+import { loadPlan, savePlan, clearPlan, listSavedPlans, archivePlan, deleteSavedPlan, deleteAllSavedPlans } from './services/planService';
 
 /** Monday (index 0) is always an easy run — never rest/recovery/strength on day 1. */
 function ensureMondayIsEasy(template) {
@@ -432,11 +432,21 @@ function AppFlow({ lang, setLang }) {
   const [legalDoc, setLegalDoc] = useState(null);
   const [legalFrom, setLegalFrom] = useState('account');
   const [gear, setGear] = useState([]);
+  const [savedPlans, setSavedPlans] = useState([]);
+  const [interests, setInterests] = useState([]);
+  const handleInterests = (list) => { setInterests(list); saveInterests(user?.uid, list); };
+  const planIdRef = useRef(null);
+  const newPlanId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  // Every save of the active plan carries its id, so it can be archived and restored later.
+  const persist = (payload) => savePlan(user?.uid, { id: planIdRef.current || (planIdRef.current = newPlanId()), ...payload });
+  const refreshSaved = () => listSavedPlans(user?.uid).then(setSavedPlans).catch(() => {});
 
   // Gear lives with the runner (not the plan); reload when the account changes.
   useEffect(() => {
     if (authLoading) return;
     loadGear(user?.uid).then(setGear).catch(() => {});
+    refreshSaved();
+    loadInterests(user?.uid).then(setInterests).catch(() => {});
   }, [authLoading, user?.uid]);
   const handleGearChange = (items) => { setGear(items); saveGear(user?.uid, items); };
 
@@ -449,6 +459,7 @@ function AppFlow({ lang, setLang }) {
         if (!planExpired(state)) {
           // Older plans have no start date: anchor them to the week they were saved.
           const restored = state.plan?.startDate ? state.plan : { ...state.plan, startDate: mondayOf(new Date(state.savedAt || Date.now())).toISOString() };
+          planIdRef.current = state.id || newPlanId();
           setPlan(restored);
           setRaceData(state.raceData);
           setProfile(state.profile);
@@ -479,10 +490,11 @@ function AppFlow({ lang, setLang }) {
     setRaceData(data);
     if (data?.isPreBase) {
       const newPlan = generatePreBasePlan();
+      planIdRef.current = newPlanId();
       setPlan(newPlan);
       setScreen('today');
       const payload = { plan: newPlan, raceData: data, profile: null, currentWeek: 0, language: lang, savedAt: Date.now() };
-      savePlan(user?.uid, payload);
+      persist(payload);
     } else {
       setScreen('profile');
     }
@@ -490,11 +502,12 @@ function AppFlow({ lang, setLang }) {
 
   const handleProfile = (p) => {
     const newPlan = raceData?.isBasePlan ? generateBasePlan(p) : generatePlan(raceData, p);
+    planIdRef.current = newPlanId();
     setProfile(p);
     setPlan(newPlan);
     setScreen('today');
     const payload = { plan: newPlan, raceData, profile: p, currentWeek: 0, language: lang, savedAt: Date.now() };
-    savePlan(user?.uid, payload);
+    persist(payload);
   };
 
   const handleRecovery = (type) => { setRecovery(type); setScreen('recovery'); };
@@ -507,10 +520,24 @@ function AppFlow({ lang, setLang }) {
     const shoe = gear.find(g => g.type === 'shoes' && g.default && !g.retiredAt);
     const next = { ...completions, [key]: { status, date: Date.now(), ...(status === 'completed' && shoe ? { shoeId: shoe.id } : {}) } };
     setCompletions(next);
-    savePlan(user?.uid, { plan, raceData, profile, currentWeek, language: lang, savedAt: Date.now(), completions: next });
+    persist({ plan, raceData, profile, currentWeek, language: lang, savedAt: Date.now(), completions: next });
   };
 
-  const handleNewPlan = () => {
+  // Per-day check marks also live in localStorage (Week view reads them): keep them in sync with the active plan.
+  const syncWorkoutKeys = (comps) => {
+    try {
+      Object.keys(localStorage).filter(k => k.startsWith('trailready_workout_')).forEach(k => localStorage.removeItem(k));
+      Object.entries(comps || {}).forEach(([k, v]) => { if (v?.status) localStorage.setItem(`trailready_workout_${k}`, JSON.stringify(v)); });
+    } catch { /* storage unavailable */ }
+  };
+
+  const currentState = () => plan ? { id: planIdRef.current, plan, raceData, profile, currentWeek, language: lang, savedAt: Date.now(), completions } : null;
+
+  // Starting a new plan keeps the current one in "My plans".
+  const handleNewPlan = async () => {
+    if (plan) { await archivePlan(user?.uid, currentState()); refreshSaved(); }
+    planIdRef.current = null;
+    syncWorkoutKeys({});
     clearPlan(user?.uid);
     setPlan(null);
     setRaceData(null);
@@ -519,6 +546,22 @@ function AppFlow({ lang, setLang }) {
     setCompletions({});
     setScreen('source');
   };
+
+  const handleActivateSaved = async (id) => {
+    const target = savedPlans.find(p => p.id === id);
+    if (!target) return;
+    if (plan) await archivePlan(user?.uid, currentState());
+    await deleteSavedPlan(user?.uid, id);
+    const restored = target.plan?.startDate ? target.plan : { ...target.plan, startDate: mondayOf(new Date(target.savedAt || Date.now())).toISOString() };
+    planIdRef.current = target.id;
+    setPlan(restored); setRaceData(target.raceData); setProfile(target.profile);
+    setCompletions(target.completions || {}); setCurrentWeek(currentWeekIndex(restored));
+    syncWorkoutKeys(target.completions);
+    persist({ plan: restored, raceData: target.raceData, profile: target.profile, currentWeek: currentWeekIndex(restored), language: lang, savedAt: Date.now(), completions: target.completions || {} });
+    refreshSaved();
+    setScreen('today');
+  };
+  const handleDeleteSaved = async (id) => { await deleteSavedPlan(user?.uid, id); refreshSaved(); };
 
   const clearDeviceData = () => {
     try {
@@ -541,6 +584,7 @@ function AppFlow({ lang, setLang }) {
     try {
       await clearPlan(user?.uid);
       await deleteAllGear(user?.uid);
+      await deleteAllSavedPlans(user?.uid);
       await deleteAccount();
       clearDeviceData();
       navigate('/');
@@ -555,7 +599,7 @@ function AppFlow({ lang, setLang }) {
 
   const handleSetLang = (l) => {
     setLang(l);
-    if (plan) savePlan(user?.uid, { plan, raceData, profile, currentWeek, language: l, savedAt: Date.now(), completions });
+    if (plan) persist({ plan, raceData, profile, currentWeek, language: l, savedAt: Date.now(), completions });
   };
 
   // Coach proposals only change the plan after the runner taps "Apply".
@@ -563,7 +607,7 @@ function AppFlow({ lang, setLang }) {
     const { plan: next, applied } = applyProposal(plan, proposal, currentWeek);
     if (applied > 0) {
       setPlan(next);
-      savePlan(user?.uid, { plan: next, raceData, profile, currentWeek, language: lang, savedAt: Date.now(), completions });
+      persist({ plan: next, raceData, profile, currentWeek, language: lang, savedAt: Date.now(), completions });
     }
     return applied;
   };
@@ -589,9 +633,9 @@ function AppFlow({ lang, setLang }) {
     if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
     if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen(strengthFrom === 'week' ? 'week' : 'today')} />;
     if (screen === 'raceProfile') return <RaceProfileScreen {...props} onProfile={() => setScreen('account')} onBack={() => setScreen('account')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
-    if (screen === 'plans')     return <PlansScreen lang={lang} plan={plan} raceData={raceData} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onProfile={() => setScreen('account')} />;
-    if (screen === 'account')   return <AccountScreen lang={lang} user={user} plan={plan} raceData={raceData} currentWeek={currentWeek} onLogin={() => setShowLogin(true)} onLogout={handleLogout} onDeleteAccount={handleDeleteAccount} onNewPlan={handleNewPlan} onRaceProfile={() => setScreen('raceProfile')} onGear={() => setScreen('gear')} onLegal={openLegal} onSetLang={handleSetLang} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
-    if (screen === 'coach')     return <CoachScreen lang={lang} user={user} plan={plan} raceData={raceData} profile={profile} currentWeek={currentWeek} completions={completions} onApply={handleApplyProposal} onLogin={() => setShowLogin(true)} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} />;
+    if (screen === 'plans')     return <PlansScreen lang={lang} plan={plan} raceData={raceData} currentWeek={currentWeek} completions={completions} savedPlans={savedPlans} onActivate={handleActivateSaved} onDelete={handleDeleteSaved} onNewPlan={handleNewPlan} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onProfile={() => setScreen('account')} />;
+    if (screen === 'account')   return <AccountScreen lang={lang} user={user} plan={plan} raceData={raceData} currentWeek={currentWeek} onLogin={() => setShowLogin(true)} onLogout={handleLogout} onDeleteAccount={handleDeleteAccount} onNewPlan={handleNewPlan} onRaceProfile={() => setScreen('raceProfile')} onGear={() => setScreen('gear')} interests={interests} onInterests={handleInterests} onLegal={openLegal} onSetLang={handleSetLang} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
+    if (screen === 'coach')     return <CoachScreen lang={lang} user={user} interests={interests} plan={plan} raceData={raceData} profile={profile} currentWeek={currentWeek} completions={completions} onApply={handleApplyProposal} onLogin={() => setShowLogin(true)} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} />;
     if (screen === 'gear')      return <GearScreen lang={lang} user={user} gear={gear} onChange={handleGearChange} plan={plan} raceData={raceData} completions={completions} onLogin={() => setShowLogin(true)} onBack={() => setScreen('account')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} />;
     if (screen === 'legal')     return <LegalScreen lang={lang} doc={legalDoc} onBack={() => setScreen(legalFrom || 'account')} />;
 

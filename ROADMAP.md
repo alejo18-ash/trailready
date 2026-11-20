@@ -1,6 +1,6 @@
 # TrailReady — Estado y roadmap
 
-Actualizado: 20 nov 2026 (tarde)
+Actualizado: 20 nov 2026 (noche)
 
 ## Qué es
 
@@ -18,6 +18,9 @@ App de entrenamiento para trail y asfalto. Plan gratis que termina el día de tu
 | Diseño | Logo propio, íconos únicos, tipografía deportiva, contraste AA, pantalla Hoy con momento "¡Hecho!" |
 | Mi equipo | Contador de km por zapatilla (suma cada entrenamiento hecho), aviso en Hoy al 85%, link de reemplazo, retirar/cambiar par |
 | Página pública | `trailready.vercel.app/u/<id>` tipo Linktree para runners: nombre, foto, próxima carrera y equipo con links; opt-in, se apaga cuando quieras |
+| Lectura de carrera | Pegas el link y la IA lee la página oficial: formato real (fija, por tiempo, backyard, vueltas con eliminación), datos ✓ confirmados vs ~ estimados, lectura del coach; el corredor corrige antes de crear el plan |
+| Mis planes | Crear un plan nuevo guarda el anterior; activar o borrar planes guardados (con su progreso) |
+| Intereses | Tipos de carrera que te gustan; el coach los usa |
 | Honestidad | Sin datos falsos (rutas, comunidades y números inventados eliminados) |
 
 ## Siguiente (en orden)

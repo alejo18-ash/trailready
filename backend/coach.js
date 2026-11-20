@@ -90,7 +90,8 @@ Safety rules (always):
 - Never encourage racing or running through pain.
 
 When the runner is deciding something (a race, a jump in distance), add one short "Devil's advocate" line with the main risk they may be missing.
-When facts about a race are not given to you, say they are estimates and that they should confirm with the organizer. Never invent race details.`;
+When facts about a race are not given to you, say they are estimates and that they should confirm with the organizer. Never invent race details.
+If a race analysis is provided, respect its format: timed, backyard and elimination-loop events are about sustaining effort, pacing per loop, fueling and recovering between laps, not just distance.`;
 }
 
 function planContext(body) {
@@ -106,6 +107,8 @@ function planContext(body) {
   const done = Object.entries(completions).slice(-14).map(([k, v]) => `${k}=${v.status}`).join(', ');
   return `Today: ${today.toISOString().slice(0, 10)} (${dow}). Current plan week: ${currentWeek + 1} of ${weeks.length}.
 Race: ${JSON.stringify({ name: raceData?.name, km: raceData?.distancia, elevationGainM: raceData?.desnivel, date: raceData?.fecha, terrain: raceData?.terreno })}
+Race analysis from the official page (format, rules; 'confirmed' = stated on the page): ${raceData?.analysis ? JSON.stringify({ format: raceData.analysis.format, loopKm: raceData.analysis.loop_km, timeLimitHours: raceData.analysis.time_limit_hours, facts: (raceData.analysis.facts || []).map(f => `${f.label_en}: ${f.value_en}${f.confirmed ? '' : ' (estimated)'}`), yourEarlierRead: raceData.analysis.insight?.en }) : 'none'}
+Runner interests: ${JSON.stringify(body?.interests || [])}
 Runner profile: ${JSON.stringify(profile || {})}
 Plan outline (week:phase:km): ${outline}
 Nearby weeks in detail: ${JSON.stringify(near)}

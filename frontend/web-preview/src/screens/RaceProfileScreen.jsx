@@ -81,34 +81,6 @@ function ElevationChart({ profile, color, height = 120, lang }) {
 }
 
 export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToday, onWeek, onPlans, onProfile }) {
-  const [dailyProfile, setDailyProfile] = useState(null);
-  const [loadingProfile, setLoadingProfile] = useState(false);
-
-  const week = plan?.weeks?.[0];
-  const todayIndex = new Date().getDay();
-  const dayIndex = todayIndex === 0 ? 6 : todayIndex - 1;
-  const todayWorkout = week?.workouts?.[dayIndex];
-
-  useEffect(() => {
-    if (!navigator.geolocation) return;
-    setLoadingProfile(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        try {
-          const { latitude: lat, longitude: lon } = pos.coords;
-          const d = week?.desnivel || 500;
-          const pts = 30;
-          const profile = Array.from({ length: pts }, (_, i) => {
-            const x = i / (pts - 1);
-            return 200 + Math.sin(x * Math.PI * 2) * (d / 20) + Math.sin(x * Math.PI * 6) * (d / 60) + Math.random() * 20;
-          });
-          setDailyProfile(profile);
-        } catch {}
-        finally { setLoadingProfile(false); }
-      },
-      () => setLoadingProfile(false)
-    );
-  }, []);
 
   const raceProfile = raceData?.profile || null;
   const terrainMap = {
@@ -116,6 +88,7 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
     mountain:  { en:'Mountain',  es:'Montaña',  color:'#b45309', bg:'rgba(251,191,36,0.12)' },
     mixed:     { en:'Mixed',     es:'Mixto',    color:'#1d4ed8', bg:'rgba(96,165,250,0.12)' },
     road:      { en:'Road',      es:'Ruta',     color:'#6b7280', bg:'rgba(156,163,175,0.12)' },
+    flat:      { en:'Flat / road', es:'Plano / asfalto', color:'#6b7280', bg:'rgba(156,163,175,0.12)' },
   };
   const terrain = terrainMap[raceData?.terreno] || terrainMap.mixed;
   const isPreBase  = Boolean(raceData?.isPreBase);
@@ -162,22 +135,31 @@ export default function RaceProfileScreen({ lang, raceData, plan, onBack, onToda
         </div>
       </div>
 
-      <div style={s.section}>
-        <div style={s.sectionLabel}>{lang==='es' ? "PERFIL DE LA RUTA DE HOY" : "TODAY'S ROUTE PROFILE"}</div>
-        <div style={s.card}>
-          <div style={s.cardTitle}>{lang==='es' ? `Semana ${week?.week} · ${todayWorkout ? t(lang,`workouts.${todayWorkout.type}`) : '—'}` : `Week ${week?.week} · ${todayWorkout ? t(lang,`workouts.${todayWorkout.type}`) : '—'}`}</div>
-          <div style={s.cardSub}>{lang==='es'?'Ruta sugerida hoy':'Suggested route for today'}</div>
-          <div style={s.statsRow}>
-            <div style={s.statBox}><div style={s.statVal('#121D29')}>{todayWorkout?.km||'—'}km</div><div style={s.statLbl}>{lang==='es'?'distancia':'distance'}</div></div>
-            <div style={s.statBox}><div style={s.statVal('#121D29')}>{week?.desnivel?`${week.desnivel}m`:'—'}</div><div style={s.statLbl}>D+</div></div>
-            <div style={s.statBox}><div style={s.statVal('#121D29')}>{week?.phase ? phaseNames[week.phase]?.[lang]||week.phase : '—'}</div><div style={s.statLbl}>{lang==='es'?'fase':'phase'}</div></div>
+      {raceData?.analysis?.insight && (
+        <div style={s.section}>
+          <div style={s.sectionLabel}>{lang==='es' ? 'LECTURA DEL COACH' : "COACH'S READ"}</div>
+          <div style={{ background:'#121D29', color:'#fff', borderRadius:16, padding:16 }}>
+            <div style={{ fontSize:14, lineHeight:1.55, color:'rgba(255,255,255,0.92)' }}>{raceData.analysis.insight[lang==='es' ? 'es' : 'en']}</div>
+            {raceData.url && (
+              <a href={raceData.url} target="_blank" rel="noopener noreferrer" style={{ display:'inline-flex', alignItems:'center', gap:4, marginTop:10, fontSize:13, fontWeight:600, color:'#FF8A8E', textDecoration:'none', minHeight:32 }}>
+                {lang==='es' ? 'Página oficial de la carrera ↗' : 'Official race page ↗'}
+              </a>
+            )}
           </div>
-          {loadingProfile
-            ? <div style={s.noData}>⏳ {lang==='es'?'Cargando...':'Loading...'}</div>
-            : <ElevationChart profile={dailyProfile} color="#7c3aed" height={120} lang={lang} />
-          }
+          {raceData.analysis.facts?.length > 0 && (
+            <div style={{ ...s.card, marginTop:8 }}>
+              {raceData.analysis.facts.map((f, i) => (
+                <div key={i} style={{ display:'flex', justifyContent:'space-between', gap:10, padding:'8px 0', borderTop: i ? '1px solid rgba(18,29,41,0.06)' : 'none', fontSize:13 }}>
+                  <span style={{ color:'rgba(18,29,41,0.66)' }}>{lang==='es' ? f.label_es : f.label_en}</span>
+                  <span style={{ textAlign:'right', color:'#121D29', fontWeight:600 }}>{lang==='es' ? f.value_es : f.value_en}
+                    <span style={{ display:'block', fontSize:12, color: f.confirmed ? '#15803d' : '#b45309' }}>{f.confirmed ? (lang==='es' ? '✓ confirmado' : '✓ confirmed') : (lang==='es' ? '~ estimado' : '~ estimated')}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
       <div style={s.section}>
         <div style={s.sectionLabel}>{lang==='es'?'RESUMEN DE TU PLAN':'YOUR PLAN SUMMARY'}</div>

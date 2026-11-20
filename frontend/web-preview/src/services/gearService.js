@@ -43,5 +43,25 @@ export async function isPublished(uid) {
 export async function deleteAllGear(uid) {
   try { localStorage.removeItem(KEY); } catch { /* ignore */ }
   if (!uid) return;
-  await Promise.allSettled([deleteDoc(doc(db, 'users', uid, 'gear', 'list')), deleteDoc(doc(db, 'profiles', uid))]);
+  await Promise.allSettled([deleteDoc(doc(db, 'users', uid, 'gear', 'list')), deleteDoc(doc(db, 'profiles', uid)), deleteDoc(doc(db, 'users', uid, 'prefs', 'main'))]);
+}
+
+// ── Interests (race types the runner likes) ──────────────────
+const INT_KEY = 'trailready_interests';
+export async function loadInterests(uid) {
+  let local = [];
+  try { local = JSON.parse(localStorage.getItem(INT_KEY) || '[]'); } catch { local = []; }
+  if (!uid) return local;
+  try {
+    const snap = await getDoc(doc(db, 'users', uid, 'prefs', 'main'));
+    if (snap.exists()) return snap.data().interests || [];
+    if (local.length) await setDoc(doc(db, 'users', uid, 'prefs', 'main'), { interests: local }, { merge: true });
+  } catch (e) { console.error('Interests load failed', e); }
+  return local;
+}
+export async function saveInterests(uid, interests) {
+  try { localStorage.setItem(INT_KEY, JSON.stringify(interests)); } catch { /* ignore */ }
+  if (!uid) return;
+  try { await setDoc(doc(db, 'users', uid, 'prefs', 'main'), { interests }, { merge: true }); }
+  catch (e) { console.error('Interests save failed', e); }
 }

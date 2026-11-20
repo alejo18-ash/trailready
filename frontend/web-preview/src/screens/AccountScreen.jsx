@@ -4,6 +4,18 @@ import { SUPPORT_EMAIL, APP_VERSION } from '../utils/legal';
 import Icon from '../components/Icon';
 import Logo from '../components/Logo';
 
+const INTERESTS = [
+  { id:'trail', es:'Trail', en:'Trail' },
+  { id:'road', es:'Asfalto', en:'Road' },
+  { id:'ultra', es:'Ultra', en:'Ultra' },
+  { id:'mountain', es:'Montaña / sky', en:'Mountain / sky' },
+  { id:'timed', es:'Por tiempo / backyard', en:'Timed / backyard' },
+  { id:'marathon', es:'Media y maratón', en:'Half & marathon' },
+  { id:'short', es:'5K y 10K', en:'5K & 10K' },
+  { id:'ocr', es:'Obstáculos', en:'Obstacle (OCR)' },
+  { id:'triathlon', es:'Triatlón', en:'Triathlon' },
+];
+
 const C = { text:'#121D29', muted:'rgba(18,29,41,0.64)', faint:'rgba(18,29,41,0.08)', red:'#EA2A30' };
 
 const s = {
@@ -27,7 +39,7 @@ function Row({ children, right, onClick, last, danger }) {
   );
 }
 
-export default function AccountScreen({ lang, user, plan, raceData, currentWeek, onLogin, onLogout, onDeleteAccount, onNewPlan, onRaceProfile, onGear, onLegal, onSetLang, onToday, onWeek, onPlans }) {
+export default function AccountScreen({ lang, user, plan, raceData, currentWeek, onLogin, onLogout, onDeleteAccount, onNewPlan, onRaceProfile, onGear, interests = [], onInterests, onLegal, onSetLang, onToday, onWeek, onPlans }) {
   const es = lang === 'es';
   const [confirm, setConfirm] = useState(null); // 'delete' | 'newPlan'
   const [busy, setBusy] = useState(false);
@@ -101,6 +113,26 @@ export default function AccountScreen({ lang, user, plan, raceData, currentWeek,
         </Row>
       </div>
 
+      {/* Interests */}
+      <div style={s.label}>{es ? 'Mis intereses' : 'My interests'}</div>
+      <div style={{ ...s.card, padding:16 }}>
+        <div style={{ fontSize:13, color:C.muted, marginBottom:12, lineHeight:1.4 }}>
+          {es ? 'Qué tipo de carreras te gustan. Tu coach lo usa para conocerte.' : 'What kind of races you like. Your coach uses it to know you.'}
+        </div>
+        <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+          {INTERESTS.map(it => {
+            const on = interests.includes(it.id);
+            return (
+              <button key={it.id} type="button" aria-pressed={on}
+                onClick={() => onInterests?.(on ? interests.filter(x => x !== it.id) : [...interests, it.id])}
+                style={{ minHeight:40, padding:'0 14px', borderRadius:999, border: on ? 'none' : '1px solid rgba(18,29,41,0.14)', background: on ? '#121D29' : '#fff', color: on ? '#fff' : C.text, fontSize:14, fontWeight: on ? 600 : 500, cursor:'pointer', fontFamily:'inherit', display:'inline-flex', alignItems:'center', gap:6 }}>
+                {on && <Icon name="check" size={14} strokeWidth={3} />}{it[es ? 'es' : 'en']}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Preferences */}
       <div style={s.label}>{es ? 'Preferencias' : 'Preferences'}</div>
       <div style={s.card}>
@@ -147,13 +179,13 @@ export default function AccountScreen({ lang, user, plan, raceData, currentWeek,
             <div style={{ fontSize:14, color:C.muted, lineHeight:1.5, marginBottom:20 }}>
               {confirm === 'delete'
                 ? (es ? 'Se borran tu cuenta, tu plan y tu progreso, en todos tus dispositivos. No se puede deshacer.' : 'Your account, plan and progress are deleted on all your devices. This cannot be undone.')
-                : (es ? 'Perderás tu plan y progreso actual. No se puede deshacer.' : 'You will lose your current plan and progress. This cannot be undone.')}
+                : (es ? 'Tu plan actual queda guardado en Planes y puedes volver a él cuando quieras.' : 'Your current plan is saved in Plans and you can go back to it anytime.')}
             </div>
             {error && <div style={{ fontSize:13, color:C.red, marginBottom:12, lineHeight:1.4 }}>{error}</div>}
             <button type="button" disabled={busy}
               onClick={confirm === 'delete' ? runDelete : () => { setConfirm(null); onNewPlan(); }}
               style={{ width:'100%', padding:13, borderRadius:100, border:'none', background:C.red, color:'#fff', fontSize:15, fontWeight:600, cursor:'pointer', fontFamily:'inherit', marginBottom:10, opacity: busy ? 0.6 : 1 }}>
-              {busy ? '…' : confirm === 'delete' ? (es ? 'Sí, eliminar todo' : 'Yes, delete everything') : (es ? 'Sí, empezar de cero' : 'Yes, start over')}
+              {busy ? '…' : confirm === 'delete' ? (es ? 'Sí, eliminar todo' : 'Yes, delete everything') : (es ? 'Sí, plan nuevo' : 'Yes, new plan')}
             </button>
             <button type="button" onClick={() => { setConfirm(null); setError(''); }}
               style={{ width:'100%', padding:13, borderRadius:100, border:`1px solid ${C.faint}`, background:'#fff', color:C.text, fontSize:15, cursor:'pointer', fontFamily:'inherit' }}>

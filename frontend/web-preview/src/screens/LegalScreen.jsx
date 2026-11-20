@@ -5,7 +5,7 @@ const DOCS = {
     es: {
       title: 'Política de privacidad',
       sections: [
-        ['Qué datos guardamos', 'Si usas TrailReady sin cuenta, tu plan se guarda solo en este dispositivo. Si inicias sesión con Google, guardamos tu nombre, correo, foto de perfil y un identificador de usuario, junto con tu plan: datos de tu carrera (nombre, distancia, desnivel, fecha), tu perfil de corredor (nivel, kilómetros semanales, días disponibles) y los entrenamientos que marcas como completados.'],
+        ['Qué datos guardamos', 'Si usas TrailReady sin cuenta, tu plan se guarda solo en este dispositivo. Si inicias sesión con Google, guardamos tu nombre, correo, foto de perfil y un identificador de usuario, junto con tu plan: datos de tu carrera (nombre, distancia, desnivel, fecha), tu perfil de corredor (nivel, kilómetros semanales, días disponibles) los entrenamientos que marcas como completados, tus planes guardados, tu equipo y tus intereses.'],
         ['Página pública de equipo', 'Si activas tu página "Mi equipo", cualquiera con el link puede ver tu nombre, tu foto, tu próxima carrera y el equipo que publicaste. Nada más. Puedes apagarla en cualquier momento y se borra de inmediato.'],
         ['Ubicación', 'Solo si la permites, usamos tu ubicación aproximada en el momento para mostrarte clima, calidad del aire y rutas cercanas. No guardamos tu historial de ubicaciones. Puedes revocar el permiso en los ajustes de tu navegador o teléfono.'],
         ['Para qué los usamos', 'Únicamente para generar tu plan, sincronizarlo entre tus dispositivos y mostrarte información del día. No vendemos tus datos ni los usamos para publicidad.'],
@@ -18,7 +18,7 @@ const DOCS = {
     en: {
       title: 'Privacy policy',
       sections: [
-        ['What we store', 'If you use TrailReady without an account, your plan is stored only on this device. If you sign in with Google, we store your name, email, profile photo and a user ID, along with your plan: race details (name, distance, elevation, date), your runner profile (level, weekly km, available days) and the workouts you mark as completed.'],
+        ['What we store', 'If you use TrailReady without an account, your plan is stored only on this device. If you sign in with Google, we store your name, email, profile photo and a user ID, along with your plan: race details (name, distance, elevation, date), your runner profile (level, weekly km, available days) the workouts you mark as completed, your saved plans, your gear and your interests.'],
         ['Public gear page', 'If you turn on your "My gear" page, anyone with the link can see your name, photo, next race and the gear you published. Nothing else. You can turn it off anytime and it is deleted immediately.'],
         ['Location', 'Only if you allow it, we use your approximate current location to show weather, air quality and nearby routes. We do not store your location history. You can revoke the permission in your browser or phone settings.'],
         ['How we use it', 'Only to generate your plan, sync it across your devices and show you daily information. We do not sell your data or use it for advertising.'],

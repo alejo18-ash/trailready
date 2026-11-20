@@ -18,7 +18,7 @@ const SUGGESTIONS = {
   en: ['Something hurts', 'I missed workouts this week', 'I only have 3 days this week', 'Review my last race', 'Is this race a good idea?'],
 };
 
-export default function CoachScreen({ lang, user, plan, raceData, profile, currentWeek, completions, onApply, onLogin, onToday, onWeek, onPlans, onProfile }) {
+export default function CoachScreen({ lang, user, interests, plan, raceData, profile, currentWeek, completions, onApply, onLogin, onToday, onWeek, onPlans, onProfile }) {
   const es = lang === 'es';
   const [msgs, setMsgs] = useState(loadChat);
   const [input, setInput] = useState('');
@@ -39,7 +39,7 @@ export default function CoachScreen({ lang, user, plan, raceData, profile, curre
       const res = await fetch(`${API_URL}/api/coach`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ lang, plan, raceData, profile, currentWeek, completions, messages: next.map(m => ({ role: m.role, content: m.content })) }),
+        body: JSON.stringify({ lang, plan, raceData, profile, currentWeek, completions, interests, messages: next.map(m => ({ role: m.role, content: m.content })) }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || (es ? 'El coach no respondió.' : 'The coach did not respond.'));
@@ -93,6 +93,16 @@ export default function CoachScreen({ lang, user, plan, raceData, profile, curre
       <div style={{ fontSize:12, color:C.muted, marginBottom:16 }}>
         {es ? 'Orientación de entrenamiento, no consejo médico. Si el dolor es fuerte, consulta a un profesional.' : 'Training guidance, not medical advice. If pain is severe, see a professional.'}
       </div>
+
+      {msgs.length === 0 && raceData?.analysis?.insight && (
+        <div style={{ background:'#121D29', color:'#fff', borderRadius:16, padding:16, marginBottom:12 }}>
+          <div style={{ fontSize:12, fontWeight:700, letterSpacing:'0.08em', color:'#FF8A8E', textTransform:'uppercase', marginBottom:6 }}>
+            {es ? `Mi lectura de ${raceData.name}` : `My read on ${raceData.name}`}
+          </div>
+          <div style={{ fontSize:14, lineHeight:1.55, color:'rgba(255,255,255,0.92)' }}>{raceData.analysis.insight[es ? 'es' : 'en']}</div>
+          <div style={{ fontSize:13, color:'rgba(255,255,255,0.7)', marginTop:8 }}>{es ? '¿Algo de esto no es así? Dímelo y ajusto el plan.' : "Anything off? Tell me and I'll adjust the plan."}</div>
+        </div>
+      )}
 
       {msgs.length === 0 && (
         <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:16 }}>

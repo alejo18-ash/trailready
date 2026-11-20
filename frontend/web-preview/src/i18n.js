@@ -196,8 +196,8 @@ export const translations = {
       modal: {
         newPlan: {
           title: "Start a new plan?",
-          subtitle: "You'll lose your current progress. This can't be undone.",
-          confirm: "Yes, start over",
+          subtitle: "Your current plan is saved in Plans, and you can go back to it anytime.",
+          confirm: "Yes, new plan",
           cancel: "Cancel",
         },
       },
@@ -419,8 +419,8 @@ export const translations = {
       modal: {
         newPlan: {
           title: "¿Empezar un plan nuevo?",
-          subtitle: "Perderás tu progreso actual. Esta acción no se puede deshacer.",
-          confirm: "Sí, empezar de cero",
+          subtitle: "Tu plan actual queda guardado en Planes y puedes volver a él cuando quieras.",
+          confirm: "Sí, plan nuevo",
           cancel: "Cancelar",
         },
       },

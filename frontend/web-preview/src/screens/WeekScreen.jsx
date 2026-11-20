@@ -120,7 +120,7 @@ export default function WeekScreen({ lang, plan, profile, raceData, currentWeek,
       : selWorkout?.duration
         ? `${selWorkout.duration} min`
         : null;
-  const selZone = zoneMap[selWorkout?.type] ?? null;
+  const selZone = (zoneMap[selWorkout?.type] && (lang==='es' ? zoneMap[selWorkout?.type].replace('Zone','Zona') : zoneMap[selWorkout?.type])) ?? null;
   const selMeta = [selDuration, selZone].filter(Boolean).join(' · ');
 
   // Plan title for header

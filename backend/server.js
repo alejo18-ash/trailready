@@ -18,6 +18,8 @@ const { registerCoach } = require('./coach');
 registerCoach(app);
 const { registerRoutes } = require('./routes');
 registerRoutes(app);
+const { registerRace } = require('./race');
+registerRace(app);
 
 // ── UNIT CONVERTERS ───────────────────────────────────────────
 const ftToM  = ft => Math.round(ft * 0.3048);
