@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { t } from '../i18n';
 import BottomNav from '../components/BottomNav';
 import Icon, { IconBadge } from '../components/Icon';
+import RouteCard from '../components/RouteCard';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const phaseKey = {
@@ -68,6 +69,14 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const [weatherFailed, setWeatherFailed]     = useState(false);
 
   useEffect(() => { fetchConditions(); }, [currentWeek]);
+  // Signing in after the page loaded: fetch routes without asking for location again.
+  useEffect(() => {
+    if (user && lastPos && routeState === 'login') {
+      const wk = plan?.weeks?.[currentWeek ?? 0] ?? plan?.weeks?.[0];
+      const di = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+      fetchRoutes(lastPos.lat, lastPos.lon, wk?.workouts?.[di], conditions);
+    }
+  }, [user]);
 
   useEffect(() => {
     const cw = currentWeek ?? 0;
@@ -80,25 +89,37 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
     try { setWorkoutStatus(JSON.parse(saved).status ?? null); } catch { setWorkoutStatus(null); }
   }, [currentWeek, completions]);
 
-  const fetchTrails = (lat, lon, km, desnivel) => {
-    // Get previously shown trail IDs from localStorage
-    const usedIds = JSON.parse(localStorage.getItem('usedTrails') || '[]');
-    const exclude = usedIds.join(',');
-  
-    fetch(`${API_URL}/api/trails?lat=${lat}&lon=${lon}&distancia=${km}&desnivel=${desnivel}&exclude=${exclude}`)
-      .then(r => r.json())
-      .then(data => {
-        if (data.success && data.trails.length) {
-          setTrails(data.trails);
-          // Save first trail as used
-          const newId = data.trails[0]?.id;
-          if (newId && !usedIds.includes(newId)) {
-            const updated = [...usedIds, newId].slice(-20); // keep last 20
-            localStorage.setItem('usedTrails', JSON.stringify(updated));
-          }
-        }
-      })
-      .catch(() => {});
+  const [routeState, setRouteState] = useState('off');
+  const [routeData, setRouteData] = useState(null);
+  const [routeError, setRouteError] = useState('');
+  const [lastPos, setLastPos] = useState(null);
+
+  // Real loops for today's run (needs an account; the server builds and picks them).
+  const fetchRoutes = async (lat, lon, tw, weather) => {
+    const RUN = !tw || ['rest','recovery','strength','strength_beginner','mobility','treadmillIntervals','cross'].includes(tw.type) ? null : tw;
+    if (!RUN) { setRouteState('off'); return; }
+    if (!user) {
+      // Only invite sign-in when the routes feature is actually switched on.
+      try { const r = await fetch(`${API_URL}/api/routes/enabled`); const j = await r.json(); setRouteState(j.enabled ? 'login' : 'off'); }
+      catch { setRouteState('off'); }
+      return;
+    }
+    setRouteState('loading'); setRouteError('');
+    try {
+      const token = await user.getIdToken();
+      const km = RUN.km ?? (RUN.duracion != null ? Math.max(3, Math.round(RUN.duracion / 7)) : 8);
+      const res = await fetch(`${API_URL}/api/routes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ lat, lon, km, type: RUN.type, lang, weather: weather ? { temp: weather.temp, description: weather.description, wind: weather.wind } : null }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 503) { setRouteState('off'); return; }   // feature not switched on yet
+      if (!res.ok) throw new Error(data.error);
+      setRouteData(data); setRouteState('ready');
+    } catch (e) {
+      setRouteError(e.message || ''); setRouteState('error');
+    }
   };
 
   const fetchConditions = () => {
@@ -113,11 +134,12 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           const tw = wk?.workouts?.[di];
           const km = tw?.km ?? (tw?.duracion != null ? Math.max(8, Math.round(tw.duracion / 4)) : 20);
           const desnivel = wk?.desnivel || 800;
-          fetchTrails(lat, lon, km, desnivel);
+          setLastPos({ lat, lon });
           setLocationError(false); setWeatherFailed(false);
           const res = await fetch(`${API_URL}/api/conditions?lat=${lat}&lon=${lon}`);
           const data = await res.json();
           if (data.success) setConditions(data.conditions); else setWeatherFailed(true);
+          fetchRoutes(lat, lon, tw, data.success ? data.conditions : null);
         } catch { setWeatherFailed(true); }
       },
       () => setLocationError(true)
@@ -341,40 +363,11 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         <div style={s.baseMotivationCard}>
           <div style={s.baseMotivationText}>{t(lang, 'basePlan.todayMotivation')}</div>
         </div>
-      ) : !activeTrail ? null : (
-        <div style={s.routeCard}>
-          <div style={s.routeLabel}>{t(lang,'todaysRoute')}</div>
-          <div style={s.routeName}>{routeName}</div>
-          <div style={s.routeSub}>{routeSource}</div>
-          <div style={s.statsRow}>
-            <div style={s.statBox}>
-              <div style={s.statVal('#121D29')}>{routeKm}km</div>
-              <div style={s.statLbl}>{t(lang,'distance')}</div>
-            </div>
-            <div style={s.statBox}>
-              <div style={s.statVal('#121D29')}>{routeElev != null && !Number.isNaN(routeElev) ? `${Math.round(routeElev)}m` : '—'}</div>
-              <div style={s.statLbl}>{t(lang,'elevation')}</div>
-            </div>
-            <div style={s.statBoxTime}>
-              <div style={s.statValTime}>{routeTime}</div>
-              <div style={s.statLblTime}>{t(lang,'estimated')}</div>
-            </div>
-          </div>
+      ) : null}
 
-          {trails.length > 1 && (
-            <div style={s.dots}>
-              {trails.map((_, i) => (
-                <div key={i} style={s.dot(i===safeTrailIndex)} onClick={() => setTrailIndex(i)} />
-              ))}
-            </div>
-          )}
-
-          {routeUrl && (
-            <div style={s.wikiloc} onClick={() => window.open(routeUrl, '_blank')}>
-              {lang==='es' ? 'Buscar en Wikiloc ↗' : 'Search on Wikiloc ↗'}
-            </div>
-          )}
-        </div>
+      {isRunDay && !isTreadmill && (
+        <RouteCard lang={lang} state={routeState} data={routeData} error={routeError}
+          onRetry={() => lastPos && fetchRoutes(lastPos.lat, lastPos.lon, todayWorkout, conditions)} onLogin={onShowLogin} />
       )}
 
       {todayWorkout?.flatAlternative && todayWorkout.type !== 'treadmillIntervals' && todayWorkout.flatTips && (
