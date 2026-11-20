@@ -126,12 +126,15 @@ function registerRace(app) {
     if (page.text.length < 200) return fail(422, 'La página casi no tiene texto (puede necesitar iniciar sesión). Ingresa los datos a mano.', 'The page has almost no text (it may need a login). Enter the details manually.');
 
     try {
-      const r = await axios.post('https://api.anthropic.com/v1/messages', {
-        model: MODEL, max_tokens: 1500, system: SYSTEM,
-        tools: [TOOL], tool_choice: { type: 'tool', name: 'report_race' },
-        messages: [{ role: 'user', content: `Race page (${url}):\n\n${page.text}` }],
+      // This model doesn't accept a forced tool_choice: ask for the tool and retry once if it answers in text.
+      const ask = (extra = '') => axios.post('https://api.anthropic.com/v1/messages', {
+        model: MODEL, max_tokens: 1500, system: SYSTEM + extra,
+        tools: [TOOL],
+        messages: [{ role: 'user', content: `Race page (${url}):\n\n${page.text}\n\nCall report_race now.` }],
       }, { headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' }, timeout: 60000 });
-      const tool = (r.data?.content || []).find(b => b.type === 'tool_use');
+      const findTool = (r) => (r.data?.content || []).find(b => b.type === 'tool_use' && b.name === 'report_race');
+      let tool = findTool(await ask());
+      if (!tool) tool = findTool(await ask('\nYou must respond only by calling the report_race tool. No text.'));
       if (!tool) throw new Error('no tool output');
       const payload = { success: true, url, race: sanitize(tool.input) };
       cache.set(url, payload);
