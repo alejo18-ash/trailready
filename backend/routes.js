@@ -5,7 +5,7 @@ const axios = require('axios');
 const { verifyFirebaseToken } = require('./coach');
 
 const ORS_BASES = (process.env.ORS_BASE_URL ? [process.env.ORS_BASE_URL] : [])
-  .concat(['https://api.openrouteservice.org', 'https://api.heigit.org']);
+  .concat(['https://api.heigit.org/openrouteservice']); // api.openrouteservice.org was shut down in Nov 2026
 const TRAIL_TYPES = new Set(['longTrail', 'shortTrail', 'backToBack']);
 const HARD_TYPES = new Set(['tempo', 'intervals', 'strides']);
 const UNPAVED = new Set([2, 8, 9, 10, 11, 12, 15, 16, 17]); // ORS surface codes
