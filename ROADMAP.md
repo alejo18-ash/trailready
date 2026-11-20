@@ -1,6 +1,6 @@
 # TrailReady — Estado y roadmap
 
-Actualizado: 20 nov 2026
+Actualizado: 20 nov 2026 (tarde)
 
 ## Qué es
 
@@ -16,6 +16,8 @@ App de entrenamiento para trail y asfalto. Plan gratis que termina el día de tu
 | Coach con IA | Ve plan, semana, carrera y check-ins; propone cambios que el usuario aprueba; reglas de seguridad; 20 mensajes/día |
 | Rutas reales | 3 circuitos de OpenRouteService, elige según sesión y clima, Maps + GPX; 15 consultas/día |
 | Diseño | Logo propio, íconos únicos, tipografía deportiva, contraste AA, pantalla Hoy con momento "¡Hecho!" |
+| Mi equipo | Contador de km por zapatilla (suma cada entrenamiento hecho), aviso en Hoy al 85%, link de reemplazo, retirar/cambiar par |
+| Página pública | `trailready.vercel.app/u/<id>` tipo Linktree para runners: nombre, foto, próxima carrera y equipo con links; opt-in, se apaga cuando quieras |
 | Honestidad | Sin datos falsos (rutas, comunidades y números inventados eliminados) |
 
 ## Siguiente (en orden)
@@ -26,6 +28,13 @@ App de entrenamiento para trail y asfalto. Plan gratis que termina el día de tu
 4. **Aviso de salud en el onboarding**, antes de generar el plan.
 5. **Comunidades por carrera** — canal en la app que se abre cuando hay varios corredores en la misma carrera; reportar/bloquear y moderación obligatorios.
 6. **Cobros con Stripe** — gratis: plan, clima, comunidades. Pago: coach + rutas.
+
+## Ingresos por afiliados (nuevo)
+
+1. **Amazon Associates** — aprobación fácil; poner el tag en `utils/legal.js` (`AMAZON_TAG`) y todos los "Reponer/Ver" pasan a pagar comisión (1–10%).
+2. **Programas directos de marcas de trail** (chalecos, nutrición, bastones) y códigos exclusivos cuando haya usuarios.
+3. **AvantLink** (red outdoor) — API con descuentos oficiales vigentes; requiere postular con tráfico. **No scraping**: el caso Honey (demanda colectiva sigue desde jun 2026) muestra el riesgo.
+4. Reglas: aviso de afiliados visible (FTC) y el coach nunca recomienda por comisión.
 
 ## Después
 

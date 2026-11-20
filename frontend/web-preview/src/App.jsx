@@ -19,6 +19,9 @@ import LegalScreen from './screens/LegalScreen';
 import CoachScreen from './screens/CoachScreen';
 import { NavContext } from './utils/navContext';
 import { applyProposal } from './utils/applyProposal';
+import GearScreen from './screens/GearScreen';
+import PublicProfile from './screens/PublicProfile';
+import { loadGear, saveGear, deleteAllGear } from './services/gearService';
 import { useAuth } from './hooks/useAuth';
 import { loadPlan, savePlan, clearPlan } from './services/planService';
 
@@ -428,6 +431,14 @@ function AppFlow({ lang, setLang }) {
   const navigate = useNavigate();
   const [legalDoc, setLegalDoc] = useState(null);
   const [legalFrom, setLegalFrom] = useState('account');
+  const [gear, setGear] = useState([]);
+
+  // Gear lives with the runner (not the plan); reload when the account changes.
+  useEffect(() => {
+    if (authLoading) return;
+    loadGear(user?.uid).then(setGear).catch(() => {});
+  }, [authLoading, user?.uid]);
+  const handleGearChange = (items) => { setGear(items); saveGear(user?.uid, items); };
 
   useEffect(() => {
     if (authLoading) return;
@@ -492,7 +503,9 @@ function AppFlow({ lang, setLang }) {
 
   // Workout check-offs live inside the saved plan, so they sync to the account.
   const handleWorkoutStatus = (key, status) => {
-    const next = { ...completions, [key]: { status, date: Date.now() } };
+    // Runs count towards the shoes currently in use.
+    const shoe = gear.find(g => g.type === 'shoes' && g.default && !g.retiredAt);
+    const next = { ...completions, [key]: { status, date: Date.now(), ...(status === 'completed' && shoe ? { shoeId: shoe.id } : {}) } };
     setCompletions(next);
     savePlan(user?.uid, { plan, raceData, profile, currentWeek, language: lang, savedAt: Date.now(), completions: next });
   };
@@ -527,6 +540,7 @@ function AppFlow({ lang, setLang }) {
     const es = lang === 'es';
     try {
       await clearPlan(user?.uid);
+      await deleteAllGear(user?.uid);
       await deleteAccount();
       clearDeviceData();
       navigate('/');
@@ -570,14 +584,15 @@ function AppFlow({ lang, setLang }) {
     if (screen === 'language')  return <LanguageScreen onSelect={handleLanguage} userEmail={user?.email} onLogin={() => { setReturningLogin(true); setShowLogin(true); }} />;
     if (screen === 'source')    return <SourceScreen {...props} onNext={handleRaceData} />;
     if (screen === 'profile')   return <ProfileScreen {...props} onNext={handleProfile} onBack={() => setScreen('source')} />;
-    if (screen === 'today')     return <TodayScreen {...props} user={user} onLogout={handleLogout} onShowLogin={() => setShowLogin(true)} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} completions={completions} onWorkoutStatus={handleWorkoutStatus} />;
+    if (screen === 'today')     return <TodayScreen {...props} user={user} onLogout={handleLogout} onShowLogin={() => setShowLogin(true)} onWeek={() => setScreen('week')} onRecovery={handleRecovery} onRaceProfile={() => setScreen('raceProfile')} onNewPlan={handleNewPlan} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} completions={completions} onWorkoutStatus={handleWorkoutStatus} gear={gear} onGear={() => setScreen('gear')} />;
     if (screen === 'week')      return <WeekScreen {...props} onToday={() => setScreen('today')} onRecovery={handleRecovery} onStrength={handleStrength} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} />;
     if (screen === 'recovery')  return <RecoveryScreen {...props} type={recovery} onBack={() => setScreen('today')} />;
     if (screen === 'strength')  return <StrengthScreen lang={lang} phase={currentPhase} onBack={() => setScreen(strengthFrom === 'week' ? 'week' : 'today')} />;
     if (screen === 'raceProfile') return <RaceProfileScreen {...props} onProfile={() => setScreen('account')} onBack={() => setScreen('account')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
     if (screen === 'plans')     return <PlansScreen lang={lang} plan={plan} raceData={raceData} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onProfile={() => setScreen('account')} />;
-    if (screen === 'account')   return <AccountScreen lang={lang} user={user} plan={plan} raceData={raceData} currentWeek={currentWeek} onLogin={() => setShowLogin(true)} onLogout={handleLogout} onDeleteAccount={handleDeleteAccount} onNewPlan={handleNewPlan} onRaceProfile={() => setScreen('raceProfile')} onLegal={openLegal} onSetLang={handleSetLang} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
+    if (screen === 'account')   return <AccountScreen lang={lang} user={user} plan={plan} raceData={raceData} currentWeek={currentWeek} onLogin={() => setShowLogin(true)} onLogout={handleLogout} onDeleteAccount={handleDeleteAccount} onNewPlan={handleNewPlan} onRaceProfile={() => setScreen('raceProfile')} onGear={() => setScreen('gear')} onLegal={openLegal} onSetLang={handleSetLang} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} />;
     if (screen === 'coach')     return <CoachScreen lang={lang} user={user} plan={plan} raceData={raceData} profile={profile} currentWeek={currentWeek} completions={completions} onApply={handleApplyProposal} onLogin={() => setShowLogin(true)} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} />;
+    if (screen === 'gear')      return <GearScreen lang={lang} user={user} gear={gear} onChange={handleGearChange} plan={plan} raceData={raceData} completions={completions} onLogin={() => setShowLogin(true)} onBack={() => setScreen('account')} onToday={() => setScreen('today')} onWeek={() => setScreen('week')} onPlans={() => setScreen('plans')} onProfile={() => setScreen('account')} />;
     if (screen === 'legal')     return <LegalScreen lang={lang} doc={legalDoc} onBack={() => setScreen(legalFrom || 'account')} />;
 
     return null;
@@ -601,6 +616,7 @@ export default function App() {
         <Route path="/app" element={<AppFlow lang={lang} setLang={setLang} />} />
         <Route path="/privacy" element={<LegalPage lang={lang} doc="privacy" />} />
         <Route path="/terms" element={<LegalPage lang={lang} doc="terms" />} />
+        <Route path="/u/:uid" element={<PublicProfile lang={lang} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

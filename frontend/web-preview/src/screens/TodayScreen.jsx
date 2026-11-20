@@ -3,6 +3,7 @@ import { t } from '../i18n';
 import BottomNav from '../components/BottomNav';
 import Icon, { IconBadge } from '../components/Icon';
 import RouteCard from '../components/RouteCard';
+import { shoeKm, buyUrl, DEFAULT_SHOE_LIMIT } from '../utils/gear';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const phaseKey = {
@@ -59,7 +60,7 @@ const s = {
 };
 
 
-export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength, onPlans, onProfile, user, onLogout, onShowLogin, completions, onWorkoutStatus }) {
+export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek, onRecovery, onRaceProfile, onNewPlan, onStrength, onPlans, onProfile, user, onLogout, onShowLogin, completions, onWorkoutStatus, gear, onGear }) {
   const [conditions, setConditions]           = useState(null);
   const [locationError, setLocationError]     = useState(false);
   const [trails, setTrails]                   = useState([]);
@@ -208,6 +209,12 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
     minutes ? { value: '~' + fmtMin(minutes), unit: minutes >= 60 ? '' : 'min', label: lang==='es' ? 'tiempo aprox.' : 'approx. time' } : null,
     ZONE[todayWorkout.type] ? { value: ZONE[todayWorkout.type], unit:'', label: lang==='es' ? 'intensidad' : 'intensity' } : null,
   ].filter(Boolean) : [];
+
+  // Shoe wear: warn from 85% of the replacement mileage.
+  const shoe = (gear || []).find(g => g.type === 'shoes' && g.default && !g.retiredAt);
+  const shoeTotal = shoe ? shoeKm(shoe, plan, completions) : 0;
+  const shoeLimit = shoe?.limitKm || DEFAULT_SHOE_LIMIT;
+  const shoeWorn = shoe && shoeTotal >= shoeLimit * 0.85;
 
   // Weekly progress for the "end" moment after checking off a session.
   const weekSessions = week.workouts.filter(w => w && w.type !== 'rest').length;
@@ -452,6 +459,28 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             )}
           </div>
         )
+      )}
+
+      {shoeWorn && (
+        <div style={{ background:'#FFFFFF', border:'1px solid rgba(234,42,48,0.25)', borderRadius:20, padding:16, marginBottom:16, display:'flex', gap:12, alignItems:'center' }}>
+          <IconBadge name="footprints" size={44} />
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ fontSize:15, fontWeight:700, color:'#121D29' }}>
+              {shoeTotal >= shoeLimit ? (lang==='es' ? 'Toca cambiar tus zapatillas' : 'Time to replace your shoes') : (lang==='es' ? 'Tus zapatillas están cerca del límite' : 'Your shoes are near their limit')}
+            </div>
+            <div style={{ fontSize:13, color:'rgba(18,29,41,0.66)', marginTop:2 }}>
+              {[shoe.brand, shoe.model].filter(Boolean).join(' ')} · {shoeTotal}/{shoeLimit} km
+            </div>
+            <div style={{ display:'flex', gap:12, marginTop:8 }}>
+              <a href={buyUrl(shoe)} target="_blank" rel="noopener noreferrer sponsored" style={{ fontSize:13, fontWeight:700, color:'#EA2A30', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:4, minHeight:32 }}>
+                {lang==='es' ? 'Ver reemplazo' : 'See replacement'}<Icon name="arrowUpRight" size={14} />
+              </a>
+              <button type="button" onClick={onGear} style={{ background:'none', border:'none', padding:0, fontSize:13, color:'rgba(18,29,41,0.66)', cursor:'pointer', fontFamily:'inherit', minHeight:32 }}>
+                {lang==='es' ? 'Mi equipo' : 'My gear'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && (

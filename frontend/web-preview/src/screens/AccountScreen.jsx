@@ -27,7 +27,7 @@ function Row({ children, right, onClick, last, danger }) {
   );
 }
 
-export default function AccountScreen({ lang, user, plan, raceData, currentWeek, onLogin, onLogout, onDeleteAccount, onNewPlan, onRaceProfile, onLegal, onSetLang, onToday, onWeek, onPlans }) {
+export default function AccountScreen({ lang, user, plan, raceData, currentWeek, onLogin, onLogout, onDeleteAccount, onNewPlan, onRaceProfile, onGear, onLegal, onSetLang, onToday, onWeek, onPlans }) {
   const es = lang === 'es';
   const [confirm, setConfirm] = useState(null); // 'delete' | 'newPlan'
   const [busy, setBusy] = useState(false);
@@ -92,6 +92,14 @@ export default function AccountScreen({ lang, user, plan, raceData, currentWeek,
           </div>
         </>
       )}
+
+      {/* Gear */}
+      <div style={s.label}>{es ? 'Equipo' : 'Gear'}</div>
+      <div style={s.card}>
+        <Row last onClick={onGear}>
+          <span style={{ display:'flex', alignItems:'center', gap:10 }}><Icon name="footprints" size={18} color="#EA2A30" />{es ? 'Mi equipo y zapatillas' : 'My gear & shoes'}</span>
+        </Row>
+      </div>
 
       {/* Preferences */}
       <div style={s.label}>{es ? 'Preferencias' : 'Preferences'}</div>
