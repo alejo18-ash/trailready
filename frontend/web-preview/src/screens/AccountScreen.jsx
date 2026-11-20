@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import BottomNav from '../components/BottomNav';
 import { SUPPORT_EMAIL, APP_VERSION } from '../utils/legal';
+import Icon from '../components/Icon';
+import Logo from '../components/Logo';
 
-const C = { text:'#121D29', muted:'rgba(18,29,41,0.5)', faint:'rgba(18,29,41,0.08)', red:'#EA2A30' };
+const C = { text:'#121D29', muted:'rgba(18,29,41,0.64)', faint:'rgba(18,29,41,0.08)', red:'#EA2A30' };
 
 const s = {
   wrap: { minHeight:'100vh', background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", maxWidth:600, margin:'0 auto', width:'100%', boxSizing:'border-box', padding:'20px 16px 96px' },
-  h1: { fontSize:26, fontWeight:800, color:C.text, margin:'4px 0 16px', letterSpacing:'-0.02em' },
+  h1: { fontSize:36, fontWeight:700, fontFamily:'var(--font-display)', lineHeight:1, color:C.text, margin:'4px 0 16px', letterSpacing:'-0.02em' },
   card: { background:'#FFFFFF', borderRadius:16, border:`1px solid ${C.faint}`, boxShadow:'0 1px 4px rgba(18,29,41,0.05)', marginBottom:16, overflow:'hidden' },
-  label: { fontSize:11, letterSpacing:'0.08em', color:C.muted, textTransform:'uppercase', margin:'0 4px 8px' },
+  label: { fontSize:12, letterSpacing:'0.08em', color:C.muted, textTransform:'uppercase', margin:'0 4px 8px' },
   row: (last) => ({ display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, width:'100%', padding:'15px 16px', background:'none', border:'none', borderBottom: last ? 'none' : `1px solid ${C.faint}`, fontSize:15, color:C.text, fontFamily:'inherit', textAlign:'left', cursor:'pointer', boxSizing:'border-box' }),
-  chev: { color:'rgba(18,29,41,0.3)', fontSize:18 },
+  chev: { color:'rgba(18,29,41,0.64)', fontSize:18 },
   avatar: { width:52, height:52, borderRadius:'50%', background:C.red, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:700, flexShrink:0, objectFit:'cover' },
   seg: { display:'flex', gap:4, background:'#F0F4F8', borderRadius:999, padding:3 },
   segBtn: (on) => ({ border:'none', borderRadius:999, padding:'6px 14px', fontSize:13, fontWeight: on ? 700 : 500, background: on ? '#FFFFFF' : 'transparent', color: on ? C.red : C.muted, cursor:'pointer', fontFamily:'inherit', boxShadow: on ? '0 1px 3px rgba(18,29,41,0.1)' : 'none' }),
@@ -51,7 +53,7 @@ export default function AccountScreen({ lang, user, plan, raceData, currentWeek,
       <div style={{ ...s.card, padding:16, display:'flex', alignItems:'center', gap:14 }}>
         {user?.photoURL
           ? <img src={user.photoURL} alt="" referrerPolicy="no-referrer" style={s.avatar} />
-          : <div style={s.avatar}>{user ? (name[0] || '?').toUpperCase() : '🏔️'}</div>}
+          : <div style={s.avatar}>{user ? (name[0] || '?').toUpperCase() : <Logo size={52} rounded />}</div>}
         <div style={{ flex:1, minWidth:0 }}>
           {user ? (
             <>
@@ -80,7 +82,7 @@ export default function AccountScreen({ lang, user, plan, raceData, currentWeek,
           <div style={s.card}>
             {raceData?.name && (
               <Row onClick={onRaceProfile}>
-                <span style={{ display:'block', fontWeight:600 }}>🏁 {raceData.name}</span>
+                <span style={{ display:'flex', alignItems:'center', gap:8, fontWeight:600 }}><Icon name="flag" size={16} color="#EA2A30" />{raceData.name}</span>
                 <span style={{ display:'block', fontSize:12, color:C.muted, marginTop:2 }}>
                   {[raceData.distancia && `${raceData.distancia} km`, raceData.fecha, total && `${es ? 'Semana' : 'Week'} ${(currentWeek ?? 0) + 1}/${total}`].filter(Boolean).join(' · ')}
                 </span>
@@ -126,7 +128,7 @@ export default function AccountScreen({ lang, user, plan, raceData, currentWeek,
         </>
       )}
 
-      <div style={{ textAlign:'center', fontSize:12, color:'rgba(18,29,41,0.35)', marginTop:8 }}>TrailReady v{APP_VERSION}</div>
+      <div style={{ textAlign:'center', fontSize:12, color:'rgba(18,29,41,0.64)', marginTop:8 }}>TrailReady v{APP_VERSION}</div>
 
       {confirm && (
         <div style={{ position:'fixed', inset:0, background:'rgba(18,29,41,0.5)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1100, padding:'0 24px' }}>

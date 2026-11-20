@@ -2,6 +2,10 @@
 
 :root {
   --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Barlow Condensed', 'Inter', system-ui, sans-serif;
+
+  /* Type scale (px): 12 · 14 · 16 · 20 · 28 · 44 */
+  /* Spacing: 4-pt grid — 4 · 8 · 12 · 16 · 24 · 32 · 48 */
 
   /* Backgrounds */
   --bg: #F0F4F8;
@@ -36,8 +40,9 @@
 
   /* Text hierarchy */
   --text: #121D29;
-  --text-60: rgba(18, 29, 41, 0.6);
-  --text-40: rgba(18, 29, 41, 0.4);
+  --text-80: rgba(18, 29, 41, 0.78);   /* body, 7:1 */
+  --text-60: rgba(18, 29, 41, 0.66);   /* secondary, ≥4.5:1 (AA) */
+  --text-40: rgba(18, 29, 41, 0.62);   /* kept for old usages, now AA */
   --text-30: rgba(18, 29, 41, 0.3);
   --text-20: rgba(18, 29, 41, 0.2);
 
@@ -68,4 +73,36 @@
   opacity: 0.7;
   transform: scale(0.98);
   transition: opacity 80ms ease, transform 80ms ease;
+}
+
+/* ── Display type ───────────────────────────────── */
+.tr-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  line-height: 1.02;
+}
+
+/* ── Celebration pop (workout completed) ─────────── */
+@keyframes tr-pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  60%  { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.tr-pop { animation: tr-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+@keyframes tr-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.tr-fill { transform-origin: left; animation: tr-fill 500ms var(--ease-out) both; }
+
+@keyframes tr-shimmer { 0% { opacity: .45 } 50% { opacity: .9 } 100% { opacity: .45 } }
+.tr-skeleton { background: rgba(18,29,41,0.08); border-radius: 8px; animation: tr-shimmer 1.2s ease-in-out infinite; }
+
+button:focus-visible, a:focus-visible, [role="button"]:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid #EA2A30;
+  outline-offset: 2px;
+}
+button { touch-action: manipulation; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
 }

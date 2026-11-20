@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { NavContext } from '../utils/navContext';
 const ACTIVE = '#EA2A30';
-const INACTIVE = 'rgba(255,255,255,0.45)';
+const INACTIVE = 'rgba(255,255,255,0.62)';
 
 const icons = {
   today: (active) => (
@@ -106,9 +106,9 @@ export default function BottomNav({ active, lang, onToday, onPlan, onWeek, onPla
         >
           {icons[key](active === key)}
           <span style={{
-            fontSize: 11,
+            fontSize:12,
             fontWeight: 500,
-            color: active === key ? ACTIVE : 'rgba(255,255,255,0.45)',
+            color: active === key ? ACTIVE : INACTIVE,
             letterSpacing: '0.04em',
           }}>
             {labels[key][lang || 'es']}

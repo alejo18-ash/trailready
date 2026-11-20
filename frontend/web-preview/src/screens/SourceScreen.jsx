@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { t } from '../i18n';
+import Icon from '../components/Icon';
+import Logo from '../components/Logo';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
@@ -7,8 +9,8 @@ const s = {
   wrap: { minHeight:'100vh', background:'#F0F4F8', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:"'Inter', system-ui, sans-serif" },
   card: { width:'100%', maxWidth:340 },
   header: { textAlign:'center', marginBottom:20 },
-  logo: { fontSize:11, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:6 },
-  heading: { fontSize:20, fontWeight:700, color:'#121D29' },
+  logo: { fontSize:12, color:'rgba(18,29,41,0.62)', letterSpacing:0.5, marginBottom:6 },
+  heading: { fontSize:32, fontWeight:700, color:'#121D29', fontFamily:'var(--font-display)', lineHeight:1.05 },
   option: (active) => ({
     display:'flex', alignItems:'center', gap:12, padding:'12px 14px',
     background: active ? 'rgba(234,42,48,0.08)' : '#FFFFFF',
@@ -21,24 +23,24 @@ const s = {
     background: active ? 'rgba(234,42,48,0.1)' : 'rgba(18,29,41,0.05)', flexShrink:0,
   }),
   optTitle: (active) => ({ fontSize:13, fontWeight:600, color: active ? '#121D29' : 'rgba(18,29,41,0.65)' }),
-  optSub: { fontSize:10, color:'rgba(18,29,41,0.4)', marginTop:2 },
+  optSub: { fontSize:12, color:'rgba(18,29,41,0.62)', marginTop:2 },
   check: { marginLeft:'auto', width:16, height:16, borderRadius:'50%', background:'#EA2A30', display:'flex', alignItems:'center', justifyContent:'center', fontSize:8, color:'#FFFFFF', fontWeight:700, flexShrink:0 },
   divider: { height:'0.5px', background:'rgba(18,29,41,0.08)', margin:'12px 0' },
-  label: { fontSize:11, color:'rgba(18,29,41,0.4)', marginBottom:6, display:'block' },
+  label: { fontSize:12, color:'rgba(18,29,41,0.62)', marginBottom:6, display:'block' },
   input: { width:'100%', background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.12)', borderRadius:10, padding:'11px 13px', color:'#121D29', fontSize:13, outline:'none', boxSizing:'border-box', marginBottom:8 },
   upload: (hasFile) => ({
     display:'block', border: hasFile ? '1.5px solid rgba(234,42,48,0.4)' : '1.5px dashed rgba(18,29,41,0.15)',
     borderRadius:12, padding:'18px', textAlign:'center', cursor:'pointer',
-    color: hasFile ? '#EA2A30' : 'rgba(18,29,41,0.4)', fontSize:12, marginBottom:8,
+    color: hasFile ? '#EA2A30' : 'rgba(18,29,41,0.64)', fontSize:12, marginBottom:8,
     background: hasFile ? 'rgba(234,42,48,0.06)' : 'transparent',
   }),
   gpxInfo: { background:'rgba(234,42,48,0.06)', border:'0.5px solid rgba(234,42,48,0.15)', borderRadius:10, padding:'10px 12px', marginBottom:8 },
-  gpxRow: { display:'flex', justifyContent:'space-between', fontSize:11, marginBottom:3 },
-  gpxKey: { color:'rgba(18,29,41,0.4)' },
+  gpxRow: { display:'flex', justifyContent:'space-between', fontSize:12, marginBottom:3 },
+  gpxKey: { color:'rgba(18,29,41,0.62)' },
   gpxVal: { color:'#EA2A30', fontWeight:600 },
   stravaBox: { background:'rgba(252,76,2,0.06)', border:'0.5px solid rgba(252,76,2,0.2)', borderRadius:12, padding:'14px', marginBottom:8 },
   stravaBtn: { display:'block', background:'#FC4C02', borderRadius:9, padding:'11px', textAlign:'center', fontSize:13, fontWeight:600, color:'#fff', cursor:'pointer', marginBottom:8, border:'none', width:'100%' },
-  stravaOr: { textAlign:'center', fontSize:11, color:'rgba(18,29,41,0.4)', margin:'8px 0' },
+  stravaOr: { textAlign:'center', fontSize:12, color:'rgba(18,29,41,0.62)', margin:'8px 0' },
   manualRow: { marginBottom:8 },
   select: { width:'100%', background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.12)', borderRadius:10, padding:'11px 13px', color:'#121D29', fontSize:13, outline:'none', boxSizing:'border-box' },
   btn: (loading, disabled) => ({
@@ -46,14 +48,14 @@ const s = {
     borderRadius:12, padding:13, textAlign:'center', fontSize:13, fontWeight:600, color:'#fff',
     cursor: disabled || loading ? 'default' : 'pointer', border:'none', width:'100%',
   }),
-  error: { color:'#EA2A30', fontSize:11, textAlign:'center', marginTop:8 },
+  error: { color:'#EA2A30', fontSize:12, textAlign:'center', marginTop:8 },
   distancePicker: { marginBottom:8 },
   distanceRow: { display:'flex', gap:6, flexWrap:'wrap', marginTop:6 },
   distBtn: (active) => ({
     padding:'7px 13px', borderRadius:20, fontSize:12, fontWeight:500, cursor:'pointer',
     background: active ? 'rgba(234,42,48,0.1)' : 'rgba(18,29,41,0.04)',
     border: active ? '1px solid rgba(234,42,48,0.25)' : '0.5px solid rgba(18,29,41,0.09)',
-    color: active ? '#EA2A30' : 'rgba(18,29,41,0.5)',
+    color: active ? '#EA2A30' : 'rgba(18,29,41,0.64)',
   }),
 };
 
@@ -190,28 +192,28 @@ export default function SourceScreen({ lang, onNext }) {
   };
 
   const GOAL_CARDS = [
-    { id:'race',    icon:'🏁', label: lang==='es' ? 'Plan de Carrera — Tengo una carrera' : 'Race Plan — I have a race', sub: lang==='es' ? 'Trail o asfalto, 21K–100K' : 'Trail or road, 21K–100K', disabled: false },
-    { id:'base',    icon:'🏃', label: lang==='es' ? 'Plan Base — Construir mi base' : 'Base Plan — Build my base', sub: lang==='es' ? 'Aeróbico sólido antes de un plan' : 'Solid aerobic engine before a plan', disabled: false },
-    { id:'prebase', icon:'🚶', label: lang==='es' ? 'Soy principiante' : "I'm a beginner", sub: lang==='es' ? 'Empezar desde cero, 4 semanas' : 'Start from scratch, 4 weeks', disabled: false },
-    { id:'rehab',   icon:'🩹', label: lang==='es' ? 'Plan de Recuperación — Rehab' : 'Recovery Plan — Rehab', sub: lang==='es' ? 'Próximamente' : 'Coming soon', disabled: true },
+    { id:'race',    icon:'flag', label: lang==='es' ? 'Plan de Carrera — Tengo una carrera' : 'Race Plan — I have a race', sub: lang==='es' ? 'Trail o asfalto, 21K–100K' : 'Trail or road, 21K–100K', disabled: false },
+    { id:'base',    icon:'activity', label: lang==='es' ? 'Plan Base — Construir mi base' : 'Base Plan — Build my base', sub: lang==='es' ? 'Aeróbico sólido antes de un plan' : 'Solid aerobic engine before a plan', disabled: false },
+    { id:'prebase', icon:'footprints', label: lang==='es' ? 'Soy principiante' : "I'm a beginner", sub: lang==='es' ? 'Empezar desde cero, 4 semanas' : 'Start from scratch, 4 weeks', disabled: false },
+    { id:'rehab',   icon:'heart', label: lang==='es' ? 'Plan de Recuperación — Rehab' : 'Recovery Plan — Rehab', sub: lang==='es' ? 'Próximamente' : 'Coming soon', disabled: true },
   ];
 
   const RACE_TABS = [
-    { id:'gpx',    icon:'📁', label: t(lang, 'sourcePdf'),    sub: t(lang, 'sourcePdfSub') },
-    { id:'web',    icon:'🔗', label: t(lang, 'sourceWeb'),    sub: t(lang, 'sourceWebSub') },
-    { id:'manual', icon:'✏️', label: t(lang, 'sourceManual'), sub: t(lang, 'sourceManualSub') },
+    { id:'gpx',    icon:'file', label: t(lang, 'sourcePdf'),    sub: t(lang, 'sourcePdfSub') },
+    { id:'web',    icon:'link', label: t(lang, 'sourceWeb'),    sub: t(lang, 'sourceWebSub') },
+    { id:'manual', icon:'pencil', label: t(lang, 'sourceManual'), sub: t(lang, 'sourceManualSub') },
   ];
 
   return (
     <div className="screen-enter" style={s.wrap}>
       <div style={s.card}>
         <div style={s.header}>
-          <div style={s.logo}>🏔️ TRAILREADY</div>
+          <div style={{ ...s.logo, display:'flex', alignItems:'center', justifyContent:'center', gap:8 }}><Logo size={20} /> TRAILREADY</div>
           {goal && (
             <button
               type="button"
               onClick={() => { setGoal(null); setError(''); }}
-              style={{ background:'none', border:'none', color:'rgba(18,29,41,0.4)', fontSize:11, cursor:'pointer', marginBottom:6, fontFamily:'inherit', padding:0 }}
+              style={{ background:'none', border:'none', color:'rgba(18,29,41,0.62)', fontSize:12, cursor:'pointer', marginBottom:6, fontFamily:'inherit', padding:0 }}
             >
               ← {lang==='es' ? 'Volver' : 'Back'}
             </button>
@@ -239,7 +241,7 @@ export default function SourceScreen({ lang, onNext }) {
             }}
             onClick={() => { if (!gc.disabled) { setGoal(gc.id); setError(''); } }}
           >
-            <div style={s.iconBox(false)}>{gc.icon}</div>
+            <div style={s.iconBox(false)}><Icon name={gc.icon} size={20} /></div>
             <div style={{flex:1}}>
               <div style={s.optTitle(false)}>{gc.label}</div>
               <div style={s.optSub}>{gc.sub}</div>
@@ -252,7 +254,7 @@ export default function SourceScreen({ lang, onNext }) {
           <>
             {RACE_TABS.map(tb => (
               <div key={tb.id} style={s.option(tab===tb.id)} onClick={() => { setTab(tb.id); setError(''); }}>
-                <div style={s.iconBox(tab===tb.id)}>{tb.icon}</div>
+                <div style={s.iconBox(tab===tb.id)}><Icon name={tb.icon} size={20} /></div>
                 <div style={{flex:1}}>
                   <div style={s.optTitle(tab===tb.id)}>{tb.label}</div>
                   <div style={s.optSub}>{tb.sub}</div>
@@ -268,7 +270,7 @@ export default function SourceScreen({ lang, onNext }) {
                 <label style={s.upload(!!gpxFile)}>
                   <input type="file" accept=".gpx" style={{display:'none'}} onChange={handleGpxChange} />
                   {loading ? (lang==='es' ? '⏳ Analizando GPX...' : '⏳ Parsing GPX...') :
-                   gpxFile ? `📍 ${gpxFile.name}` :
+                   gpxFile ? `✓ ${gpxFile.name}` :
                    (lang==='es' ? '+ Subir archivo .gpx' : '+ Upload .gpx file')}
                 </label>
                 {gpxData && (
@@ -355,7 +357,7 @@ export default function SourceScreen({ lang, onNext }) {
         {/* ── STEP 2b: Base plan ── */}
         {goal === 'base' && (
           <>
-            <div style={{ fontSize:11, color:'rgba(255,255,255,0.45)', lineHeight:1.55, marginBottom:10 }}>
+            <div style={{ fontSize:12, color:'rgba(255,255,255,0.45)', lineHeight:1.55, marginBottom:10 }}>
               {t(lang, 'basePlan.subtitle')}
             </div>
             <button style={s.btn(false, false)} onClick={handleBaseNext}>
@@ -367,10 +369,10 @@ export default function SourceScreen({ lang, onNext }) {
         {/* ── STEP 2c: Pre-base plan ── */}
         {goal === 'prebase' && (
           <>
-            <div style={{ fontSize:11, color:'rgba(255,255,255,0.45)', lineHeight:1.55, marginBottom:10 }}>
+            <div style={{ fontSize:12, color:'rgba(255,255,255,0.45)', lineHeight:1.55, marginBottom:10 }}>
               {t(lang, 'prebase.subtitle')}
             </div>
-            <div style={{ fontSize:11, color:'rgba(255,255,255,0.35)', lineHeight:1.55, marginBottom:16, fontStyle:'italic' }}>
+            <div style={{ fontSize:12, color:'rgba(255,255,255,0.35)', lineHeight:1.55, marginBottom:16, fontStyle:'italic' }}>
               {t(lang, 'prebase.coachNote')}
             </div>
             <button style={s.btn(false, false)} onClick={handlePreBaseNext}>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { t } from '../i18n';
 import BottomNav from '../components/BottomNav';
+import Icon, { IconBadge } from '../components/Icon';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const phaseKey = {
@@ -11,43 +12,48 @@ const phaseKey = {
   preBase2: 'prebase.phase2',
 };
 
+// Typical effort and pace per session type, used for the hero stats (approximate).
+const ZONE = { easy:'Z2', longTrail:'Z2', shortTrail:'Z2', backToBack:'Z2', recovery:'Z1', tempo:'Z3', intervals:'Z4–5', strides:'Z2+', walk:'Z1', walk_run:'Z1–2', cross:'Z2', treadmillIntervals:'Z4' };
+const PACE = { easy:6.5, longTrail:8, shortTrail:7.5, backToBack:8, recovery:7, tempo:5.5, intervals:6, strides:6.5, walk:11, walk_run:9, cross:6.5 };
+const fmtMin = (m) => m >= 60 ? `${Math.floor(m/60)}h${String(Math.round(m%60)).padStart(2,'0')}` : `${Math.round(m)}`;
+
 const s = {
   wrap: { background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", paddingBottom:80, paddingLeft:16, paddingRight:16, maxWidth:600, margin:'0 auto', width:'100%', boxSizing:'border-box' },
   header: { padding:'20px 20px 14px', display:'flex', justifyContent:'space-between', alignItems:'flex-start' },
-  weekLabel: { fontSize:10, color:'rgba(18,29,41,0.45)', letterSpacing:1, textTransform:'uppercase' },
-  activityTitle: { fontSize:26, fontWeight:800, color:'#121D29', marginTop:5, letterSpacing:'-0.02em', lineHeight:1.1 },
-  activitySub: { fontSize:11, color:'rgba(18,29,41,0.5)', marginTop:4 },
+  weekLabel: { fontSize:12, color:'rgba(18,29,41,0.62)', letterSpacing:1, textTransform:'uppercase' },
+  activityTitle: { fontSize:48, fontWeight:700, color:'#121D29', marginTop:4, fontFamily:'var(--font-display)', lineHeight:0.95, textTransform:'uppercase' },
+  activitySub: { fontSize:12, color:'rgba(18,29,41,0.62)', marginTop:4 },
   weatherBox: { textAlign:'right', minWidth:80 },
   weatherIcon: { fontSize:20 },
   weatherTemp: { fontSize:13, fontWeight:600, color:'#EA2A30', marginTop:1 },
-  weatherDesc: { fontSize:10, color:'rgba(18,29,41,0.5)', marginTop:1 },
-  weatherWind: { fontSize:10, color:'rgba(18,29,41,0.4)', marginTop:1 },
-  aqiBadge: (good) => ({ display:'inline-block', padding:'2px 8px', borderRadius:20, fontSize:9, fontWeight:600, marginTop:3, background: good ? 'rgba(234,42,48,0.08)' : 'rgba(251,191,36,0.15)', color: good ? '#EA2A30' : '#fbbf24' }),
-  alert: { margin:'0 20px 8px', background:'rgba(251,191,36,0.1)', border:'0.5px solid rgba(251,191,36,0.25)', borderRadius:10, padding:'8px 12px', fontSize:11, color:'#b45309' },
+  weatherDesc: { fontSize:12, color:'rgba(18,29,41,0.62)', marginTop:1 },
+  weatherWind: { fontSize:12, color:'rgba(18,29,41,0.62)', marginTop:1 },
+  aqiBadge: (good) => ({ display:'inline-block', padding:'2px 8px', borderRadius:20, fontSize:12, fontWeight:600, marginTop:3, background: good ? 'rgba(234,42,48,0.08)' : 'rgba(251,191,36,0.15)', color: good ? '#EA2A30' : '#fbbf24' }),
+  alert: { margin:'0 0 16px', background:'rgba(251,191,36,0.1)', border:'0.5px solid rgba(251,191,36,0.25)', borderRadius:10, padding:'8px 12px', fontSize:12, color:'#b45309' },
   divider: { height:'0.5px', background:'rgba(18,29,41,0.08)', margin:'0 20px' },
-  locationBtn: { margin:'8px 20px 0', background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.1)', borderRadius:10, padding:'10px 14px', fontSize:11, color:'rgba(18,29,41,0.5)', cursor:'pointer', textAlign:'center' },
-  routeCard: { margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' },
-  routeLabel: { fontSize:10, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:6 },
+  locationBtn: { margin:'8px 20px 0', background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.1)', borderRadius:10, padding:'10px 14px', fontSize:12, color:'rgba(18,29,41,0.62)', cursor:'pointer', textAlign:'center' },
+  routeCard: { margin:'0 0 16px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:20, padding:20, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' },
+  routeLabel: { fontSize:12, color:'rgba(18,29,41,0.62)', letterSpacing:0.5, marginBottom:6 },
   routeName: { fontSize:14, fontWeight:600, color:'#121D29' },
-  routeSub: { fontSize:10, color:'rgba(18,29,41,0.4)', marginTop:2 },
+  routeSub: { fontSize:12, color:'rgba(18,29,41,0.62)', marginTop:2 },
   statsRow: { display:'flex', gap:6, marginTop:10 },
   statBox: { flex:1, background:'rgba(18,29,41,0.04)', borderRadius:8, padding:'8px 6px', textAlign:'center' },
   statBoxTime: { flex:1.12, background:'rgba(234,42,48,0.06)', border:'1px solid rgba(234,42,48,0.18)', borderRadius:10, padding:'10px 6px', textAlign:'center' },
-  statVal: (color) => ({ fontSize:15, fontWeight:700, color }),
+  statVal: (color) => ({ fontSize:22, fontWeight:700, color, fontFamily:'var(--font-display)', lineHeight:1.1 }),
   statValTime: { fontSize:18, fontWeight:800, color:'#EA2A30', letterSpacing:'-0.02em' },
-  statLbl: { fontSize:9, color:'rgba(18,29,41,0.4)', marginTop:1 },
-  statLblTime: { fontSize:10, color:'#EA2A30', marginTop:4, fontWeight:600, letterSpacing:0.2 },
+  statLbl: { fontSize:12, color:'rgba(18,29,41,0.62)', marginTop:1 },
+  statLblTime: { fontSize:12, color:'#EA2A30', marginTop:4, fontWeight:600, letterSpacing:0.2 },
   dots: { display:'flex', gap:6, marginTop:8, justifyContent:'center' },
   dot: (active) => ({ width:7, height:7, borderRadius:'50%', cursor:'pointer', background: active ? '#EA2A30' : 'rgba(18,29,41,0.18)' }),
-  wikiloc: { marginTop:10, background:'rgba(234,42,48,0.07)', borderRadius:8, padding:'9px', textAlign:'center', fontSize:11, fontWeight:600, color:'#EA2A30', cursor:'pointer' },
-  section: { padding:'0 20px', marginTop:12 },
-  sectionLabel: { fontSize:10, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:8 },
-  recoveryRow: { display:'flex', gap:8 },
-  recoveryCard: (_bg, border) => ({ flex:1, background:'#FFFFFF', border:`0.5px solid ${border}`, borderRadius:11, padding:'10px 8px', textAlign:'center', cursor:'pointer', boxShadow:'0 1px 3px rgba(18,29,41,0.05)' }),
+  wikiloc: { marginTop:10, background:'rgba(234,42,48,0.07)', borderRadius:8, padding:'9px', textAlign:'center', fontSize:12, fontWeight:600, color:'#EA2A30', cursor:'pointer' },
+  section: { padding:0, marginTop:8 },
+  sectionLabel: { fontSize:12, fontWeight:600, color:'rgba(18,29,41,0.66)', letterSpacing:'0.08em', textTransform:'uppercase', marginBottom:8 },
+  recoveryRow: { display:'flex', gap:8, marginBottom:16 },
+  recoveryCard: () => ({ flex:1, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:16, padding:'16px 8px', textAlign:'center', cursor:'pointer', fontFamily:'inherit', display:'flex', flexDirection:'column', alignItems:'center', gap:8, minHeight:44 }),
   recoveryIcon: { fontSize:16, marginBottom:3 },
-  recoveryTitle: (color) => ({ fontSize:10, color, fontWeight:500 }),
-  recoverySub: { fontSize:9, color:'rgba(18,29,41,0.5)', marginTop:2 },
-  baseMotivationCard: { margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' },
+  recoveryTitle: () => ({ fontSize:14, color:'#121D29', fontWeight:600 }),
+  recoverySub: { fontSize:12, color:'rgba(18,29,41,0.62)', marginTop:2 },
+  baseMotivationCard: { margin:'0 0 16px', background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' },
   baseMotivationText: { fontSize:13, color:'#121D29', lineHeight:1.55 },
 };
 
@@ -59,6 +65,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const [trailIndex, setTrailIndex]           = useState(0);
   const [workoutStatus, setWorkoutStatus]     = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [weatherFailed, setWeatherFailed]     = useState(false);
 
   useEffect(() => { fetchConditions(); }, [currentWeek]);
 
@@ -107,10 +114,11 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           const km = tw?.km ?? (tw?.duracion != null ? Math.max(8, Math.round(tw.duracion / 4)) : 20);
           const desnivel = wk?.desnivel || 800;
           fetchTrails(lat, lon, km, desnivel);
+          setLocationError(false); setWeatherFailed(false);
           const res = await fetch(`${API_URL}/api/conditions?lat=${lat}&lon=${lon}`);
           const data = await res.json();
-          if (data.success) setConditions(data.conditions);
-        } catch { setLocationError(true); }
+          if (data.success) setConditions(data.conditions); else setWeatherFailed(true);
+        } catch { setWeatherFailed(true); }
       },
       () => setLocationError(true)
     );
@@ -125,7 +133,8 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const storageKey   = `trailready_workout_${cw}_${dayIndex}`;
   const handleStatus = (status) => {
     setWorkoutStatus(status);
-    localStorage.setItem(storageKey, JSON.stringify({ status, date: Date.now() }));
+    if (status) localStorage.setItem(storageKey, JSON.stringify({ status, date: Date.now() }));
+    else localStorage.removeItem(storageKey);
     onWorkoutStatus?.(`${cw}_${dayIndex}`, status);
   };
   const todayWorkout = week.workouts[dayIndex];
@@ -136,7 +145,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const fmtDur = (n) => t(lang, 'workout.duration').replace('{n}', String(n));
   const isTreadmill  = todayWorkout.type === 'treadmillIntervals';
   const treadmillLabel = t(lang, 'workoutNames.treadmillIntervals') || t(lang, 'workouts.treadmillIntervals');
-  const workoutName  = isTreadmill ? `🏃 ${treadmillLabel}` : (t(lang, `workouts.${todayWorkout.type}`) || todayWorkout.type);
+  const workoutName  = isTreadmill ? treadmillLabel : (t(lang, `workouts.${todayWorkout.type}`) || todayWorkout.type);
   const isGoodAqi    = !conditions?.aqi || conditions.aqi === 'Good' || conditions.aqi === 'Moderate';
 
   const isStrength = todayWorkout.type === 'strength' || todayWorkout.type === 'strength_beginner';
@@ -161,104 +170,119 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const routeUrl    = activeTrail?.wikiloc || null;
   const routeTime   = `${Math.floor(routeKm/7)}:${String(Math.round((routeKm/7%1)*60)).padStart(2,'0')}h`;
 
+  const isRunDay = !['rest','recovery','strength','strength_beginner','mobility'].includes(todayWorkout.type);
+  const minutes = todayWorkout.duracion ?? todayWorkout.duration ?? (todayWorkout.km && PACE[todayWorkout.type] ? todayWorkout.km * PACE[todayWorkout.type] : null);
+  const heroStats = isRunDay ? [
+    todayWorkout.km ? { value: todayWorkout.km, unit:'km', label: lang==='es' ? 'distancia' : 'distance' } : null,
+    minutes ? { value: '~' + fmtMin(minutes), unit: minutes >= 60 ? '' : 'min', label: lang==='es' ? 'tiempo aprox.' : 'approx. time' } : null,
+    ZONE[todayWorkout.type] ? { value: ZONE[todayWorkout.type], unit:'', label: lang==='es' ? 'intensidad' : 'intensity' } : null,
+  ].filter(Boolean) : [];
+
+  // Weekly progress for the "end" moment after checking off a session.
+  const weekSessions = week.workouts.filter(w => w && w.type !== 'rest').length;
+  const weekDone = week.workouts.reduce((n, w, di) => {
+    if (!w || w.type === 'rest') return n;
+    let st = completions?.[`${cw}_${di}`]?.status;
+    if (!st) { try { st = JSON.parse(localStorage.getItem(`trailready_workout_${cw}_${di}`) || 'null')?.status; } catch { st = null; } }
+    if (di === dayIndex && workoutStatus) st = workoutStatus;
+    return n + (st === 'completed' ? 1 : 0);
+  }, 0);
+
   return (
     <div className="screen-enter" style={s.wrap}>
-      <div style={s.header}>
-        <div style={{ flex:1, paddingRight:12 }}>
-          <div style={s.weekLabel}>
-            {t(lang,'today')} · {t(lang,'week')} {week.week} {t(lang,'of')} {plan.totalWeeks}
-          </div>
-          <div style={s.activityTitle}>{workoutName}</div>
-          <div style={s.activitySub}>{phaseLabel}</div>
-          {isBasePlan && todayWorkout.duracion != null ? (
-            <div style={{ display:'inline-block', marginTop:7, background:'rgba(234,42,48,0.08)', border:'0.5px solid rgba(234,42,48,0.2)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#EA2A30', fontWeight:600 }}>
-              {fmtDur(todayWorkout.duracion)}
-            </div>
-          ) : isTreadmill && todayWorkout.duration != null ? (
-            <div style={{ display:'inline-block', marginTop:7, background:'rgba(251,191,36,0.12)', border:'0.5px solid rgba(251,191,36,0.28)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#b45309', fontWeight:600 }}>
-              {todayWorkout.duration} min
-            </div>
-          ) : todayWorkout.km ? (
-            <div style={{ display:'inline-block', marginTop:7, background:'rgba(234,42,48,0.08)', border:'0.5px solid rgba(234,42,48,0.2)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#EA2A30', fontWeight:600 }}>
-              {todayWorkout.km} km
-            </div>
-          ) : null}
-          {daysToRace !== null && daysToRace >= 0 && (
-            <div style={{ fontSize:11, marginTop:7, color: isRaceWeek ? '#EA2A30' : 'rgba(18,29,41,0.4)', fontWeight: isRaceWeek ? 600 : 400 }}>
-              🏁 {isRaceWeek ? t(lang, 'countdown.raceWeek') : `${daysToRace} ${t(lang, 'countdown.days')}`}
-            </div>
-          )}
+      {/* ── Top bar: date, account, weather ── */}
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'20px 4px 12px', gap:12 }}>
+        <div style={{ fontSize:12, fontWeight:600, color:'rgba(18,29,41,0.66)', letterSpacing:'0.08em', textTransform:'uppercase' }}>
+          {new Date().toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US', { weekday:'long', day:'numeric', month:'short' })}
         </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            {user ? (
-              <>
-                {user.photoURL
-                  ? <img src={user.photoURL} alt="" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }} />
-                  : <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#EA2A30', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#fff', fontWeight: 700 }}>{user.displayName?.[0] || '?'}</div>
-                }
-                <button onClick={onLogout} style={{ background: 'none', border: 'none', fontSize: 10, color: 'rgba(18,29,41,0.4)', cursor: 'pointer', fontFamily: 'inherit', padding: 0 }}>
-                  {lang === 'es' ? 'Salir' : 'Sign out'}
-                </button>
-              </>
-            ) : (
-              <button onClick={onShowLogin} style={{ background: 'none', border: 'none', fontSize: 10, color: '#EA2A30', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, padding: 0 }}>
-                {lang === 'es' ? 'Iniciar sesión' : 'Sign in'}
-              </button>
-            )}
-          </div>
-        <div style={s.weatherBox}>
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
           {conditions ? (
-            <>
-              <div style={s.weatherIcon}>{conditions.icon}</div>
-              <div style={s.weatherTemp}>{conditions.temp}°C</div>
-              <div style={s.weatherDesc}>{conditions.description}</div>
-              <div style={s.weatherWind}>💨 {conditions.wind} km/h</div>
-              {conditions.aqi && <div style={s.aqiBadge(isGoodAqi)}>AQI: {conditions.aqi}</div>}
-            </>
-          ) : locationError ? (
-            <div style={{fontSize:10, color:'rgba(18,29,41,0.4)', textAlign:'right'}}>
-              📍 {lang==='es' ? 'Sin ubicación' : 'No location'}
+            <div style={{ display:'flex', alignItems:'center', gap:6, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:999, padding:'6px 12px', fontSize:13, fontWeight:600, color:'#121D29' }}>
+              <span aria-hidden="true">{conditions.icon}</span>{conditions.temp}°
+              <span style={{ color:'rgba(18,29,41,0.66)', fontWeight:500, display:'inline-flex', alignItems:'center', gap:3 }}><Icon name="wind" size={13} />{conditions.wind}</span>
             </div>
+          ) : locationError ? (
+            <button type="button" onClick={fetchConditions} style={{ display:'flex', alignItems:'center', gap:6, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:999, padding:'8px 12px', fontSize:12, fontWeight:600, color:'#121D29', cursor:'pointer', fontFamily:'inherit', minHeight:36 }}>
+              <Icon name="pin" size={14} color="#EA2A30" />{lang==='es' ? 'Activar clima' : 'Enable weather'}
+            </button>
+          ) : weatherFailed ? (
+            <button type="button" onClick={fetchConditions} style={{ display:'flex', alignItems:'center', gap:6, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:999, padding:'8px 12px', fontSize:12, color:'rgba(18,29,41,0.66)', cursor:'pointer', fontFamily:'inherit', minHeight:36 }}>
+              <Icon name="cloudSun" size={14} />{lang==='es' ? 'Clima no disponible · Reintentar' : 'Weather unavailable · Retry'}
+            </button>
           ) : (
-            <div style={{fontSize:18}}>⏳</div>
+            <div className="tr-skeleton" style={{ width:84, height:32, borderRadius:999 }} aria-label={lang==='es' ? 'Cargando clima' : 'Loading weather'} />
           )}
-        </div>
+          {user ? (
+            <button type="button" onClick={onProfile} aria-label={lang==='es' ? 'Perfil' : 'Profile'} style={{ background:'none', border:'none', padding:0, cursor:'pointer', width:36, height:36 }}>
+              {user.photoURL
+                ? <img src={user.photoURL} alt="" referrerPolicy="no-referrer" style={{ width:36, height:36, borderRadius:'50%', objectFit:'cover' }} />
+                : <span style={{ width:36, height:36, borderRadius:'50%', background:'#121D29', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:700 }}>{user.displayName?.[0] || '?'}</span>}
+            </button>
+          ) : (
+            <button type="button" onClick={onShowLogin} style={{ background:'none', border:'none', fontSize:13, color:'#EA2A30', cursor:'pointer', fontFamily:'inherit', fontWeight:600, padding:'8px 4px', minHeight:36 }}>
+              {lang === 'es' ? 'Iniciar sesión' : 'Sign in'}
+            </button>
+          )}
         </div>
       </div>
 
-      {conditions?.alert && <div style={s.alert}>⚠️ {conditions.alert}</div>}
+      {conditions?.alert && <div style={{ ...s.alert, margin:'0 0 12px', display:'flex', gap:8, alignItems:'flex-start' }}><Icon name="alert" size={16} />{conditions.alert}</div>}
 
-      {locationError && (
-        <div style={s.locationBtn} onClick={fetchConditions}>
-          📍 {lang==='es' ? 'Permitir ubicación para rutas y clima reales' : 'Allow location for real routes and weather'}
+      {/* ── Hero: today's session ── */}
+      <div style={{ background:'#FFFFFF', borderRadius:24, padding:24, boxShadow:'0 1px 2px rgba(18,29,41,0.04), 0 8px 24px rgba(18,29,41,0.06)', marginBottom:16 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:8, marginBottom:8 }}>
+          <span style={{ fontSize:12, fontWeight:700, color:'#EA2A30', letterSpacing:'0.08em', textTransform:'uppercase' }}>
+            {phaseLabel} · {t(lang,'week')} {week.week}/{plan.totalWeeks}
+          </span>
+          {daysToRace !== null && daysToRace >= 0 && (
+            <span style={{ display:'inline-flex', alignItems:'center', gap:4, fontSize:12, fontWeight:600, color: isRaceWeek ? '#EA2A30' : 'rgba(18,29,41,0.66)' }}>
+              <Icon name="flag" size={13} />{isRaceWeek ? t(lang, 'countdown.raceWeek') : `${daysToRace} ${lang==='es' ? 'días' : 'days'}`}
+            </span>
+          )}
         </div>
-      )}
+        <h1 style={{ ...s.activityTitle, margin:0 }}>{workoutName}</h1>
+        {(todayWorkout.desc?.[lang] || todayWorkout.desc?.en) && !isStrength && (
+          <p style={{ fontSize:16, color:'rgba(18,29,41,0.78)', lineHeight:1.5, margin:'8px 0 0' }}>
+            {todayWorkout.desc?.[lang] || todayWorkout.desc?.en}
+          </p>
+        )}
+        {heroStats.length > 0 && (
+          <div style={{ display:'flex', gap:24, marginTop:20 }}>
+            {heroStats.map(st => (
+              <div key={st.label}>
+                <div style={{ fontFamily:'var(--font-display)', fontSize:32, fontWeight:700, color:'#121D29', lineHeight:1, fontVariantNumeric:'tabular-nums' }}>
+                  {st.value}<span style={{ fontSize:16, marginLeft:2, color:'rgba(18,29,41,0.66)' }}>{st.unit}</span>
+                </div>
+                <div style={{ fontSize:12, color:'rgba(18,29,41,0.66)', marginTop:4 }}>{st.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-      <div style={s.divider} />
+
 
       {(todayWorkout.type === 'rest' || todayWorkout.type === 'recovery') ? (
-        <div style={{ margin:'12px 20px', background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.08)', borderRadius:14, padding:'20px 16px', textAlign:'center', boxShadow:'0 1px 4px rgba(18,29,41,0.05)' }}>
-          <div style={{ fontSize:28, marginBottom:8 }}>{todayWorkout.type === 'recovery' ? '🧘' : '😴'}</div>
+        <div style={{ margin:'0 0 16px', background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.08)', borderRadius:14, padding:'20px 16px', textAlign:'center', boxShadow:'0 1px 4px rgba(18,29,41,0.05)' }}>
+          <div style={{ display:'flex', justifyContent:'center', marginBottom:12 }}><IconBadge name={todayWorkout.type === 'recovery' ? 'stretch' : 'moon'} size={48} /></div>
           <div style={{ fontSize:13, fontWeight:600, color:'rgba(18,29,41,0.75)', marginBottom:4 }}>
             {todayWorkout.type === 'recovery'
               ? (lang==='es' ? 'Día de recuperación activa' : 'Active recovery day')
               : (lang==='es' ? 'Día de descanso' : 'Rest day')}
           </div>
-          <div style={{ fontSize:11, color:'rgba(18,29,41,0.4)', lineHeight:1.6 }}>
+          <div style={{ fontSize:12, color:'rgba(18,29,41,0.62)', lineHeight:1.6 }}>
             {lang==='es' ? 'Tu cuerpo se adapta mientras descansas. Es parte del plan.' : 'Your body adapts while you rest. This is part of the plan.'}
           </div>
         </div>
       ) : isStrength ? (
-        <div style={{ margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(234,42,48,0.2)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
-          <div style={{ fontSize:10, color:'#EA2A30', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
+        <div style={{ margin:'0 0 16px', background:'#FFFFFF', border:'1px solid rgba(234,42,48,0.2)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
+          <div style={{ fontSize:12, color:'#EA2A30', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
             {lang==='es' ? 'SESIÓN DE FUERZA' : 'STRENGTH SESSION'}
           </div>
           <div style={{ fontSize:15, fontWeight:700, color:'#121D29', marginBottom:4 }}>
-            💪 {todayWorkout.type === 'strength_beginner' ? workoutName : t(lang,'strength.title')}
+            {todayWorkout.type === 'strength_beginner' ? workoutName : t(lang,'strength.title')}
           </div>
-          <div style={{ fontSize:12, color:'rgba(18,29,41,0.55)', lineHeight:1.55, marginBottom:12 }}>
+          <div style={{ fontSize:12, color:'rgba(18,29,41,0.62)', lineHeight:1.55, marginBottom:12 }}>
             {todayWorkout.type === 'strength_beginner'
               ? t(lang, 'prebase.coachNote')
               : t(lang,'strength.whyStrength')}
@@ -273,42 +297,42 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
         </div>
       ) : isTreadmill ? (
         <>
-          <div style={{ margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(251,191,36,0.3)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
-            <div style={{ fontSize:10, color:'#b45309', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
+          <div style={{ margin:'0 0 16px', background:'#FFFFFF', border:'1px solid rgba(251,191,36,0.3)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
+            <div style={{ fontSize:12, color:'#b45309', letterSpacing:0.5, marginBottom:6, fontWeight:600 }}>
               {t(lang,'treadmillSession').toUpperCase()}
             </div>
             <div style={{ fontSize:15, fontWeight:700, color:'#121D29', marginBottom:4 }}>
               {treadmillLabel}
             </div>
-            <div style={{ fontSize:11, color:'rgba(18,29,41,0.5)', lineHeight:1.45, marginBottom:8 }}>
+            <div style={{ fontSize:12, color:'rgba(18,29,41,0.62)', lineHeight:1.45, marginBottom:8 }}>
               {t(lang, 'workoutDescriptions.treadmillIntervals')}
             </div>
             <div style={{ fontSize:12, color:'rgba(18,29,41,0.7)', lineHeight:1.55, marginBottom:10 }}>
               {todayWorkout.treadmillNote?.[lang] || todayWorkout.treadmillNote?.en}
             </div>
-            <ul style={{ margin:0, paddingLeft:18, fontSize:12, color:'rgba(18,29,41,0.6)', lineHeight:1.65 }}>
+            <ul style={{ margin:0, paddingLeft:18, fontSize:12, color:'rgba(18,29,41,0.62)', lineHeight:1.65 }}>
               <li>{t(lang,'treadmillTipIncline')}</li>
               <li>{t(lang,'treadmillTipHR')}</li>
               <li>{t(lang,'treadmillTipPoles')}</li>
             </ul>
           </div>
-          {routeName && <div style={{ margin:'0 20px 8px', background:'rgba(18,29,41,0.03)', border:'0.5px solid rgba(18,29,41,0.07)', borderRadius:12, padding:'10px 14px', opacity:0.75 }}>
-            <div style={{ fontSize:10, color:'rgba(18,29,41,0.4)', marginBottom:4 }}>{t(lang,'treadmillOptionalOutdoor')}</div>
-            <div style={{ fontSize:12, color:'rgba(18,29,41,0.5)' }}>{routeName} · ~{routeKm} km</div>
+          {routeName && <div style={{ margin:'0 0 16px', background:'rgba(18,29,41,0.03)', border:'0.5px solid rgba(18,29,41,0.07)', borderRadius:12, padding:'10px 14px', opacity:0.75 }}>
+            <div style={{ fontSize:12, color:'rgba(18,29,41,0.62)', marginBottom:4 }}>{t(lang,'treadmillOptionalOutdoor')}</div>
+            <div style={{ fontSize:12, color:'rgba(18,29,41,0.62)' }}>{routeName} · ~{routeKm} km</div>
           </div>}
         </>
       ) : isPreBase ? (
-        <div style={{ margin:'12px 20px', background:'#FFFFFF', border:'1px solid rgba(234,42,48,0.15)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
-          <div style={{ fontSize:12, color:'rgba(18,29,41,0.6)', lineHeight:1.55, marginBottom:8 }}>
+        <div style={{ margin:'0 0 16px', background:'#FFFFFF', border:'1px solid rgba(234,42,48,0.15)', borderRadius:14, padding:14, boxShadow:'0 1px 4px rgba(18,29,41,0.06)' }}>
+          <div style={{ fontSize:12, color:'rgba(18,29,41,0.62)', lineHeight:1.55, marginBottom:8 }}>
             {t(lang, 'prebase.todayMotivation')}
           </div>
           {todayWorkout.duracion != null && (
             <div style={{ display:'inline-flex', alignItems:'center', gap:6, background:'rgba(234,42,48,0.08)', border:'0.5px solid rgba(234,42,48,0.2)', borderRadius:20, padding:'3px 11px', fontSize:12, color:'#EA2A30', fontWeight:600 }}>
-              ⏱ {fmtDur(todayWorkout.duracion)}
+              <Icon name="clock" size={13} />{fmtDur(todayWorkout.duracion)}
             </div>
           )}
           {todayWorkout.desc?.[lang] && (
-            <div style={{ fontSize:12, color:'rgba(18,29,41,0.5)', lineHeight:1.5, marginTop:8 }}>
+            <div style={{ fontSize:12, color:'rgba(18,29,41,0.62)', lineHeight:1.5, marginTop:8 }}>
               {todayWorkout.desc[lang]}
             </div>
           )}
@@ -324,11 +348,11 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           <div style={s.routeSub}>{routeSource}</div>
           <div style={s.statsRow}>
             <div style={s.statBox}>
-              <div style={s.statVal('#4ade80')}>{routeKm}km</div>
+              <div style={s.statVal('#121D29')}>{routeKm}km</div>
               <div style={s.statLbl}>{t(lang,'distance')}</div>
             </div>
             <div style={s.statBox}>
-              <div style={s.statVal('#fbbf24')}>{routeElev != null && !Number.isNaN(routeElev) ? `${Math.round(routeElev)}m` : '—'}</div>
+              <div style={s.statVal('#121D29')}>{routeElev != null && !Number.isNaN(routeElev) ? `${Math.round(routeElev)}m` : '—'}</div>
               <div style={s.statLbl}>{t(lang,'elevation')}</div>
             </div>
             <div style={s.statBoxTime}>
@@ -354,11 +378,11 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
       )}
 
       {todayWorkout?.flatAlternative && todayWorkout.type !== 'treadmillIntervals' && todayWorkout.flatTips && (
-        <div style={{margin:'8px 20px', background:'rgba(251,191,36,0.08)', border:'0.5px solid rgba(251,191,36,0.3)', borderRadius:12, padding:'12px 14px'}}>
-          <div style={{fontSize:10, color:'#b45309', fontWeight:600, letterSpacing:0.5, marginBottom:6}}>
-            {lang==='es' ? '🏔️ SIMULACIÓN DE DESNIVEL' : '🏔️ ELEVATION SIMULATION'}
+        <div style={{margin:'0 0 16px', background:'rgba(251,191,36,0.08)', border:'0.5px solid rgba(251,191,36,0.3)', borderRadius:12, padding:'12px 14px'}}>
+          <div style={{fontSize:12, color:'#b45309', fontWeight:600, letterSpacing:0.5, marginBottom:6}}>
+            {lang==='es' ? 'SIMULACIÓN DE DESNIVEL' : 'ELEVATION SIMULATION'}
           </div>
-          <div style={{fontSize:12, color:'rgba(18,29,41,0.65)', lineHeight:1.6}}>
+          <div style={{fontSize:12, color:'rgba(18,29,41,0.66)', lineHeight:1.6}}>
             {todayWorkout.flatTips?.[lang] || todayWorkout.flatTips?.en}
           </div>
         </div>
@@ -366,105 +390,98 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
 
 
       {todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && (
-        <div style={{ margin: '12px 20px', background: '#FFFFFF', border: '0.5px solid rgba(18,29,41,0.08)', borderRadius: 12, padding: '12px 14px', boxShadow:'0 1px 4px rgba(18,29,41,0.05)' }}>
-          <div style={{ fontSize: 11, color: 'rgba(18,29,41,0.45)', marginBottom: 10 }}>
-            {t(lang, 'workout.didYouComplete')}
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button
-              type="button"
-              onClick={() => handleStatus('completed')}
-              style={{
-                flex: 1, padding: '10px 8px', borderRadius: 10, cursor: 'pointer',
-                fontFamily: 'inherit', fontSize: 12, fontWeight: 600,
-                background: workoutStatus === 'completed' ? '#EA2A30' : 'transparent',
-                border: workoutStatus === 'completed' ? '1px solid #EA2A30' : '1px solid rgba(234,42,48,0.3)',
-                color: workoutStatus === 'completed' ? '#FFFFFF' : '#EA2A30',
-              }}
-            >
-              ✓ {t(lang, 'workout.yes')}
-            </button>
-            <button
-              type="button"
-              onClick={() => handleStatus('missed')}
-              style={{
-                flex: 1, padding: '10px 8px', borderRadius: 10, cursor: 'pointer',
-                fontFamily: 'inherit', fontSize: 12, fontWeight: 600,
-                background: workoutStatus === 'missed' ? '#121D29' : 'transparent',
-                border: workoutStatus === 'missed' ? '1px solid #121D29' : '1px solid rgba(18,29,41,0.2)',
-                color: workoutStatus === 'missed' ? '#FFFFFF' : 'rgba(18,29,41,0.5)',
-              }}
-            >
-              ✗ {t(lang, 'workout.missed')}
-            </button>
-          </div>
-          {workoutStatus && (
-            <div style={{ fontSize: 11, lineHeight: 1.55, marginTop: 10, color: workoutStatus === 'completed' ? '#EA2A30' : 'rgba(18,29,41,0.55)' }}>
-              {t(lang, workoutStatus === 'completed' ? 'workout.completedMsg' : 'workout.missedMsg')}
+        workoutStatus === 'completed' ? (
+          <div role="status" aria-live="polite" style={{ background:'#121D29', color:'#FFFFFF', borderRadius:24, padding:24, marginBottom:16, display:'flex', gap:16, alignItems:'center' }}>
+            <span className="tr-pop" style={{ width:56, height:56, borderRadius:'50%', background:'#EA2A30', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, boxShadow:'0 0 0 8px rgba(234,42,48,0.18)' }}>
+              <Icon name="check" size={28} strokeWidth={3} />
+            </span>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ fontFamily:'var(--font-display)', fontSize:28, fontWeight:700, lineHeight:1, textTransform:'uppercase' }}>
+                {lang==='es' ? '¡Hecho!' : 'Done!'}
+              </div>
+              <div style={{ fontSize:14, color:'rgba(255,255,255,0.78)', marginTop:4 }}>
+                {weekDone}/{weekSessions} {lang==='es' ? 'sesiones esta semana' : 'sessions this week'}
+                {weekDone >= weekSessions ? (lang==='es' ? ' · ¡semana completa!' : ' · week complete!') : ''}
+              </div>
+              <div style={{ height:6, background:'rgba(255,255,255,0.14)', borderRadius:3, marginTop:10, overflow:'hidden' }}>
+                <div className="tr-fill" style={{ height:'100%', width:`${Math.min(100, Math.round(weekDone / Math.max(1, weekSessions) * 100))}%`, background:'#EA2A30', borderRadius:3 }} />
+              </div>
+              <button type="button" onClick={() => handleStatus(null)} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.66)', fontSize:12, padding:'10px 0 0', cursor:'pointer', fontFamily:'inherit', display:'inline-flex', alignItems:'center', gap:4 }}>
+                <Icon name="undo" size={12} />{lang==='es' ? 'Deshacer' : 'Undo'}
+              </button>
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div style={{ marginBottom:16 }}>
+            <button type="button" onClick={() => handleStatus('completed')}
+              style={{ width:'100%', minHeight:56, borderRadius:16, border:'none', background:'#EA2A30', color:'#FFFFFF', fontSize:16, fontWeight:700, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center', gap:8, boxShadow:'0 6px 16px rgba(234,42,48,0.28), inset 0 1px 0 rgba(255,255,255,0.2)' }}>
+              <Icon name="check" size={20} strokeWidth={2.5} />{lang==='es' ? 'Marcar como hecho' : 'Mark as done'}
+            </button>
+            {workoutStatus === 'missed' ? (
+              <div style={{ fontSize:14, color:'rgba(18,29,41,0.78)', lineHeight:1.5, marginTop:12, textAlign:'center' }}>
+                {t(lang, 'workout.missedMsg')}{' '}
+                <button type="button" onClick={() => handleStatus(null)} style={{ background:'none', border:'none', color:'#EA2A30', fontWeight:600, fontSize:14, cursor:'pointer', fontFamily:'inherit', padding:0 }}>
+                  {lang==='es' ? 'Deshacer' : 'Undo'}
+                </button>
+              </div>
+            ) : (
+              <button type="button" onClick={() => handleStatus('missed')}
+                style={{ width:'100%', minHeight:44, marginTop:8, background:'none', border:'none', color:'rgba(18,29,41,0.66)', fontSize:14, fontWeight:500, cursor:'pointer', fontFamily:'inherit' }}>
+                {lang==='es' ? 'Hoy no pude entrenar' : "I couldn't train today"}
+              </button>
+            )}
+          </div>
+        )
       )}
 
       {todayWorkout.type !== 'rest' && todayWorkout.type !== 'recovery' && (
       <div style={s.section}>
         <div style={s.sectionLabel}>{t(lang,'afterRun')}</div>
         <div style={s.recoveryRow}>
-          <div style={s.recoveryCard('rgba(167,139,250,0.1)','rgba(167,139,250,0.2)')} onClick={() => onRecovery('stretching')}>
-            <div style={s.recoveryIcon}>🧘</div>
-            <div style={s.recoveryTitle('#a78bfa')}>{t(lang,'stretching')}</div>
+          <button type="button" style={s.recoveryCard()} onClick={() => onRecovery('stretching')}>
+            <IconBadge name="stretch" size={36} />
+            <div style={s.recoveryTitle()}>{t(lang,'stretching')}</div>
             <div style={s.recoverySub}>15 {t(lang,'min')} ↗</div>
-          </div>
+          </button>
           {!isBasePlan && !isPreBase && cw >= 1 && (
-            <div style={s.recoveryCard('rgba(96,165,250,0.1)','rgba(96,165,250,0.2)')} onClick={() => onRecovery('iceBath')}>
-              <div style={s.recoveryIcon}>🧊</div>
-              <div style={s.recoveryTitle('#60a5fa')}>{t(lang,'iceBath')}</div>
+            <button type="button" style={s.recoveryCard()} onClick={() => onRecovery('iceBath')}>
+              <IconBadge name="snowflake" size={36} />
+              <div style={s.recoveryTitle()}>{t(lang,'iceBath')}</div>
               <div style={s.recoverySub}>10 {t(lang,'min')} ↗</div>
-            </div>
+            </button>
           )}
           {!isBasePlan && !isPreBase && (
-            <div style={s.recoveryCard('rgba(251,191,36,0.1)','rgba(251,191,36,0.2)')} onClick={() => onRecovery('nutrition')}>
-              <div style={s.recoveryIcon}>🍌</div>
-              <div style={s.recoveryTitle('#fbbf24')}>{t(lang,'nutrition')}</div>
+            <button type="button" style={s.recoveryCard()} onClick={() => onRecovery('nutrition')}>
+              <IconBadge name="apple" size={36} />
+              <div style={s.recoveryTitle()}>{t(lang,'nutrition')}</div>
               <div style={s.recoverySub}>{t(lang,'guide')} ↗</div>
-            </div>
+            </button>
           )}
           {(isBasePlan || isPreBase) && baseWeekNum >= 2 && (
-            <div style={s.recoveryCard('rgba(251,191,36,0.1)','rgba(251,191,36,0.2)')} onClick={() => onRecovery('nutrition')}>
-              <div style={s.recoveryIcon}>🍌</div>
-              <div style={s.recoveryTitle('#fbbf24')}>{t(lang,'nutrition')}</div>
+            <button type="button" style={s.recoveryCard()} onClick={() => onRecovery('nutrition')}>
+              <IconBadge name="apple" size={36} />
+              <div style={s.recoveryTitle()}>{t(lang,'nutrition')}</div>
               <div style={s.recoverySub}>{t(lang,'guide')} ↗</div>
-            </div>
+            </button>
           )}
           {isBasePlan && baseWeekNum >= 5 && (
-            <div style={s.recoveryCard('rgba(96,165,250,0.1)','rgba(96,165,250,0.2)')} onClick={() => onRecovery('iceBath')}>
-              <div style={s.recoveryIcon}>🧊</div>
-              <div style={s.recoveryTitle('#60a5fa')}>{t(lang,'iceBath')}</div>
+            <button type="button" style={s.recoveryCard()} onClick={() => onRecovery('iceBath')}>
+              <IconBadge name="snowflake" size={36} />
+              <div style={s.recoveryTitle()}>{t(lang,'iceBath')}</div>
               <div style={s.recoverySub}>10 {t(lang,'min')} ↗</div>
-            </div>
+            </button>
           )}
           {isPreBase && baseWeekNum >= 3 && (
-            <div style={s.recoveryCard('rgba(96,165,250,0.1)','rgba(96,165,250,0.2)')} onClick={() => onRecovery('iceBath')}>
-              <div style={s.recoveryIcon}>🧊</div>
-              <div style={s.recoveryTitle('#60a5fa')}>{t(lang,'iceBath')}</div>
+            <button type="button" style={s.recoveryCard()} onClick={() => onRecovery('iceBath')}>
+              <IconBadge name="snowflake" size={36} />
+              <div style={s.recoveryTitle()}>{t(lang,'iceBath')}</div>
               <div style={s.recoverySub}>10 {t(lang,'min')} ↗</div>
-            </div>
+            </button>
           )}
         </div>
       </div>
       )}
 
-      {onNewPlan && (
-        <div style={{ textAlign: 'center', padding: '10px 0 2px' }}>
-          <button
-            type="button"
-            onClick={() => setShowConfirmModal(true)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: 'rgba(18,29,41,0.3)', fontFamily: 'inherit', padding: '4px 8px' }}
-          >
-            {t(lang, 'actions.newPlan')}
-          </button>
-        </div>
-      )}
       <BottomNav active="today" lang={lang || 'es'} onToday={null} onPlan={onWeek} onPlans={onPlans} onProfile={onProfile || onRaceProfile} />
 
       {showConfirmModal && (
@@ -473,7 +490,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             <div style={{ fontSize:18, fontWeight:600, color:'#121D29', marginBottom:8 }}>
               {t(lang, 'modal.newPlan.title')}
             </div>
-            <div style={{ fontSize:14, color:'rgba(18,29,41,0.5)', marginBottom:24, lineHeight:1.5 }}>
+            <div style={{ fontSize:14, color:'rgba(18,29,41,0.62)', marginBottom:24, lineHeight:1.5 }}>
               {t(lang, 'modal.newPlan.subtitle')}
             </div>
             <button
@@ -486,7 +503,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             <button
               type="button"
               onClick={() => setShowConfirmModal(false)}
-              style={{ display:'block', width:'100%', background:'transparent', color:'rgba(18,29,41,0.5)', border:'1px solid rgba(18,29,41,0.15)', borderRadius:100, padding:14, fontSize:15, cursor:'pointer', fontFamily:'inherit' }}
+              style={{ display:'block', width:'100%', background:'transparent', color:'rgba(18,29,41,0.62)', border:'1px solid rgba(18,29,41,0.15)', borderRadius:100, padding:14, fontSize:15, cursor:'pointer', fontFamily:'inherit' }}
             >
               {t(lang, 'modal.newPlan.cancel')}
             </button>

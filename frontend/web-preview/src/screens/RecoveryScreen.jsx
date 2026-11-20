@@ -1,10 +1,11 @@
 import { t } from '../i18n';
+import Icon from '../components/Icon';
 
 const videos = {
   stretching: {
     url: 'https://www.youtube.com/results?search_query=post+trail+run+stretching',
-    icon: '🧘',
-    color: '#a78bfa',
+    icon: 'stretch',
+    color: '#EA2A30',
     bg: 'rgba(167,139,250,0.1)',
     border: 'rgba(167,139,250,0.25)',
     tags: {
@@ -14,8 +15,8 @@ const videos = {
   },
   iceBath: {
     url: 'https://www.youtube.com/results?search_query=ice+bath+protocol+recovery+athletes',
-    icon: '🧊',
-    color: '#60a5fa',
+    icon: 'snowflake',
+    color: '#EA2A30',
     bg: 'rgba(96,165,250,0.1)',
     border: 'rgba(96,165,250,0.25)',
     tags: {
@@ -25,8 +26,8 @@ const videos = {
   },
   nutrition: {
     url: 'https://www.youtube.com/results?search_query=post+trail+run+nutrition+recovery',
-    icon: '🍌',
-    color: '#fbbf24',
+    icon: 'apple',
+    color: '#EA2A30',
     bg: 'rgba(251,191,36,0.1)',
     border: 'rgba(251,191,36,0.25)',
     tags: {
@@ -51,35 +52,35 @@ const subs = {
 const s = {
   wrap: { minHeight:'100vh', background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", padding:'0 16px 80px', maxWidth:600, margin:'0 auto', width:'100%', boxSizing:'border-box' },
   header: { padding:'14px 20px 12px', display:'flex', alignItems:'center', gap:12 },
-  back: { fontSize:12, color:'rgba(18,29,41,0.4)', cursor:'pointer' },
-  headerTitle: { fontSize:16, fontWeight:700, color:'#121D29' },
+  back: { fontSize:12, color:'rgba(18,29,41,0.62)', cursor:'pointer' },
+  headerTitle: { fontSize:24, fontWeight:700, color:'#121D29', fontFamily:'var(--font-display)', lineHeight:1.05 },
   section: { padding:'0 20px' },
-  sectionLabel: { fontSize:10, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:10 },
+  sectionLabel: { fontSize:12, color:'rgba(18,29,41,0.62)', letterSpacing:0.5, marginBottom:10 },
   mainCard: (bg, border) => ({
     background:'#FFFFFF', border:`1px solid ${border}`, borderRadius:14, padding:16, marginBottom:12,
     boxShadow:'0 1px 4px rgba(18,29,41,0.06)',
   }),
   cardHeader: { display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:12 },
   cardTitle: { fontSize:14, fontWeight:600, color:'#121D29' },
-  cardSub: { fontSize:11, color:'rgba(18,29,41,0.4)', marginTop:3 },
+  cardSub: { fontSize:12, color:'rgba(18,29,41,0.62)', marginTop:3 },
   ytBadge: (color, bg) => ({
-    background:bg, borderRadius:8, padding:'4px 10px', fontSize:10, color, fontWeight:500, cursor:'pointer', border:'none',
+    background:bg, borderRadius:8, padding:'4px 10px', fontSize:12, color, fontWeight:500, cursor:'pointer', border:'none',
   }),
   thumbnail: {
     background:'rgba(18,29,41,0.04)', borderRadius:10, height:90, display:'flex', alignItems:'center',
     justifyContent:'center', border:'0.5px solid rgba(18,29,41,0.08)', cursor:'pointer', marginBottom:10,
   },
   playBtn: { width:32, height:32, background:'rgba(234,42,48,0.8)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13 },
-  tagsLabel: { fontSize:10, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:6 },
+  tagsLabel: { fontSize:12, color:'rgba(18,29,41,0.62)', letterSpacing:0.5, marginBottom:6 },
   tags: { display:'flex', gap:5, flexWrap:'wrap' },
-  tag: (color, bg) => ({ background:bg, color, padding:'3px 9px', borderRadius:20, fontSize:10, fontWeight:500 }),
+  tag: (color, bg) => ({ background:bg, color, padding:'3px 9px', borderRadius:20, fontSize:12, fontWeight:500 }),
   otherCard: (_bg, border) => ({
     background:'#FFFFFF', border:`0.5px solid ${border}`, borderRadius:14, padding:'12px 14px',
     marginBottom:8, display:'flex', justifyContent:'space-between', alignItems:'center', cursor:'pointer',
     boxShadow:'0 1px 3px rgba(18,29,41,0.05)',
   }),
   otherTitle: { fontSize:13, fontWeight:600, color:'#121D29' },
-  otherSub: { fontSize:10, color:'rgba(18,29,41,0.4)', marginTop:2 },
+  otherSub: { fontSize:12, color:'rgba(18,29,41,0.62)', marginTop:2 },
 };
 
 export default function RecoveryScreen({ lang, type, onBack, raceData, plan, currentWeek }) {
@@ -138,10 +139,10 @@ export default function RecoveryScreen({ lang, type, onBack, raceData, plan, cur
             {filteredOthers.map(([key, vid]) => (
               <div key={key} style={s.otherCard(vid.bg, vid.border)} onClick={() => openVideo(vid.url)}>
                 <div>
-                  <div style={s.otherTitle}>{vid.icon} {titles[key]?.[lang]}</div>
+                  <div style={{ ...s.otherTitle, display:'flex', alignItems:'center', gap:8 }}><Icon name={vid.icon} size={18} color="#EA2A30" />{titles[key]?.[lang]}</div>
                   <div style={s.otherSub}>{subs[key]?.[lang]}</div>
                 </div>
-                <span style={{fontSize:11, color:vid.color}}>↗ YouTube</span>
+                <span style={{fontSize:12, color:vid.color}}>↗ YouTube</span>
               </div>
             ))}
           </>

@@ -1,12 +1,13 @@
 import { t } from '../i18n';
 import BottomNav from '../components/BottomNav';
+import Icon, { IconBadge } from '../components/Icon';
 
 const PLANS = [
-  { icon: '🏁', nk: 'god1Name', sk: 'god1Sub', bk: 'god1Body', active: true },
-  { icon: '💪', nk: 'god2Name', sk: 'god2Sub', bk: 'god2Body', active: true },
-  { icon: '🏃', nk: 'god3Name', sk: 'god3Sub', bk: 'god3Body', active: true },
-  { icon: '⚡', nk: 'god4Name', sk: 'god4Sub', bk: 'god4Body', active: false },
-  { icon: '🩹', nk: 'god5Name', sk: 'god5Sub', bk: 'god5Body', active: false },
+  { icon: 'flag', nk: 'god1Name', sk: 'god1Sub', bk: 'god1Body', active: true },
+  { icon: 'dumbbell', nk: 'god2Name', sk: 'god2Sub', bk: 'god2Body', active: true },
+  { icon: 'activity', nk: 'god3Name', sk: 'god3Sub', bk: 'god3Body', active: true },
+  { icon: 'zap', nk: 'god4Name', sk: 'god4Sub', bk: 'god4Body', active: false },
+  { icon: 'heart', nk: 'god5Name', sk: 'god5Sub', bk: 'god5Body', active: false },
 ];
 
 export default function PlansScreen({ lang, plan, raceData, onToday, onWeek, onProfile }) {
@@ -32,10 +33,10 @@ export default function PlansScreen({ lang, plan, raceData, onToday, onWeek, onP
         maxWidth: 600,
         margin: '0 auto',
       }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--green)', textTransform: 'uppercase', marginBottom: 8 }}>
+        <div style={{ fontSize:12, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--green)', textTransform: 'uppercase', marginBottom: 8 }}>
           {lang === 'es' ? 'LOS PLANES' : 'THE PLANS'}
         </div>
-        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, letterSpacing: '-0.03em' }}>
+        <h1 style={{ fontSize: 36, fontWeight: 700, margin: 0, fontFamily: 'var(--font-display)', lineHeight: 1 }}>
           {lang === 'es' ? 'Planes' : 'Plans'}
         </h1>
         <p style={{ fontSize: 14, color: 'var(--text-60)', marginTop: 8 }}>
@@ -59,7 +60,7 @@ export default function PlansScreen({ lang, plan, raceData, onToday, onWeek, onP
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{ fontSize: '2rem' }}>{icon}</span>
+                <IconBadge name={icon} size={44} tone={active ? 'accent' : 'neutral'} />
                 <div>
                   <div style={{ fontWeight: 800, fontSize: 17, letterSpacing: '-0.01em' }}>
                     {t(lang, `landing.${nk}`)}

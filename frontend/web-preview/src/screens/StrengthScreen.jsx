@@ -1,5 +1,6 @@
 import { t } from '../i18n';
 import { BEGINNER_EXERCISES } from '../data/beginnerStrength';
+import Icon, { IconBadge } from '../components/Icon';
 
 const LIBRARY = {
   beginner: {
@@ -216,9 +217,9 @@ function normalizePhase(phase) {
 const s = {
   wrap:      { minHeight: '100vh', background: '#F0F4F8', fontFamily: "'Inter', system-ui, sans-serif", paddingBottom: 80, paddingLeft: 16, paddingRight: 16, maxWidth: 600, margin: '0 auto', width: '100%', boxSizing: 'border-box' },
   header:    { padding: '14px 20px 16px', borderBottom: '0.5px solid rgba(18,29,41,0.08)' },
-  backBtn:   { background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(18,29,41,0.4)', fontSize: 13, padding: '0 0 10px', fontFamily: 'inherit', display: 'block' },
-  title:     { fontSize: 20, fontWeight: 700, color: '#121D29', marginBottom: 4 },
-  subtitle:  { fontSize: 11, color: 'rgba(18,29,41,0.4)', letterSpacing: 0.3 },
+  backBtn:   { background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(18,29,41,0.62)', fontSize: 13, padding: '0 0 10px', fontFamily: 'inherit', display: 'block' },
+  title:     { fontSize: 30, fontWeight: 700, color: '#121D29', marginBottom: 4, fontFamily: 'var(--font-display)', lineHeight: 1.05 },
+  subtitle:  { fontSize:12, color: 'rgba(18,29,41,0.62)', letterSpacing: 0.3 },
   list:      { padding: '12px 20px' },
   card: {
     background: '#FFFFFF',
@@ -228,17 +229,17 @@ const s = {
     marginBottom: 10,
     boxShadow: '0 1px 4px rgba(18,29,41,0.06)',
   },
-  cardNum:   { fontSize: 10, color: '#7c3aed', fontWeight: 700, letterSpacing: 0.5, marginBottom: 4 },
+  cardNum:   { fontSize:12, color: '#7c3aed', fontWeight: 700, letterSpacing: 0.5, marginBottom: 4 },
   cardName:  { fontSize: 14, fontWeight: 700, color: '#121D29', marginBottom: 2 },
-  cardMeta:  { fontSize: 11, color: 'rgba(18,29,41,0.5)', marginBottom: 6 },
-  cardFocus: { fontSize: 10, color: '#7c3aed', marginBottom: 8 },
+  cardMeta:  { fontSize:12, color: 'rgba(18,29,41,0.62)', marginBottom: 6 },
+  cardFocus: { fontSize:12, color: '#7c3aed', marginBottom: 8 },
   cardNote: {
-    fontSize: 11, color: 'rgba(18,29,41,0.65)', lineHeight: 1.55,
+    fontSize:12, color: 'rgba(18,29,41,0.66)', lineHeight: 1.55,
     borderLeft: '2px solid rgba(124,58,237,0.35)', paddingLeft: 8, marginBottom: 10,
   },
   videoBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
-    fontSize: 11, color: '#7c3aed', fontWeight: 600, fontFamily: 'inherit', padding: 0,
+    fontSize:12, color: '#7c3aed', fontWeight: 600, fontFamily: 'inherit', padding: 0,
   },
   whyBox: {
     margin: '8px 16px 0',
@@ -247,7 +248,7 @@ const s = {
     borderRadius: 12,
     padding: '12px 14px',
     fontSize: 12,
-    color: 'rgba(18,29,41,0.55)',
+    color: 'rgba(18,29,41,0.62)',
     lineHeight: 1.65,
   },
 };
@@ -265,7 +266,7 @@ export default function StrengthScreen({ lang, phase, onBack }) {
         <button type="button" style={s.backBtn} onClick={onBack}>
           ← {lang === 'es' ? 'Volver' : 'Back'}
         </button>
-        <div style={s.title}>💪 {t(lang, 'strength.title')}</div>
+        <div style={{ ...s.title, display:'flex', alignItems:'center', gap:10 }}><IconBadge name="dumbbell" size={36} />{t(lang, 'strength.title')}</div>
         <div style={s.subtitle}>
           {PHASE_LABEL[p]?.[lang]} · {sub}
         </div>
@@ -281,7 +282,7 @@ export default function StrengthScreen({ lang, phase, onBack }) {
             <div style={s.cardMeta}>
               {ex.sets}{ex.unit ? ` · ${ex.unit[lang] || ex.unit.en}` : ''}
             </div>
-            <div style={s.cardFocus}>📍 {ex.focus[lang] || ex.focus.en}</div>
+            <div style={s.cardFocus}>{ex.focus[lang] || ex.focus.en}</div>
             <div style={s.cardNote}>"{ex.note[lang] || ex.note.en}"</div>
             {ex.video && (
               <button

@@ -1,23 +1,24 @@
 import { useState } from 'react';
 import { planLengthWeeks } from '../utils/planWeeks';
 import { t } from '../i18n';
+import Icon from '../components/Icon';
 
 const s = {
   wrap: { minHeight:'100vh', background:'#F0F4F8', display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:"'Inter', system-ui, sans-serif" },
   card: { width:'100%', maxWidth:340 },
-  back: { fontSize:12, color:'rgba(18,29,41,0.4)', cursor:'pointer', marginBottom:16, display:'block' },
+  back: { fontSize:12, color:'rgba(18,29,41,0.62)', cursor:'pointer', marginBottom:16, display:'block' },
   racePill: { display:'inline-flex', alignItems:'center', gap:6, background:'rgba(234,42,48,0.08)', border:'0.5px solid rgba(234,42,48,0.2)', borderRadius:20, padding:'5px 12px', marginBottom:16 },
   racePillText: { fontSize:12, color:'#EA2A30', fontWeight:500 },
   raceTags: { display:'flex', gap:6, flexWrap:'wrap', marginBottom:20 },
-  tag: (color) => ({ padding:'3px 10px', borderRadius:20, fontSize:11, fontWeight:500, background:`rgba(${color},0.1)`, color:`rgb(${color})` }),
-  sectionLabel: { fontSize:10, color:'rgba(18,29,41,0.4)', letterSpacing:0.5, marginBottom:8, marginTop:16 },
-  heading: { fontSize:20, fontWeight:700, color:'#121D29', marginBottom:4 },
+  tag: () => ({ padding:'4px 12px', borderRadius:20, fontSize:13, fontWeight:600, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.1)', color:'#121D29' }),
+  sectionLabel: { fontSize:12, color:'rgba(18,29,41,0.62)', letterSpacing:0.5, marginBottom:8, marginTop:16 },
+  heading: { fontSize:32, fontWeight:700, color:'#121D29', marginBottom:4, fontFamily:'var(--font-display)', lineHeight:1.05 },
   optRow: { display:'flex', gap:7, flexWrap:'wrap', marginBottom:4 },
   opt: (active) => ({
     padding:'8px 14px', borderRadius:20, fontSize:12, fontWeight:500, cursor:'pointer',
     background: active ? 'rgba(234,42,48,0.1)' : 'rgba(18,29,41,0.04)',
     border: active ? '1px solid rgba(234,42,48,0.25)' : '0.5px solid rgba(18,29,41,0.09)',
-    color: active ? '#EA2A30' : 'rgba(18,29,41,0.5)',
+    color: active ? '#EA2A30' : 'rgba(18,29,41,0.64)',
   }),
   weekInput: { background:'#FFFFFF', border:'0.5px solid rgba(18,29,41,0.12)', borderRadius:10, padding:'11px 14px', color:'#121D29', fontSize:13, outline:'none', width:'100%', boxSizing:'border-box', marginTop:6 },
   warning: { background:'rgba(251,191,36,0.1)', border:'0.5px solid rgba(251,191,36,0.2)', borderRadius:10, padding:'10px 12px', marginTop:12, fontSize:12, color:'#b45309' },
@@ -44,22 +45,22 @@ export default function ProfileScreen({ lang, raceData, onNext, onBack }) {
         <span style={s.back} onClick={onBack}>← {lang==='es' ? 'Volver' : 'Back'}</span>
 
         <div style={s.racePill}>
-          <span style={{fontSize:14}}>🏁</span>
+          <Icon name="flag" size={14} />
           <span style={s.racePillText}>{raceData.name}</span>
         </div>
 
         <div style={s.raceTags}>
-          <span style={s.tag('74,222,128')}>{raceData.distancia} km</span>
-          <span style={s.tag('251,191,36')}>{raceData.desnivel?.toLocaleString()}m D+</span>
-          {raceData.fecha && <span style={s.tag('96,165,250')}>{raceData.fecha}</span>}
-          <span style={s.tag('167,139,250')}>
+          <span style={s.tag()}>{raceData.distancia} km</span>
+          <span style={s.tag()}>{raceData.desnivel?.toLocaleString()}m D+</span>
+          {raceData.fecha && <span style={s.tag()}>{raceData.fecha}</span>}
+          <span style={s.tag()}>
             {planWeeks} {t(lang,'weeksAvailable')}
           </span>
         </div>
 
         {insufficient && (
           <div style={s.warning}>
-            ⚠️ {lang==='es'
+            <Icon name="alert" size={14} style={{ marginRight:6 }} />{lang==='es'
               ? `Tiempo ajustado. Plan ideal: ${idealWeeks} sem, tienes: ${available} sem. Haremos lo mejor posible.`
               : `Tight timeline. Ideal: ${idealWeeks} weeks, you have: ${available}. We'll make it work.`}
           </div>
@@ -121,10 +122,10 @@ export default function ProfileScreen({ lang, raceData, onNext, onBack }) {
         <div style={s.sectionLabel}>{lang === 'es' ? '¿Dónde entrenas?' : 'Where do you train?'}</div>
         <div style={s.optRow}>
           <div style={s.opt(terrain === 'mountain')} onClick={() => setTerrain('mountain')}>
-            {lang === 'es' ? '🏔️ Tengo montañas cerca' : '🏔️ Mountains / hills nearby'}
+            <Icon name="mountain" size={16} style={{ marginRight:6 }} />{lang === 'es' ? 'Tengo montañas cerca' : 'Mountains / hills nearby'}
           </div>
           <div style={s.opt(terrain === 'flat')} onClick={() => setTerrain('flat')}>
-            {lang === 'es' ? '🌅 Zona principalmente plana' : '🌅 Mostly flat terrain'}
+            <Icon name="sunrise" size={16} style={{ marginRight:6 }} />{lang === 'es' ? 'Zona principalmente plana' : 'Mostly flat terrain'}
           </div>
         </div>
 

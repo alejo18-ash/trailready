@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Logo from '../components/Logo';
 
 export default function SplashScreen({ onDone }) {
   const [phase, setPhase] = useState('logo');
@@ -25,7 +26,7 @@ export default function SplashScreen({ onDone }) {
       <div style={{
         width: 80,
         height: 80,
-        background: '#EA2A30',
+        background: 'transparent',
         borderRadius: 22,
         display: 'flex',
         alignItems: 'center',
@@ -35,7 +36,7 @@ export default function SplashScreen({ onDone }) {
         transform: phase === 'logo' ? 'scale(0.8)' : 'scale(1)',
         transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
       }}>
-        🏔️
+        <Logo size={80} rounded />
       </div>
 
       <div style={{
@@ -52,7 +53,7 @@ export default function SplashScreen({ onDone }) {
 
       <div style={{
         fontSize: 14,
-        color: 'rgba(18,29,41,0.45)',
+        color: 'rgba(18,29,41,0.62)',
         marginTop: 8,
         opacity: phase === 'tagline' || phase === 'fade' ? 1 : 0,
         transition: 'opacity 0.5s ease 0.2s',

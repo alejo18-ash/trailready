@@ -15,7 +15,7 @@ export const translations = {
 
       countdown: {
         days: "days to your race",
-        raceWeek: "Race week! 🎉",
+        raceWeek: "Race week!",
       },
       sourceOptions: {
         base: "Build My Base",
@@ -30,7 +30,7 @@ export const translations = {
         phase1: "Aerobic Base",
         phase2: "Base Development",
         todayMotivation:
-          "Building your base 🏃 — consistency beats intensity. Every easy run counts.",
+          "Building your base — consistency beats intensity. Every easy run counts.",
       },
       prebase: {
         title: "Pre-Base Plan",
@@ -42,8 +42,8 @@ export const translations = {
         coachNote: "The jog should feel easy — if you can't hold a conversation, slow down or walk.",
         phase1: "Activation",
         phase2: "Transition",
-        todayMotivation: "Keep it very easy 🚶 — if you can talk, you're doing it right. Every step counts.",
-        encouragement: "Building your foundation — 4 weeks to your first real run 🚶→🏃",
+        todayMotivation: "Keep it very easy — if you can talk, you're doing it right. Every step counts.",
+        encouragement: "Building your foundation — 4 weeks to your first real run",
       },
       analyzeRace: "Analyze race",
       analyzingPage: "Analyzing page...",
@@ -53,9 +53,9 @@ export const translations = {
       raceDetected: "RACE DETECTED",
       yourProfile: "YOUR PROFILE",
       currentLevel: "Current level",
-      beginner: "🌱 Beginner",
-      intermediate: "🔥 Intermediate",
-      advanced: "⚡ Advanced",
+      beginner: "Beginner",
+      intermediate: "Intermediate",
+      advanced: "Advanced",
       weeklyKm: "Current weekly km",
       alreadyTraining: "Already training?",
       startFromZero: "Starting from scratch",
@@ -81,7 +81,7 @@ export const translations = {
       treadmillTipIncline: "Set treadmill to the prescribed incline before starting",
       treadmillTipHR: "Use HR monitor — target zone shown above",
       treadmillTipPoles: "No poles needed — focus on arm drive and short stride",
-      keyWorkoutFlatRunner: "Flat Runner Key Session 🏔️➡️🏃",
+      keyWorkoutFlatRunner: "Flat Runner Key Session",
       afterRun: "AFTER YOUR RUN — TAP TO OPEN VIDEO",
       stretching: "Stretching",
       iceBath: "Ice bath",
@@ -96,7 +96,7 @@ export const translations = {
         didYouComplete: "Did you complete this workout?",
         yes: "Yes, completed",
         missed: "Missed it",
-        completedMsg: "Great work! Consistency is everything. 🔥",
+        completedMsg: "Great work! Consistency is everything.",
         missedMsg: "No worries — one missed day doesn't break a plan. Keep going.",
       },
 
@@ -185,7 +185,7 @@ export const translations = {
         footerTop: "Back to top",
         footerTagline: "Built for trail runners, by trail runners",
 
-        bannerText: "Welcome back 👋 You have an active plan.",
+        bannerText: "Welcome back You have an active plan.",
         bannerCta: "Continue →",
       },
   
@@ -238,7 +238,7 @@ export const translations = {
 
       countdown: {
         days: "días para tu carrera",
-        raceWeek: "¡Semana de carrera! 🎉",
+        raceWeek: "¡Semana de carrera!",
       },
       sourceOptions: {
         base: "Construir Mi Base",
@@ -253,7 +253,7 @@ export const translations = {
         phase1: "Base Aeróbica",
         phase2: "Desarrollo de Base",
         todayMotivation:
-          "Construyendo tu base 🏃 — la constancia supera la intensidad. Cada carrera fácil cuenta.",
+          "Construyendo tu base — la constancia supera la intensidad. Cada carrera fácil cuenta.",
       },
       prebase: {
         title: "Plan Pre-Base",
@@ -265,8 +265,8 @@ export const translations = {
         coachNote: "El trote debe sentirse fácil — si no puedes mantener una conversación, camina o disminuye el ritmo.",
         phase1: "Activación",
         phase2: "Transición",
-        todayMotivation: "Muy suave 🚶 — si puedes hablar, lo estás haciendo bien. Cada paso cuenta.",
-        encouragement: "Construyendo tu base — 4 semanas hasta tu primera carrera real 🚶→🏃",
+        todayMotivation: "Muy suave — si puedes hablar, lo estás haciendo bien. Cada paso cuenta.",
+        encouragement: "Construyendo tu base — 4 semanas hasta tu primera carrera real",
       },
       analyzeRace: "Analizar carrera",
       analyzingPage: "Analizando página...",
@@ -276,9 +276,9 @@ export const translations = {
       raceDetected: "CARRERA DETECTADA",
       yourProfile: "TU PERFIL",
       currentLevel: "Nivel actual",
-      beginner: "🌱 Principiante",
-      intermediate: "🔥 Intermedio",
-      advanced: "⚡ Avanzado",
+      beginner: "Principiante",
+      intermediate: "Intermedio",
+      advanced: "Avanzado",
       weeklyKm: "Km semanales actuales",
       alreadyTraining: "¿Ya estás entrenando?",
       startFromZero: "Arranco desde cero",
@@ -304,7 +304,7 @@ export const translations = {
       treadmillTipIncline: "Configura la cinta con la inclinación indicada antes de empezar",
       treadmillTipHR: "Usa monitor de FC — apunta a la zona indicada arriba",
       treadmillTipPoles: "Sin bastones — enfócate en brazada y zancada corta",
-      keyWorkoutFlatRunner: "Sesión clave corredor en llano 🏔️➡️🏃",
+      keyWorkoutFlatRunner: "Sesión clave corredor en llano",
       afterRun: "DESPUÉS DE CORRER — TOCA PARA VER VIDEO",
       stretching: "Estiramiento",
       iceBath: "Ice bath",
@@ -319,7 +319,7 @@ export const translations = {
         didYouComplete: "¿Completaste este entrenamiento?",
         yes: "Sí, completé",
         missed: "No pude",
-        completedMsg: "¡Excelente! La constancia lo es todo. 🔥",
+        completedMsg: "¡Excelente! La constancia lo es todo.",
         missedMsg: "Sin problema — un día perdido no arruina el plan. Sigue adelante.",
       },
 
@@ -408,7 +408,7 @@ export const translations = {
         footerTop: "Volver arriba",
         footerTagline: "Hecho para trail runners, por trail runners",
 
-        bannerText: "Bienvenido de nuevo 👋 Tienes un plan activo.",
+        bannerText: "Bienvenido de nuevo Tienes un plan activo.",
         bannerCta: "Continuar →",
       },
   

@@ -59,11 +59,11 @@ export default function LegalScreen({ lang, doc, onBack }) {
   const d = (DOCS[doc] || DOCS.privacy)[lang === 'es' ? 'es' : 'en'];
   return (
     <div style={{ minHeight:'100vh', background:'#F0F4F8', fontFamily:"'Inter', system-ui, sans-serif", maxWidth:600, margin:'0 auto', padding:'20px 20px 48px', boxSizing:'border-box' }}>
-      <button type="button" onClick={onBack} style={{ background:'none', border:'none', color:'rgba(18,29,41,0.5)', fontSize:13, cursor:'pointer', padding:0, fontFamily:'inherit' }}>
+      <button type="button" onClick={onBack} style={{ background:'none', border:'none', color:'rgba(18,29,41,0.62)', fontSize:13, cursor:'pointer', padding:0, fontFamily:'inherit' }}>
         ← {lang === 'es' ? 'Volver' : 'Back'}
       </button>
-      <h1 style={{ fontSize:24, fontWeight:800, color:'#121D29', margin:'16px 0 4px', letterSpacing:'-0.02em' }}>{d.title}</h1>
-      <div style={{ fontSize:12, color:'rgba(18,29,41,0.45)', marginBottom:20 }}>
+      <h1 style={{ fontSize:32, fontWeight:700, fontFamily:'var(--font-display)', lineHeight:1.05, color:'#121D29', margin:'16px 0 4px', letterSpacing:'-0.02em' }}>{d.title}</h1>
+      <div style={{ fontSize:12, color:'rgba(18,29,41,0.62)', marginBottom:20 }}>
         {lang === 'es' ? 'Última actualización' : 'Last updated'}: {LEGAL_UPDATED}
       </div>
       {d.sections.map(([h, body]) => (

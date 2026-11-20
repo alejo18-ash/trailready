@@ -4,7 +4,7 @@ import { t } from '../i18n';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const STORE = 'trailready_coach_chat';
-const C = { text:'#121D29', muted:'rgba(18,29,41,0.55)', faint:'rgba(18,29,41,0.08)', red:'#EA2A30', navy:'#121D29' };
+const C = { text:'#121D29', muted:'rgba(18,29,41,0.64)', faint:'rgba(18,29,41,0.08)', red:'#EA2A30', navy:'#121D29' };
 
 function loadChat() {
   try { return JSON.parse(localStorage.getItem(STORE) || '[]'); } catch { return []; }
@@ -65,7 +65,7 @@ export default function CoachScreen({ lang, user, plan, raceData, profile, curre
   if (!user) {
     return (
       <div style={wrap}>
-        <h1 style={{ fontSize:26, fontWeight:800, color:C.text, margin:'4px 0 12px' }}>Coach</h1>
+        <h1 style={{ fontSize:36, fontWeight:700, fontFamily:'var(--font-display)', lineHeight:1, color:C.text, margin:'4px 0 12px' }}>Coach</h1>
         <div style={{ background:'#fff', borderRadius:16, padding:20, border:`1px solid ${C.faint}` }}>
           <div style={{ fontSize:16, fontWeight:700, color:C.text, marginBottom:6 }}>{es ? 'Tu coach ajusta el plan contigo' : 'Your coach adjusts the plan with you'}</div>
           <div style={{ fontSize:14, color:C.muted, lineHeight:1.5, marginBottom:16 }}>
@@ -83,7 +83,7 @@ export default function CoachScreen({ lang, user, plan, raceData, profile, curre
   return (
     <div style={wrap}>
       <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between' }}>
-        <h1 style={{ fontSize:26, fontWeight:800, color:C.text, margin:'4px 0 4px' }}>Coach</h1>
+        <h1 style={{ fontSize:36, fontWeight:700, fontFamily:'var(--font-display)', lineHeight:1, color:C.text, margin:'4px 0 4px' }}>Coach</h1>
         {msgs.length > 0 && (
           <button type="button" onClick={() => setMsgs([])} style={{ background:'none', border:'none', color:C.muted, fontSize:12, cursor:'pointer', fontFamily:'inherit' }}>
             {es ? 'Nueva conversación' : 'New chat'}
@@ -111,7 +111,7 @@ export default function CoachScreen({ lang, user, plan, raceData, profile, curre
             {m.content}
             {m.proposal && (
               <div style={{ marginTop:10, background:'#F0F4F8', borderRadius:12, padding:12 }}>
-                <div style={{ fontSize:11, letterSpacing:'0.06em', color:C.red, fontWeight:700, marginBottom:6 }}>{es ? 'CAMBIO PROPUESTO' : 'PROPOSED CHANGE'}</div>
+                <div style={{ fontSize:12, letterSpacing:'0.06em', color:C.red, fontWeight:700, marginBottom:6 }}>{es ? 'CAMBIO PROPUESTO' : 'PROPOSED CHANGE'}</div>
                 <div style={{ fontSize:13, fontWeight:600, marginBottom:8 }}>{m.proposal.summary}</div>
                 {m.proposal.changes.map((c, k) => (
                   <div key={k} style={{ fontSize:12, color:C.muted, marginBottom:4 }}>

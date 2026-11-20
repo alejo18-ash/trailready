@@ -558,6 +558,9 @@ function AppFlow({ lang, setLang }) {
 
   const props = { lang, raceData, profile, plan, currentWeek, setCurrentWeek };
 
+  // Each screen opens at the top (no leftover scroll from the previous one).
+  useEffect(() => { window.scrollTo(0, 0); }, [screen, showLogin]);
+
   const renderScreen = () => {
     if (authLoading) return <SplashScreen key="auth-wait" onDone={() => {}} />;
     if (screen === 'login') return <LoginScreen lang={lang} onLegal={openLegal} onLogin={async () => { await loginWithGoogle(); setScreen('language'); }} onSkip={() => setScreen('language')} />;

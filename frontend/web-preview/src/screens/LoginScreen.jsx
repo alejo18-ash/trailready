@@ -1,3 +1,4 @@
+import Logo from '../components/Logo';
 export default function LoginScreen({ lang, onLogin, onSkip, returning, onLegal }) {
   return (
     <div style={{
@@ -10,24 +11,14 @@ export default function LoginScreen({ lang, onLogin, onSkip, returning, onLegal 
       padding: '0 32px',
       fontFamily: "'Inter', system-ui, sans-serif",
     }}>
-      <div style={{
-        width: 56,
-        height: 56,
-        background: '#EA2A30',
-        borderRadius: 16,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 28,
-        marginBottom: 24,
-      }}>
-        🏔️
+      <div style={{ marginBottom: 24 }}>
+        <Logo size={56} />
       </div>
 
-      <h1 style={{ fontSize: 24, fontWeight: 800, color: '#121D29', margin: 0, letterSpacing: '-0.02em', textAlign: 'center' }}>
+      <h1 style={{ fontSize: 34, fontWeight: 700, fontFamily: 'var(--font-display)', lineHeight: 1.05, color: '#121D29', margin: 0, letterSpacing: '-0.02em', textAlign: 'center' }}>
         {returning ? (lang === 'es' ? 'Bienvenido de vuelta' : 'Welcome back') : (lang === 'es' ? 'Guarda tu plan' : 'Save your plan')}
       </h1>
-      <p style={{ fontSize: 14, color: 'rgba(18,29,41,0.5)', marginTop: 8, marginBottom: 32, textAlign: 'center', lineHeight: 1.5 }}>
+      <p style={{ fontSize: 14, color: 'rgba(18,29,41,0.62)', marginTop: 8, marginBottom: 32, textAlign: 'center', lineHeight: 1.5 }}>
         {returning
           ? (lang === 'es' ? 'Inicia sesión para recuperar tu plan.' : 'Sign in to get your plan back.')
           : (lang === 'es'
@@ -72,7 +63,7 @@ export default function LoginScreen({ lang, onLogin, onSkip, returning, onLegal 
           background: 'transparent',
           border: 'none',
           fontSize: 13,
-          color: 'rgba(18,29,41,0.4)',
+          color: 'rgba(18,29,41,0.62)',
           cursor: 'pointer',
           padding: '8px 0',
           fontFamily: "'Inter', system-ui, sans-serif",
@@ -80,11 +71,11 @@ export default function LoginScreen({ lang, onLogin, onSkip, returning, onLegal 
       >
         {lang === 'es' ? 'Continuar sin cuenta →' : 'Continue without account →'}
       </button>
-      <p style={{ fontSize:11, color:'rgba(18,29,41,0.4)', textAlign:'center', maxWidth:300, lineHeight:1.5, marginTop:20 }}>
+      <p style={{ fontSize:12, color:'rgba(18,29,41,0.62)', textAlign:'center', maxWidth:300, lineHeight:1.5, marginTop:20 }}>
         {lang === 'es' ? 'Al continuar aceptas los ' : 'By continuing you accept the '}
-        <button type="button" onClick={() => onLegal?.('terms')} style={{ background:'none', border:'none', padding:0, color:'rgba(18,29,41,0.6)', textDecoration:'underline', cursor:'pointer', fontSize:11, fontFamily:'inherit' }}>{lang === 'es' ? 'Términos de uso' : 'Terms of use'}</button>
+        <button type="button" onClick={() => onLegal?.('terms')} style={{ background:'none', border:'none', padding:0, color:'rgba(18,29,41,0.62)', textDecoration:'underline', cursor:'pointer', fontSize:12, fontFamily:'inherit' }}>{lang === 'es' ? 'Términos de uso' : 'Terms of use'}</button>
         {lang === 'es' ? ' y la ' : ' and the '}
-        <button type="button" onClick={() => onLegal?.('privacy')} style={{ background:'none', border:'none', padding:0, color:'rgba(18,29,41,0.6)', textDecoration:'underline', cursor:'pointer', fontSize:11, fontFamily:'inherit' }}>{lang === 'es' ? 'Política de privacidad' : 'Privacy policy'}</button>.
+        <button type="button" onClick={() => onLegal?.('privacy')} style={{ background:'none', border:'none', padding:0, color:'rgba(18,29,41,0.62)', textDecoration:'underline', cursor:'pointer', fontSize:12, fontFamily:'inherit' }}>{lang === 'es' ? 'Política de privacidad' : 'Privacy policy'}</button>.
       </p>
     </div>
   );

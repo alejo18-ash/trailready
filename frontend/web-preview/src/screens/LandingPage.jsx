@@ -1,26 +1,28 @@
 import { useState, useEffect } from 'react';
 import { t } from '../i18n';
 import { useNavigate } from 'react-router-dom';
+import Icon, { IconBadge } from '../components/Icon';
+import Logo from '../components/Logo';
 
 const MARQUEE_SEG =
   '   Runners training for UTMB  ·  Western States  ·  Leadville  ·  Transgrancanaria  ·  IAU World Championships  ·  Tarawera  ·  Hardrock 100  ·  and local ultras in 40+ countries';
 
 
 const FEATURES = [
-  { icon: '🗺️', tk: 'f1Title', bk: 'f1Body' },
-  { icon: '💪', tk: 'f2Title', bk: 'f2Body' },
-  { icon: '🌦️', tk: 'f3Title', bk: 'f3Body' },
-  { icon: '🏃', tk: 'f4Title', bk: 'f4Body' },
-  { icon: '🌍', tk: 'f5Title', bk: 'f5Body' },
+  { icon: 'map', tk: 'f1Title', bk: 'f1Body' },
+  { icon: 'dumbbell', tk: 'f2Title', bk: 'f2Body' },
+  { icon: 'cloudSun', tk: 'f3Title', bk: 'f3Body' },
+  { icon: 'activity', tk: 'f4Title', bk: 'f4Body' },
+  { icon: 'globe', tk: 'f5Title', bk: 'f5Body' },
   { icon: '🇪🇸', tk: 'f6Title', bk: 'f6Body' },
 ];
 
 const PLANS = [
-  { icon: '🏁', nk: 'god1Name', sk: 'god1Sub', bk: 'god1Body', active: true },
-  { icon: '💪', nk: 'god2Name', sk: 'god2Sub', bk: 'god2Body', active: true },
-  { icon: '🏃', nk: 'god3Name', sk: 'god3Sub', bk: 'god3Body', active: true },
-  { icon: '⚡', nk: 'god4Name', sk: 'god4Sub', bk: 'god4Body', active: false },
-  { icon: '🩹', nk: 'god5Name', sk: 'god5Sub', bk: 'god5Body', active: false },
+  { icon: 'flag', nk: 'god1Name', sk: 'god1Sub', bk: 'god1Body', active: true },
+  { icon: 'dumbbell', nk: 'god2Name', sk: 'god2Sub', bk: 'god2Body', active: true },
+  { icon: 'activity', nk: 'god3Name', sk: 'god3Sub', bk: 'god3Body', active: true },
+  { icon: 'zap', nk: 'god4Name', sk: 'god4Sub', bk: 'god4Body', active: false },
+  { icon: 'heart', nk: 'god5Name', sk: 'god5Sub', bk: 'god5Body', active: false },
 ];
 
 /* Injected styles — uses CSS variables from design-system.css */
@@ -260,9 +262,11 @@ const s = {
   },
   h1: {
     fontSize: 'clamp(2.4rem, 6vw, 5rem)',
-    fontWeight: 900,
-    lineHeight: 1.04,
-    letterSpacing: '-0.03em',
+    fontWeight: 700,
+    fontFamily: 'var(--font-display)',
+    textTransform: 'uppercase',
+    lineHeight: 0.98,
+    letterSpacing: '0',
     color: 'var(--text)',
     margin: '0 0 28px',
     whiteSpace: 'pre-line',
@@ -639,7 +643,7 @@ export default function LandingPage({ lang, setLang }) {
         <nav style={s.navWrap(scrolled)}>
           <div style={s.navInner}>
             <div style={s.brand}>
-              <span style={s.brandEmoji}>🏔️</span>
+              <Logo size={28} />
               TrailReady
             </div>
             <div style={{ display:'flex', alignItems:'center', gap:10 }}>
@@ -686,7 +690,7 @@ export default function LandingPage({ lang, setLang }) {
             <div style={s.godGrid} className="tr-god-grid">
               {PLANS.map(({ icon, nk, sk, bk, active }) => (
                 <div key={nk} className={`tr-god-card ${active ? 'tr-god-active' : 'tr-god-soon'}`}>
-                  <span style={s.godIcon}>{icon}</span>
+                  <span style={s.godIcon}><IconBadge name={icon} size={44} /></span>
                   <span style={s.godBadge(active)}>{active ? (lang === 'es' ? 'ACTIVO' : 'ACTIVE') : (lang === 'es' ? 'PRÓXIMAMENTE' : 'COMING SOON')}</span>
                   <div style={s.godName}>{t(lang, `landing.${nk}`)}</div>
                   <div style={s.godSub}>{t(lang, `landing.${sk}`)}</div>
@@ -709,7 +713,7 @@ export default function LandingPage({ lang, setLang }) {
             <div style={s.featGrid} className="tr-feat-grid">
               {FEATURES.map(({ icon, tk, bk }) => (
                 <div key={tk} className="tr-feature-card">
-                  <div style={s.featIconBadge}>{icon}</div>
+                  <div style={s.featIconBadge}><Icon name={icon} size={22} color="#EA2A30" /></div>
                   <div style={s.featTitle}>{t(lang, `landing.${tk}`)}</div>
                   <div style={s.featBody}>{t(lang, `landing.${bk}`)}</div>
                 </div>
@@ -731,7 +735,7 @@ export default function LandingPage({ lang, setLang }) {
         <footer style={s.footer}>
           <div style={s.footerInner}>
             <div style={s.footerBrand}>
-              <span style={s.footerBrandEmoji}>🏔️</span>
+              <Logo size={24} />
               TrailReady · 2026
             </div>
             <div style={s.footerLangRow}>
