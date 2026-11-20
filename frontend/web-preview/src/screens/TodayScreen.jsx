@@ -192,10 +192,10 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
     <div className="screen-enter" style={s.wrap}>
       {/* ── Top bar: date, account, weather ── */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'20px 4px 12px', gap:12 }}>
-        <div style={{ fontSize:12, fontWeight:600, color:'rgba(18,29,41,0.66)', letterSpacing:'0.08em', textTransform:'uppercase' }}>
+        <div style={{ fontSize:12, fontWeight:600, color:'rgba(18,29,41,0.66)', letterSpacing:'0.06em', textTransform:'uppercase', whiteSpace:'nowrap' }}>
           {new Date().toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US', { weekday:'long', day:'numeric', month:'short' })}
         </div>
-        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:6, whiteSpace:'nowrap' }}>
           {conditions ? (
             <div style={{ display:'flex', alignItems:'center', gap:6, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:999, padding:'6px 12px', fontSize:13, fontWeight:600, color:'#121D29' }}>
               <span aria-hidden="true">{conditions.icon}</span>{conditions.temp}°
@@ -203,11 +203,11 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             </div>
           ) : locationError ? (
             <button type="button" onClick={fetchConditions} style={{ display:'flex', alignItems:'center', gap:6, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:999, padding:'8px 12px', fontSize:12, fontWeight:600, color:'#121D29', cursor:'pointer', fontFamily:'inherit', minHeight:36 }}>
-              <Icon name="pin" size={14} color="#EA2A30" />{lang==='es' ? 'Activar clima' : 'Enable weather'}
+              <Icon name="pin" size={14} color="#EA2A30" />{lang==='es' ? 'Clima' : 'Weather'}
             </button>
           ) : weatherFailed ? (
             <button type="button" onClick={fetchConditions} style={{ display:'flex', alignItems:'center', gap:6, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:999, padding:'8px 12px', fontSize:12, color:'rgba(18,29,41,0.66)', cursor:'pointer', fontFamily:'inherit', minHeight:36 }}>
-              <Icon name="cloudSun" size={14} />{lang==='es' ? 'Clima no disponible · Reintentar' : 'Weather unavailable · Retry'}
+              <Icon name="cloudSun" size={14} />{lang==='es' ? 'Reintentar clima' : 'Retry weather'}
             </button>
           ) : (
             <div className="tr-skeleton" style={{ width:84, height:32, borderRadius:999 }} aria-label={lang==='es' ? 'Cargando clima' : 'Loading weather'} />
@@ -220,7 +220,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             </button>
           ) : (
             <button type="button" onClick={onShowLogin} style={{ background:'none', border:'none', fontSize:13, color:'#EA2A30', cursor:'pointer', fontFamily:'inherit', fontWeight:600, padding:'8px 4px', minHeight:36 }}>
-              {lang === 'es' ? 'Iniciar sesión' : 'Sign in'}
+              {lang === 'es' ? 'Entrar' : 'Sign in'}
             </button>
           )}
         </div>
@@ -235,7 +235,7 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
             {phaseLabel} · {t(lang,'week')} {week.week}/{plan.totalWeeks}
           </span>
           {daysToRace !== null && daysToRace >= 0 && (
-            <span style={{ display:'inline-flex', alignItems:'center', gap:4, fontSize:12, fontWeight:600, color: isRaceWeek ? '#EA2A30' : 'rgba(18,29,41,0.66)' }}>
+            <span style={{ display:'inline-flex', alignItems:'center', gap:4, fontSize:12, fontWeight:600, whiteSpace:'nowrap', color: isRaceWeek ? '#EA2A30' : 'rgba(18,29,41,0.66)' }}>
               <Icon name="flag" size={13} />{isRaceWeek ? t(lang, 'countdown.raceWeek') : `${daysToRace} ${lang==='es' ? 'días' : 'days'}`}
             </span>
           )}
