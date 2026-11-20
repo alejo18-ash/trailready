@@ -67,6 +67,8 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
   const [workoutStatus, setWorkoutStatus]     = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [weatherFailed, setWeatherFailed]     = useState(false);
+  const [geoBusy, setGeoBusy]                 = useState(false);
+  const [geoHelp, setGeoHelp]                 = useState(null); // 'denied' | 'unavailable' | null
 
   useEffect(() => { fetchConditions(); }, [currentWeek]);
   // Signing in after the page loaded: fetch routes without asking for location again.
@@ -122,10 +124,12 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
     }
   };
 
-  const fetchConditions = () => {
-    if (!navigator.geolocation) return setLocationError(true);
+  const fetchConditions = (fromTap = false) => {
+    if (!navigator.geolocation) { setLocationError(true); if (fromTap) setGeoHelp('unavailable'); return; }
+    setGeoBusy(true);
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
+        setGeoBusy(false); setGeoHelp(null);
         try {
           const { latitude: lat, longitude: lon } = pos.coords;
           const cw = currentWeek ?? 0;
@@ -142,7 +146,12 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           fetchRoutes(lat, lon, tw, data.success ? data.conditions : null);
         } catch { setWeatherFailed(true); }
       },
-      () => setLocationError(true)
+      (err) => {
+        // The browser won't ask again once location was blocked: explain how to turn it on.
+        setGeoBusy(false); setLocationError(true);
+        if (fromTap) setGeoHelp(err?.code === 1 ? 'denied' : 'unavailable');
+      },
+      { timeout: 15000, maximumAge: 10 * 60 * 1000 }
     );
   };
 
@@ -224,11 +233,11 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
               <span style={{ color:'rgba(18,29,41,0.66)', fontWeight:500, display:'inline-flex', alignItems:'center', gap:3 }}><Icon name="wind" size={13} />{conditions.wind}</span>
             </div>
           ) : locationError ? (
-            <button type="button" onClick={fetchConditions} style={{ display:'flex', alignItems:'center', gap:6, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:999, padding:'8px 12px', fontSize:12, fontWeight:600, color:'#121D29', cursor:'pointer', fontFamily:'inherit', minHeight:36 }}>
-              <Icon name="pin" size={14} color="#EA2A30" />{lang==='es' ? 'Clima' : 'Weather'}
+            <button type="button" onClick={() => fetchConditions(true)} disabled={geoBusy} style={{ display:'flex', alignItems:'center', gap:6, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:999, padding:'8px 12px', fontSize:12, fontWeight:600, color:'#121D29', cursor:'pointer', fontFamily:'inherit', minHeight:36, opacity: geoBusy ? 0.6 : 1 }}>
+              <Icon name="pin" size={14} color="#EA2A30" />{geoBusy ? '…' : (lang==='es' ? 'Clima' : 'Weather')}
             </button>
           ) : weatherFailed ? (
-            <button type="button" onClick={fetchConditions} style={{ display:'flex', alignItems:'center', gap:6, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:999, padding:'8px 12px', fontSize:12, color:'rgba(18,29,41,0.66)', cursor:'pointer', fontFamily:'inherit', minHeight:36 }}>
+            <button type="button" onClick={() => fetchConditions(true)} style={{ display:'flex', alignItems:'center', gap:6, background:'#FFFFFF', border:'1px solid rgba(18,29,41,0.08)', borderRadius:999, padding:'8px 12px', fontSize:12, color:'rgba(18,29,41,0.66)', cursor:'pointer', fontFamily:'inherit', minHeight:36 }}>
               <Icon name="cloudSun" size={14} />{lang==='es' ? 'Reintentar clima' : 'Retry weather'}
             </button>
           ) : (
@@ -247,6 +256,24 @@ export default function TodayScreen({ lang, plan, raceData, currentWeek, onWeek,
           )}
         </div>
       </div>
+
+      {geoHelp && (
+        <div role="alert" style={{ background:'#FFFFFF', border:'1px solid rgba(234,42,48,0.25)', borderRadius:16, padding:16, marginBottom:12, fontSize:14, color:'rgba(18,29,41,0.78)', lineHeight:1.5 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:8 }}>
+            <strong style={{ color:'#121D29' }}>{lang==='es' ? 'La ubicación está bloqueada' : 'Location is blocked'}</strong>
+            <button type="button" onClick={() => setGeoHelp(null)} aria-label={lang==='es' ? 'Cerrar' : 'Close'} style={{ background:'none', border:'none', padding:4, cursor:'pointer', color:'rgba(18,29,41,0.66)' }}><Icon name="x" size={16} /></button>
+          </div>
+          {geoHelp === 'denied' ? (
+            <ol style={{ margin:'8px 0 0', paddingLeft:18 }}>
+              <li>{lang==='es' ? 'En el iPhone: Ajustes → Privacidad y seguridad → Localización → activa tu navegador (Chrome o Safari) con "Al usar la app".' : 'On iPhone: Settings → Privacy & Security → Location Services → set your browser (Chrome or Safari) to "While Using".'}</li>
+              <li>{lang==='es' ? 'En Safari también: Ajustes → Apps → Safari → Ubicación → Preguntar o Permitir.' : 'For Safari also: Settings → Apps → Safari → Location → Ask or Allow.'}</li>
+              <li>{lang==='es' ? 'Vuelve, recarga la página y toca "Clima" otra vez.' : 'Come back, reload the page and tap "Weather" again.'}</li>
+            </ol>
+          ) : (
+            <div style={{ marginTop:6 }}>{lang==='es' ? 'No pudimos obtener tu ubicación. Revisa que la localización esté activa e inténtalo de nuevo.' : "We couldn't get your location. Check that location is on and try again."}</div>
+          )}
+        </div>
+      )}
 
       {conditions?.alert && <div style={{ ...s.alert, margin:'0 0 12px', display:'flex', gap:8, alignItems:'flex-start' }}><Icon name="alert" size={16} />{conditions.alert}</div>}
 
